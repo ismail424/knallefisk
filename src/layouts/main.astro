@@ -1,0 +1,23 @@
+---
+import Header from 'components/Header';
+import Footer from 'components/Footer';
+const pathname = Astro.url.pathname;
+---
+
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="description" content="Knallefisk startades år 2006 av en trevlig fiskhandlare som såg fram emot att starta ett eget företag. Med 15 år av erfarenhet inom fiskbranchen erbjuder han och hans anställda alltid den bästa kvaliteten till det lägstapriset."/>
+      <link rel="stylesheet" href="/css/main.css">
+      <title>Knallefisk</title>
+  </head>
+  <body>
+    <main class="main flex-wrapper">
+      <Header client:load url={pathname} />
+        <slot /> <!-- your content is injected here -->
+      <Footer />
+    </main>
+    <script src="https://kit.fontawesome.com/d929f5c8b7.js" crossorigin="anonymous"></script>
+  </body>
+</html>
