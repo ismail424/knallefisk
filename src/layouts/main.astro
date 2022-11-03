@@ -2,6 +2,12 @@
 import Header from 'components/Header';
 import Footer from 'components/Footer';
 const pathname = Astro.url.pathname;
+// remove last slash
+let currentPath = pathname;
+if (pathname != '/'){
+  currentPath = pathname.replace(/\/$/, '');
+}
+
 ---
 
 <html lang="en">
@@ -14,7 +20,7 @@ const pathname = Astro.url.pathname;
   </head>
   <body>
     <main class="main flex-wrapper">
-      <Header client:load url={pathname} />
+      <Header client:load url={currentPath} />
         <slot /> <!-- your content is injected here -->
       <Footer />
     </main>
