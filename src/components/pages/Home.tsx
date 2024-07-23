@@ -5,6 +5,7 @@ import About from "./About";
 import video from "/assets/video/havet.mp4";
 import logo from "/assets/img/logo.svg";
 import Pictures from "../Pictures";
+import Prices from "components/Prices";
 
 const Home: Component = () => {
     const [fadeOut, setFadeOut] = createSignal(1);
@@ -52,6 +53,7 @@ const Home: Component = () => {
                 </div>
             </div>
         </main>
+            <Prices />
             < About />
             < Pictures />
         </>
