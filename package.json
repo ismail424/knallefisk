@@ -13,6 +13,7 @@
   "dependencies": {
     "@astrojs/solid-js": "^1.2.2",
     "@emailjs/browser": "^3.9.0",
+    "@example/minimal": "file:",
     "@motionone/solid": "^10.14.3",
     "astro": "^1.6.0",
     "solid-js": "^1.4.3"
