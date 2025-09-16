@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import {
@@ -6,12 +6,10 @@ import {
   Container,
   Typography,
   Button,
-  Grid,
   Card,
   CardMedia,
 } from '@mui/material';
 import MUIThemeProvider from '../components/ThemeProvider';
-import Navbar from '../components/Navbar';
 import Image from 'next/image';
 
 export default function Home() {
@@ -147,19 +145,17 @@ export default function Home() {
 
         {/* About Section */}
         <Container maxWidth="lg" className="py-24">
-          <Grid container spacing={6} alignItems="center">
-            <Grid item xs={12} md={6}>
-              <Box className="relative">
-                <Image 
-                  src="/assets/img/store_front.webp"
-                  alt="Bild på framsidan av fisk affären"
-                  width={600}
-                  height={500}
-                  className="rounded-lg shadow-lg w-full"
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={6}>
+          <Box className="flex flex-col md:flex-row items-center gap-12">
+            <Box className="flex-1">
+              <Image 
+                src="/assets/img/store_front.webp"
+                alt="Bild på framsidan av fisk affären"
+                width={600}
+                height={500}
+                className="rounded-lg shadow-lg w-full"
+              />
+            </Box>
+            <Box className="flex-1">
               <Typography variant="h4" component="h2" className="mb-6 font-semibold text-gray-800">
                 Om Knallefisk
               </Typography>
@@ -170,8 +166,8 @@ export default function Home() {
                 priset. Här hittar du allt från färsk fisk till färdiga delikatesser, som hämtas direkt
                 från GÖTBORGS FISKAUKTION.
               </Typography>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </Container>
 
         {/* Image Gallery */}
@@ -180,21 +176,19 @@ export default function Home() {
             <Typography variant="h4" component="h2" className="text-center mb-12 font-semibold text-gray-800">
               Våra Produkter
             </Typography>
-            <Grid container spacing={4}>
+            <Box className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {images.map((image, index) => (
-                <Grid item xs={12} md={4} key={index}>
-                  <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
-                    <CardMedia
-                      component="img"
-                      height="250"
-                      image={image.src}
-                      alt={image.alt}
-                      className="h-64 object-cover"
-                    />
-                  </Card>
-                </Grid>
+                <Card key={index} className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={image.src}
+                    alt={image.alt}
+                    className="h-64 object-cover"
+                  />
+                </Card>
               ))}
-            </Grid>
+            </Box>
           </Container>
         </Box>
 
@@ -206,142 +200,6 @@ export default function Home() {
             </Typography>
           </Container>
         </Box>
-      </Box>
-    </MUIThemeProvider>
-  );
-}
-      alt: 'Knallefisk butik'
-    },
-    {
-      src: '/assets/img/bild1.webp',
-      alt: 'Färsk fisk'
-    },
-    {
-      src: '/assets/img/bild7.webp',
-      alt: 'Räkmacka'
-    },
-    {
-      src: '/assets/img/bild8.webp',
-      alt: 'Laxmacka'
-    },
-    {
-      src: '/assets/img/bild4.jpg',
-      alt: 'Butiksbild'
-    },
-    {
-      src: '/assets/img/bild5.webp',
-      alt: 'Färsk fisk'
-    },
-    {
-      src: '/assets/img/bild2.webp',
-      alt: 'Räkor'
-    },
-    {
-      src: '/assets/img/bild6.webp',
-      alt: 'Skaldjur'
-    }
-  ];
-
-  return (
-    <MUIThemeProvider>
-      <Navbar />
-
-      {/* Main Content */}
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        {/* Hero Text Section */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography
-            variant="h3"
-            component="h1"
-            gutterBottom
-            sx={{
-              fontWeight: 'bold',
-              color: '#1976d2',
-              mb: 3
-            }}
-          >
-            Färska delikatesser från hav och sjö
-          </Typography>
-
-          <Typography
-            variant="h6"
-            sx={{
-              mb: 4,
-              maxWidth: '800px',
-              mx: 'auto',
-              lineHeight: 1.6
-            }}
-          >
-            Knallefisk startades år 2006 av en trevlig fiskhandlare som såg fram emot att starta ett eget företag.
-            Med 15 år av erfarenhet inom fiskbranchen erbjuder han och hans anställda alltid den bästa kvaliteten
-            till det lägsta priset. Här hittar du allt från färsk fisk till färdiga delikatesser,
-            som hämtas direkt från GÖTBORGS FISKAUKTION.
-          </Typography>
-
-          <Button
-            variant="contained"
-            size="large"
-            sx={{
-              backgroundColor: '#1976d2',
-              color: 'white',
-              px: 4,
-              py: 1.5,
-              fontSize: '1.1rem',
-              '&:hover': {
-                backgroundColor: '#1565c0',
-              }
-            }}
-          >
-            Beställ nu
-          </Button>
-        </Box>
-
-        {/* Image Gallery */}
-        <Grid container spacing={3}>
-          {images.map((image, index) => (
-            <Grid item xs={12} sm={6} md={3} key={index}>
-              <Card
-                sx={{
-                  height: '100%',
-                  boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  transition: 'transform 0.2s',
-                  '&:hover': {
-                    transform: 'scale(1.02)',
-                    boxShadow: '0 6px 12px rgba(0,0,0,0.15)',
-                  }
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={image.src}
-                  alt={image.alt}
-                  sx={{
-                    objectFit: 'cover',
-                  }}
-                />
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-
-      {/* Footer */}
-      <Box
-        sx={{
-          backgroundColor: '#f5f5f5',
-          py: 3,
-          mt: 6,
-          textAlign: 'center'
-        }}
-      >
-        <Container maxWidth="lg">
-          <Typography color="text.secondary">
-            Copyright © 2022 Knallefisk
-          </Typography>
-        </Container>
       </Box>
     </MUIThemeProvider>
   );
