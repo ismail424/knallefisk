@@ -1,4 +1,4 @@
-'use client';'use client';'use client';
+'use client';'use client';'use client';'use client';
 
 
 
@@ -6,88 +6,177 @@ import React from 'react';
 
 import {
 
-  Box,import React from 'react';import React from 'react';
+  Box,import React from 'react';
 
   Container,
 
-  Typography,import {import {
+  Typography,import {
 
   Grid,
 
-  Card,  Box,  Box,
+  Card,  Box,import React from 'react';import React from 'react';
 
   CardContent,
 
-} from '@mui/material';  Container,  Container,
+} from '@mui/material';  Container,
 
 import {
 
-  Phone as PhoneIcon,  Typography,  Typography,
+  Phone as PhoneIcon,  Typography,import {import {
 
   Email as EmailIcon,
 
-  LocationOn as LocationIcon,  Grid2 as Grid,  Grid,
+  LocationOn as LocationIcon,  Grid,
 
 } from '@mui/icons-material';
 
-  Card,  Card,
+  Card,  Box,  Box,
 
 export default function KontaktPage() {
 
-  return (  CardContent,  CardContent,
+  return (  CardContent,
 
     <Box className="mt-24">
 
-      <Container maxWidth="lg" className="py-16">} from '@mui/material';} from '@mui/material';
+      <Container maxWidth="lg" className="py-16">} from '@mui/material';  Container,  Container,
 
         <div className="grid-kontakta-oss">
 
-          <div className="text-center mb-8">import {import {
+          <div className="text-center mb-8">import {
 
             <Typography 
 
-              variant="h2"   Phone as PhoneIcon,  Phone as PhoneIcon,
+              variant="h2"   Phone as PhoneIcon,  Typography,  Typography,
 
               component="h1" 
 
-              className="text-4xl font-bold text-gray-800 mb-8"  Email as EmailIcon,  Email as EmailIcon,
+              className="text-4xl font-bold text-gray-800 mb-8"  Email as EmailIcon,
 
             >
 
-              KONTAKTA OSS  LocationOn as LocationIcon,  LocationOn as LocationIcon,
+              KONTAKTA OSS  LocationOn as LocationIcon,  Grid2 as Grid,  Grid,
 
             </Typography>
 
-          </div>} from '@mui/icons-material';} from '@mui/icons-material';
+          </div>} from '@mui/icons-material';
 
 
 
-          <Grid container spacing={4}>
+          <Grid container spacing={4}>  Card,  Card,
 
             <Grid item xs={12} md={4}>
 
-              <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300">export default function KontaktPage() {export default function KontaktPage() {
+              <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300">export default function KontaktPage() {
 
                 <CardContent className="text-center p-8">
 
-                  <EmailIcon className="text-6xl text-blue-600 mb-4" />  return (  return (
+                  <EmailIcon sx={{ fontSize: 60, color: '#2563eb', mb: 2 }} />  return (  CardContent,  CardContent,
 
                   <Typography variant="h5" component="h3" className="font-semibold mb-4">
 
-                    Email    <Box className="mt-24">    <Box className="mt-24">
+                    Email    <Box className="mt-24">
 
                   </Typography>
 
-                  <Typography variant="body1" className="text-gray-600">      <Container maxWidth="lg" className="py-16">      <Container maxWidth="lg" className="py-16">
+                  <Typography variant="body1" className="text-gray-600">      <Container maxWidth="lg" className="py-16">} from '@mui/material';} from '@mui/material';
 
                     rsacic@yahoo.se<br />
 
-                    almir.hamza@hotmail.com        <Grid container spacing={4} className="grid-kontakta-oss">        <Grid container spacing={4} className="grid-kontakta-oss">
+                    almir.hamza@hotmail.com        <div className="grid-kontakta-oss">
 
                   </Typography>
 
-                </CardContent>          <Grid xs={12} className="text-center mb-8">          <Grid item xs={12} className="text-center mb-8">
+                </CardContent>          <div className="text-center mb-8">import {import {
 
+              </Card>
+
+            </Grid>            <Typography 
+
+
+
+            <Grid item xs={12} md={4}>              variant="h2"   Phone as PhoneIcon,  Phone as PhoneIcon,
+
+              <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300">
+
+                <CardContent className="text-center p-8">              component="h1" 
+
+                  <PhoneIcon sx={{ fontSize: 60, color: '#16a34a', mb: 2 }} />
+
+                  <Typography variant="h5" component="h3" className="font-semibold mb-4">              className="text-4xl font-bold text-gray-800 mb-8"  Email as EmailIcon,  Email as EmailIcon,
+
+                    Nummer
+
+                  </Typography>            >
+
+                  <Typography variant="body1" className="text-gray-600">
+
+                    073 535 09 17<br />              KONTAKTA OSS  LocationOn as LocationIcon,  LocationOn as LocationIcon,
+
+                    070 836 59 71
+
+                  </Typography>            </Typography>
+
+                </CardContent>
+
+              </Card>          </div>} from '@mui/icons-material';} from '@mui/icons-material';
+
+            </Grid>
+
+
+
+            <Grid item xs={12} md={4}>
+
+              <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300">          <Grid container spacing={4}>
+
+                <CardContent className="text-center p-8">
+
+                  <LocationIcon sx={{ fontSize: 60, color: '#dc2626', mb: 2 }} />            <Grid item xs={12} md={4}>
+
+                  <Typography variant="h5" component="h3" className="font-semibold mb-4">
+
+                    Plats              <Card className="h-full shadow-lg hover:shadow-xl transition-shadow duration-300">export default function KontaktPage() {export default function KontaktPage() {
+
+                  </Typography>
+
+                  <Typography variant="body1" className="text-gray-600">                <CardContent className="text-center p-8">
+
+                    Ålgårdsvägen 3, 506 30 Borås<br />
+
+                    Örbyvägen 27, 511 61 Skene                  <EmailIcon className="text-6xl text-blue-600 mb-4" />  return (  return (
+
+                  </Typography>
+
+                </CardContent>                  <Typography variant="h5" component="h3" className="font-semibold mb-4">
+
+              </Card>
+
+            </Grid>                    Email    <Box className="mt-24">    <Box className="mt-24">
+
+          </Grid>
+
+        </div>                  </Typography>
+
+
+
+        {/* Footer */}                  <Typography variant="body1" className="text-gray-600">      <Container maxWidth="lg" className="py-16">      <Container maxWidth="lg" className="py-16">
+
+        <Box className="mt-12 text-center py-8 bg-gray-50 rounded-lg">
+
+          <Typography variant="body2" className="text-gray-600">                    rsacic@yahoo.se<br />
+
+            Copyright © 2022 Knallefisk
+
+          </Typography>                    almir.hamza@hotmail.com        <Grid container spacing={4} className="grid-kontakta-oss">        <Grid container spacing={4} className="grid-kontakta-oss">
+
+        </Box>
+
+      </Container>                  </Typography>
+
+    </Box>
+
+  );                </CardContent>          <Grid xs={12} className="text-center mb-8">          <Grid item xs={12} className="text-center mb-8">
+
+}
               </Card>
 
             </Grid>            <Typography             <Typography 

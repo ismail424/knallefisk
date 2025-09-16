@@ -1,185 +1,366 @@
-'use client';
+'use client';'use client';
 
-import React, { useState } from 'react';
-import {
-  Box,
-  Container,
-  Typography,
-  Card,
-  CardContent,
-  CardActions,
-  Grid,
-  Button,
-  Badge,
-  Chip,
-  Alert,
-  Dialog,
+
+
+import React, { useState } from 'react';import React, { useState } from 'react';
+
+import {import {
+
+  Box,  Box,
+
+  Container,  Container,
+
+  Typography,  Typography,
+
+  TextField,  Card,
+
+  Button,  CardContent,
+
+  Card,  CardActions,
+
+  CardContent,  Grid,
+
+  Alert,  Button,
+
+} from '@mui/material';  Badge,
+
+import {  Chip,
+
+  Send as SendIcon,  Alert,
+
+} from '@mui/icons-material';  Dialog,
+
   DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-} from '@mui/material';
-import {
-  ShoppingCart as CartIcon,
-  Add as AddIcon,
-  Remove as RemoveIcon,
+
+export default function BestallOnlinePage() {  DialogContent,
+
+  const [formData, setFormData] = useState({  DialogActions,
+
+    name: '',  TextField,
+
+    date: '',} from '@mui/material';
+
+    number: '',import {
+
+    message: '',  ShoppingCart as CartIcon,
+
+  });  Add as AddIcon,
+
+  const [submitted, setSubmitted] = useState(false);  Remove as RemoveIcon,
+
   LocalShipping as ShippingIcon,
-} from '@mui/icons-material';
-import MUIThemeProvider from '../../components/ThemeProvider';
-import Navbar from '../../components/Navbar';
 
-interface Product {
-  id: number;
-  namn: string;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {} from '@mui/icons-material';
+
+    const { name, value } = e.target;import MUIThemeProvider from '../../components/ThemeProvider';
+
+    setFormData(prev => ({import Navbar from '../../components/Navbar';
+
+      ...prev,
+
+      [name]: valueinterface Product {
+
+    }));  id: number;
+
+  };  namn: string;
+
   pris: number;
-  enhet: string;
-  kategori: string;
-  beskrivning: string;
-  bild: string;
-}
 
-interface CartItem extends Product {
-  antal: number;
-}
+  const handleSubmit = (e: React.FormEvent) => {  enhet: string;
 
-export default function BestallOnline() {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [orderDialog, setOrderDialog] = useState(false);
-  const [orderSubmitted, setOrderSubmitted] = useState(false);
+    e.preventDefault();  kategori: string;
 
-  const produkter: Product[] = [
+    // Here you would integrate with EmailJS or your preferred email service  beskrivning: string;
+
+    console.log('Form submitted:', formData);  bild: string;
+
+    setSubmitted(true);}
+
+    // Reset form after submission
+
+    setTimeout(() => {interface CartItem extends Product {
+
+      setFormData({  antal: number;
+
+        name: '',}
+
+        date: '',
+
+        number: '',export default function BestallOnline() {
+
+        message: '',  const [cart, setCart] = useState<CartItem[]>([]);
+
+      });  const [orderDialog, setOrderDialog] = useState(false);
+
+      setSubmitted(false);  const [orderSubmitted, setOrderSubmitted] = useState(false);
+
+    }, 3000);
+
+  };  const produkter: Product[] = [
+
     { id: 1, namn: 'Lax, färsk', pris: 189, enhet: 'kg', kategori: 'Färsk fisk', beskrivning: 'Färsk lax från Norge', bild: '/assets/img/bild1.webp' },
-    { id: 2, namn: 'Torsk', pris: 159, enhet: 'kg', kategori: 'Färsk fisk', beskrivning: 'Färsk torsk från Västkusten', bild: '/assets/img/bild5.webp' },
-    { id: 3, namn: 'Räkor, färska', pris: 245, enhet: 'kg', kategori: 'Skaldjur', beskrivning: 'Färska västkusträkor', bild: '/assets/img/bild2.webp' },
-    { id: 4, namn: 'Gravlax', pris: 289, enhet: 'kg', kategori: 'Delikatesser', beskrivning: 'Hemgjord gravlax', bild: '/assets/img/bild7.webp' },
-    { id: 5, namn: 'Fiskbullar', pris: 89, enhet: 'kg', kategori: 'Delikatesser', beskrivning: 'Hemlagade fiskbullar', bild: '/assets/img/bild8.webp' },
-    { id: 6, namn: 'Musslor', pris: 45, enhet: 'kg', kategori: 'Skaldjur', beskrivning: 'Färska blåmusslor', bild: '/assets/img/bild6.webp' },
-  ];
 
-  const addToCart = (product: Product) => {
-    setCart(prevCart => {
-      const existingItem = prevCart.find(item => item.id === product.id);
+  return (    { id: 2, namn: 'Torsk', pris: 159, enhet: 'kg', kategori: 'Färsk fisk', beskrivning: 'Färsk torsk från Västkusten', bild: '/assets/img/bild5.webp' },
+
+    <Box className="mt-24 min-h-screen bg-gray-50">    { id: 3, namn: 'Räkor, färska', pris: 245, enhet: 'kg', kategori: 'Skaldjur', beskrivning: 'Färska västkusträkor', bild: '/assets/img/bild2.webp' },
+
+      <Container maxWidth="md" className="py-16">    { id: 4, namn: 'Gravlax', pris: 289, enhet: 'kg', kategori: 'Delikatesser', beskrivning: 'Hemgjord gravlax', bild: '/assets/img/bild7.webp' },
+
+        <Typography     { id: 5, namn: 'Fiskbullar', pris: 89, enhet: 'kg', kategori: 'Delikatesser', beskrivning: 'Hemlagade fiskbullar', bild: '/assets/img/bild8.webp' },
+
+          variant="h3"     { id: 6, namn: 'Musslor', pris: 45, enhet: 'kg', kategori: 'Skaldjur', beskrivning: 'Färska blåmusslor', bild: '/assets/img/bild6.webp' },
+
+          component="h1"   ];
+
+          className="text-center mb-12 font-bold text-gray-800"
+
+        >  const addToCart = (product: Product) => {
+
+          Beställ Online    setCart(prevCart => {
+
+        </Typography>      const existingItem = prevCart.find(item => item.id === product.id);
+
       if (existingItem) {
-        return prevCart.map(item =>
-          item.id === product.id ? { ...item, antal: item.antal + 0.5 } : item
-        );
-      } else {
-        return [...prevCart, { ...product, antal: 0.5 }];
-      }
-    });
-  };
 
-  const updateQuantity = (id: number, change: number) => {
+        <Card className="shadow-lg">        return prevCart.map(item =>
+
+          <CardContent className="p-8">          item.id === product.id ? { ...item, antal: item.antal + 0.5 } : item
+
+            {submitted && (        );
+
+              <Alert       } else {
+
+                severity="success"         return [...prevCart, { ...product, antal: 0.5 }];
+
+                className="mb-6"      }
+
+              >    });
+
+                Tack för din beställning! Vi kontaktar dig snart.  };
+
+              </Alert>
+
+            )}  const updateQuantity = (id: number, change: number) => {
+
     setCart(prevCart =>
-      prevCart.map(item => {
-        if (item.id === id) {
-          const newAmount = Math.max(0, item.antal + change);
-          return newAmount > 0 ? { ...item, antal: newAmount } : item;
-        }
-        return item;
-      }).filter(item => item.antal > 0)
-    );
-  };
 
-  const getTotalPrice = () => {
+            <form onSubmit={handleSubmit} className="space-y-6">      prevCart.map(item => {
+
+              <TextField        if (item.id === id) {
+
+                fullWidth          const newAmount = Math.max(0, item.antal + change);
+
+                label="Namn och efternamn"          return newAmount > 0 ? { ...item, antal: newAmount } : item;
+
+                name="name"        }
+
+                value={formData.name}        return item;
+
+                onChange={handleInputChange}      }).filter(item => item.antal > 0)
+
+                required    );
+
+                variant="outlined"  };
+
+                className="mb-4"
+
+              />  const getTotalPrice = () => {
+
     return cart.reduce((total, item) => total + (item.pris * item.antal), 0);
-  };
 
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.antal, 0);
-  };
+              <TextField  };
 
-  const handleOrder = () => {
-    setOrderSubmitted(true);
-    setOrderDialog(false);
-    setCart([]);
-    setTimeout(() => setOrderSubmitted(false), 5000);
-  };
+                fullWidth
 
-  return (
-    <MUIThemeProvider>
+                label="Datum"  const getTotalItems = () => {
+
+                name="date"    return cart.reduce((total, item) => total + item.antal, 0);
+
+                type="date"  };
+
+                value={formData.date}
+
+                onChange={handleInputChange}  const handleOrder = () => {
+
+                required    setOrderSubmitted(true);
+
+                variant="outlined"    setOrderDialog(false);
+
+                helperText="När vill du hämta din beställning?"    setCart([]);
+
+                InputLabelProps={{    setTimeout(() => setOrderSubmitted(false), 5000);
+
+                  shrink: true,  };
+
+                }}
+
+                className="mb-4"  return (
+
+              />    <MUIThemeProvider>
+
       <Navbar />
 
-      <Container maxWidth="lg" sx={{ py: 4 }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-          <Typography
-            variant="h3"
-            component="h1"
-            sx={{
-              fontWeight: 'bold',
-              color: '#1976d2',
-            }}
-          >
+              <TextField
+
+                fullWidth      <Container maxWidth="lg" sx={{ py: 4 }}>
+
+                label="Telefonnummer"        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
+
+                name="number"          <Typography
+
+                type="tel"            variant="h3"
+
+                value={formData.number}            component="h1"
+
+                onChange={handleInputChange}            sx={{
+
+                required              fontWeight: 'bold',
+
+                variant="outlined"              color: '#1976d2',
+
+                className="mb-4"            }}
+
+              />          >
+
             Beställ online
-          </Typography>
 
-          <Button
-            variant="contained"
-            startIcon={
-              <Badge badgeContent={getTotalItems()} color="error">
-                <CartIcon />
-              </Badge>
-            }
-            onClick={() => setOrderDialog(true)}
-            disabled={cart.length === 0}
-            sx={{
-              backgroundColor: '#1976d2',
+              <TextField          </Typography>
+
+                fullWidth
+
+                label="Beställning / beskrivning"          <Button
+
+                name="message"            variant="contained"
+
+                value={formData.message}            startIcon={
+
+                onChange={handleInputChange}              <Badge badgeContent={getTotalItems()} color="error">
+
+                required                <CartIcon />
+
+                multiline              </Badge>
+
+                rows={6}            }
+
+                variant="outlined"            onClick={() => setOrderDialog(true)}
+
+                placeholder="Beskriv vad du vill beställa..."            disabled={cart.length === 0}
+
+                className="mb-6"            sx={{
+
+              />              backgroundColor: '#1976d2',
+
               '&:hover': { backgroundColor: '#1565c0' }
-            }}
-          >
-            Varukorg ({getTotalPrice().toFixed(0)} kr)
-          </Button>
-        </Box>
 
-        {orderSubmitted && (
-          <Alert severity="success" sx={{ mb: 3 }}>
-            🎉 Tack för din beställning! Vi kontaktar dig inom kort för bekräftelse och leveransdetaljer.
-          </Alert>
-        )}
+              <Button            }}
 
-        <Typography
+                type="submit"          >
+
+                variant="contained"            Varukorg ({getTotalPrice().toFixed(0)} kr)
+
+                size="large"          </Button>
+
+                startIcon={<SendIcon />}        </Box>
+
+                fullWidth
+
+                className="bg-blue-600 hover:bg-blue-700 py-3 text-lg font-semibold"        {orderSubmitted && (
+
+              >          <Alert severity="success" sx={{ mb: 3 }}>
+
+                Skicka Beställning            🎉 Tack för din beställning! Vi kontaktar dig inom kort för bekräftelse och leveransdetaljer.
+
+              </Button>          </Alert>
+
+            </form>        )}
+
+          </CardContent>
+
+        </Card>        <Typography
+
           variant="h6"
-          sx={{
-            textAlign: 'center',
-            mb: 4,
-            color: 'text.secondary'
-          }}
-        >
-          Välj dina produkter nedan. Minsta beställning 200 kr. Leverans inom Göteborg.
-        </Typography>
 
-        <Grid container spacing={3}>
-          {produkter.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product.id}>
-              <Card
-                sx={{
-                  height: '100%',
+        {/* Information Section */}          sx={{
+
+        <Box className="mt-12 grid md:grid-cols-2 gap-8">            textAlign: 'center',
+
+          <Card className="shadow-md">            mb: 4,
+
+            <CardContent className="p-6">            color: 'text.secondary'
+
+              <Typography variant="h6" className="font-semibold mb-4 text-blue-600">          }}
+
+                📍 Hämtställen        >
+
+              </Typography>          Välj dina produkter nedan. Minsta beställning 200 kr. Leverans inom Göteborg.
+
+              <Typography variant="body2" className="text-gray-600 mb-2">        </Typography>
+
+                <strong>Borås:</strong> Ålgårdsvägen 3, 506 30 Borås
+
+              </Typography>        <Grid container spacing={3}>
+
+              <Typography variant="body2" className="text-gray-600">          {produkter.map((product) => (
+
+                <strong>Skene:</strong> Örbyvägen 27, 511 61 Skene            <Grid item xs={12} sm={6} md={4} key={product.id}>
+
+              </Typography>              <Card
+
+            </CardContent>                sx={{
+
+          </Card>                  height: '100%',
+
                   display: 'flex',
-                  flexDirection: 'column',
-                  boxShadow: 3,
-                  transition: 'transform 0.2s',
-                  '&:hover': { transform: 'translateY(-2px)' }
-                }}
-              >
-                <Box
-                  component="img"
-                  src={product.bild}
-                  alt={product.namn}
-                  sx={{
-                    height: 200,
-                    objectFit: 'cover',
-                  }}
+
+          <Card className="shadow-md">                  flexDirection: 'column',
+
+            <CardContent className="p-6">                  boxShadow: 3,
+
+              <Typography variant="h6" className="font-semibold mb-4 text-green-600">                  transition: 'transform 0.2s',
+
+                📞 Kontakt                  '&:hover': { transform: 'translateY(-2px)' }
+
+              </Typography>                }}
+
+              <Typography variant="body2" className="text-gray-600 mb-2">              >
+
+                073 535 09 17                <Box
+
+              </Typography>                  component="img"
+
+              <Typography variant="body2" className="text-gray-600">                  src={product.bild}
+
+                070 836 59 71                  alt={product.namn}
+
+              </Typography>                  sx={{
+
+            </CardContent>                    height: 200,
+
+          </Card>                    objectFit: 'cover',
+
+        </Box>                  }}
+
                 />
-                <CardContent sx={{ flexGrow: 1, p: 3 }}>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
-                    <Typography variant="h6" component="h3" gutterBottom>
-                      {product.namn}
-                    </Typography>
-                    <Chip
-                      label={product.kategori}
-                      size="small"
-                      color={
-                        product.kategori === 'Färsk fisk' ? 'primary' :
+
+        {/* Footer */}                <CardContent sx={{ flexGrow: 1, p: 3 }}>
+
+        <Box className="mt-12 text-center py-8 bg-white rounded-lg shadow-sm">                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 2 }}>
+
+          <Typography variant="body2" className="text-gray-600">                    <Typography variant="h6" component="h3" gutterBottom>
+
+            Copyright © 2022 Knallefisk                      {product.namn}
+
+          </Typography>                    </Typography>
+
+        </Box>                    <Chip
+
+      </Container>                      label={product.kategori}
+
+    </Box>                      size="small"
+
+  );                      color={
+
+}                        product.kategori === 'Färsk fisk' ? 'primary' :
                         product.kategori === 'Skaldjur' ? 'secondary' : 'default'
                       }
                       variant="outlined"
