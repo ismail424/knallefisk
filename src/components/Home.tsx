@@ -1,8 +1,9 @@
 'use client';
 
-import { Box, Container, Typography, Button, Card, CardContent, Grid } from '@mui/material';
+import { Box, Container, Typography, Button } from '@mui/material';
 import { ShoppingCart, StorefrontOutlined } from '@mui/icons-material';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const Home = () => {
     const images = [
@@ -29,23 +30,29 @@ const Home = () => {
                 }}
             >
                 {/* Background Video */}
-                <Box
-                    component="video"
+                <video
                     autoPlay
                     muted
                     loop
-                    sx={{
+                    playsInline
+                    preload="auto"
+                    onError={(e) => console.error('Video failed to load:', e)}
+                    onLoadStart={() => console.log('Video loading started')}
+                    onCanPlay={() => console.log('Video can play')}
+                    style={{
                         position: 'absolute',
                         top: 0,
                         left: 0,
                         width: '100%',
                         height: '100%',
                         objectFit: 'cover',
-                        zIndex: -2
+                        zIndex: 1,
+                        backgroundColor: 'transparent'
                     }}
                 >
                     <source src="/video/havet.mp4" type="video/mp4" />
-                </Box>
+                    Your browser does not support the video tag.
+                </video>
 
                 {/* Simple Overlay */}
                 <Box
@@ -56,16 +63,18 @@ const Home = () => {
                         width: '100%',
                         height: '100%',
                         backgroundColor: 'rgba(68, 143, 155, 0.7)',
-                        zIndex: -1
+                        zIndex: 2
                     }}
                 />
 
                 {/* Hero Content */}
-                <Container maxWidth="md" sx={{ textAlign: 'center', zIndex: 1, py: 8 }}>
+                <Container maxWidth="md" sx={{ textAlign: 'center', zIndex: 3, py: 8, position: 'relative' }}>
                     <Box sx={{ mb: 4 }}>
-                        <img
+                        <Image
                             src="/img/logo.svg"
                             alt="Knallefisk Logo"
+                            width={300}
+                            height={150}
                             style={{
                                 maxWidth: '300px',
                                 width: '100%',
@@ -147,8 +156,13 @@ const Home = () => {
             {/* About Section */}
             <Box sx={{ py: 8, backgroundColor: 'white' }}>
                 <Container maxWidth="lg">
-                    <Grid container spacing={6} alignItems="center">
-                        <Grid item xs={12} md={6}>
+                    <Box sx={{ 
+                        display: 'flex', 
+                        flexDirection: { xs: 'column', md: 'row' },
+                        alignItems: 'center',
+                        gap: 6
+                    }}>
+                        <Box sx={{ flex: { xs: '1', md: '0 0 50%' } }}>
                             <Box
                                 component="img"
                                 src="/img/store_front.webp"
@@ -159,8 +173,8 @@ const Home = () => {
                                     borderRadius: 2
                                 }}
                             />
-                        </Grid>
-                        <Grid item xs={12} md={6}>
+                        </Box>
+                        <Box sx={{ flex: { xs: '1', md: '0 0 50%' } }}>
                             <Typography
                                 variant="h4"
                                 sx={{
@@ -186,17 +200,25 @@ const Home = () => {
                                 priset. Här hittar du allt från färsk fisk till färdiga delikatesser, som hämtas direkt
                                 från GÖTBORGS FISKAUKTION.
                             </Typography>
-                        </Grid>
-                    </Grid>
+                        </Box>
+                    </Box>
                 </Container>
             </Box>
 
             {/* Gallery Section */}
             <Box sx={{ py: 8, backgroundColor: '#f8fafc' }}>
                 <Container maxWidth="lg">
-                    <Grid container spacing={2}>
+                    <Box sx={{
+                        display: 'grid',
+                        gridTemplateColumns: {
+                            xs: '1fr',
+                            sm: 'repeat(2, 1fr)',
+                            md: 'repeat(3, 1fr)'
+                        },
+                        gap: 2
+                    }}>
                         {images.map((image, index) => (
-                            <Grid item xs={12} sm={6} md={4} key={index}>
+                            <Box key={index}>
                                 <Box
                                     component="img"
                                     src={image.src}
@@ -212,9 +234,9 @@ const Home = () => {
                                         }
                                     }}
                                 />
-                            </Grid>
+                            </Box>
                         ))}
-                    </Grid>
+                    </Box>
                 </Container>
             </Box>
         </Box>
