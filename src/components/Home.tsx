@@ -87,38 +87,6 @@ const Home = () => {
                         Färska delikatesser från hav och sjö
                     </Typography>
 
-                    {/* Holiday Notice */}
-                    <Card
-                        sx={{
-                            maxWidth: 400,
-                            mx: 'auto',
-                            mb: 4,
-                            backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                            borderRadius: 2
-                        }}
-                    >
-                        <CardContent sx={{ py: 2 }}>
-                            <Typography
-                                variant="h6"
-                                sx={{
-                                    color: '#d4152c',
-                                    fontWeight: 600,
-                                    mb: 1,
-                                    fontSize: '1rem'
-                                }}
-                            >
-                                Semesterstängt
-                            </Typography>
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    color: '#666'
-                                }}
-                            >
-                                Vi har semesterstängt till 5 augusti 2025
-                            </Typography>
-                        </CardContent>
-                    </Card>
 
                     {/* CTA Buttons */}
                     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
