@@ -55,46 +55,45 @@ const Order = () => {
 
     if (submitted) {
         return (
-            <Box sx={{ py: 8, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+            <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
                 <Container maxWidth="md">
                     <Paper
                         sx={{
-                            p: 6,
-                            borderRadius: 4,
+                            p: 4,
+                            borderRadius: 1,
                             textAlign: 'center',
-                            boxShadow: '0 8px 32px rgba(68, 143, 155, 0.15)'
+                            border: '1px solid #e0e0e0',
+                            backgroundColor: 'white'
                         }}
                     >
-                        <CheckCircle sx={{ fontSize: '4rem', color: '#4caf50', mb: 2 }} />
+                        <CheckCircle sx={{ fontSize: '3rem', color: '#4caf50', mb: 2 }} />
                         <Typography
-                            variant="h3"
+                            variant="h4"
                             sx={{
                                 color: '#448f9b',
                                 fontFamily: 'Poppins, sans-serif',
-                                fontWeight: 700,
+                                fontWeight: 600,
                                 mb: 2
                             }}
                         >
                             Tack för din beställning!
                         </Typography>
                         <Typography
-                            variant="h6"
-                            sx={{
-                                color: '#666',
-                                fontFamily: 'Poppins, sans-serif',
-                                mb: 3
-                            }}
-                        >
-                            Vi har tagit emot din beställning och kommer att kontakta dig på {formData.phone} för att bekräfta din order.
-                        </Typography>
-                        <Typography
                             variant="body1"
                             sx={{
                                 color: '#666',
-                                fontFamily: 'Poppins, sans-serif'
+                                mb: 2
                             }}
                         >
-                            Förväntad hämtning: {formData.date}
+                            Vi kontaktar dig på {formData.phone} för att bekräfta.
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: '#666'
+                            }}
+                        >
+                            Hämtning: {formData.date}
                         </Typography>
                     </Paper>
                 </Container>
@@ -103,45 +102,42 @@ const Order = () => {
     }
 
     return (
-        <Box sx={{ py: 6, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+        <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
             <Container maxWidth="lg">
                 {/* Header */}
-                <Box sx={{ textAlign: 'center', mb: 6 }}>
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
                     <Typography
-                        variant="h2"
+                        variant="h4"
                         sx={{
                             color: '#448f9b',
                             fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 700,
-                            mb: 2,
-                            fontSize: { xs: '2.5rem', md: '3.5rem' }
+                            fontWeight: 600,
+                            mb: 2
                         }}
                     >
                         Beställ online
                     </Typography>
                     <Typography
-                        variant="h6"
+                        variant="body1"
                         sx={{
                             color: '#666',
-                            maxWidth: 600,
-                            mx: 'auto',
-                            fontFamily: 'Poppins, sans-serif',
-                            fontSize: { xs: '1rem', md: '1.25rem' }
+                            maxWidth: 500,
+                            mx: 'auto'
                         }}
                     >
-                        Beställ dina favoriter och hämta i butik. Vi förbereder din order så att den är klar när du kommer.
+                        Beställ och hämta i butik.
                     </Typography>
                 </Box>
 
-                <Grid container spacing={4}>
+                <Grid container spacing={3}>
                     {/* Order Form */}
-                    <Grid item xs={12} lg={8}>
+                    <Grid item xs={12} md={8}>
                         <Paper
                             sx={{
-                                p: 4,
-                                borderRadius: 4,
-                                boxShadow: '0 8px 32px rgba(68, 143, 155, 0.15)',
-                                mb: 4
+                                p: 3,
+                                borderRadius: 1,
+                                border: '1px solid #e0e0e0',
+                                backgroundColor: 'white'
                             }}
                         >
                             <Typography

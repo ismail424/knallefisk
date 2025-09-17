@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Typography, Grid, Card, CardContent, Chip, CircularProgress, Alert } from '@mui/material';
+import { Box, Container, Typography, Grid, Card, CardContent, Chip, CircularProgress, Alert, Button } from '@mui/material';
 import { LocalOfferOutlined } from '@mui/icons-material';
 import Link from 'next/link';
 
@@ -153,18 +153,17 @@ const Prices = () => {
     }
 
     return (
-        <Box sx={{ py: 6, backgroundColor: 'white', minHeight: '100vh' }}>
+        <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
             <Container maxWidth="lg">
                 {/* Header */}
-                <Box sx={{ textAlign: 'center', mb: 6 }}>
+                <Box sx={{ textAlign: 'center', mb: 4 }}>
                     <Typography
-                        variant="h3"
+                        variant="h4"
                         sx={{
                             color: '#448f9b',
                             fontFamily: 'Poppins, sans-serif',
                             fontWeight: 600,
-                            mb: 2,
-                            fontSize: { xs: '2rem', md: '2.5rem' }
+                            mb: 2
                         }}
                     >
                         Våra priser
@@ -173,29 +172,25 @@ const Prices = () => {
                         variant="body1"
                         sx={{
                             color: '#666',
-                            maxWidth: 600,
-                            mx: 'auto',
-                            fontSize: '1.1rem'
+                            maxWidth: 500,
+                            mx: 'auto'
                         }}
                     >
-                        Priserna uppdateras dagligen från Göteborgs Fiskauktion. Priser per kg.
+                        Priserna uppdateras dagligen från Göteborgs Fiskauktion.
                     </Typography>
                 </Box>
 
                 {/* Price Grid */}
-                <Grid container spacing={3} sx={{ mb: 6 }}>
+                <Grid container spacing={2} sx={{ mb: 4 }}>
                     {prices.map((price) => (
                         <Grid item xs={12} sm={6} md={4} key={price.id}>
                             <Card
                                 sx={{
                                     height: '100%',
-                                    borderRadius: 2,
+                                    borderRadius: 1,
                                     border: '1px solid #e0e0e0',
                                     position: 'relative',
-                                    transition: 'all 0.2s ease',
-                                    '&:hover': {
-                                        boxShadow: '0 4px 20px rgba(68, 143, 155, 0.1)'
-                                    }
+                                    backgroundColor: 'white'
                                 }}
                             >
                                 {price.on_sale && (
@@ -204,24 +199,25 @@ const Prices = () => {
                                         size="small"
                                         sx={{
                                             position: 'absolute',
-                                            top: 12,
-                                            right: 12,
+                                            top: 8,
+                                            right: 8,
                                             backgroundColor: '#e74c3c',
                                             color: 'white',
                                             fontWeight: 600,
-                                            zIndex: 1
+                                            fontSize: '0.7rem'
                                         }}
                                     />
                                 )}
 
-                                <CardContent sx={{ p: 3, textAlign: 'center' }}>
+                                <CardContent sx={{ p: 2, textAlign: 'center' }}>
                                     <Typography
                                         variant="h6"
                                         sx={{
-                                            mb: 2,
+                                            mb: 1,
                                             fontFamily: 'Poppins, sans-serif',
                                             fontWeight: 600,
-                                            color: '#333'
+                                            color: '#333',
+                                            fontSize: '1.1rem'
                                         }}
                                     >
                                         {price.title}
@@ -231,26 +227,27 @@ const Prices = () => {
                                         variant="body2"
                                         sx={{
                                             color: '#666',
-                                            mb: 3
+                                            mb: 2,
+                                            fontSize: '0.85rem'
                                         }}
                                     >
                                         {price.description}
                                     </Typography>
 
                                     {price.on_sale ? (
-                                        <Box sx={{ mb: 2 }}>
+                                        <Box>
                                             <Typography
                                                 variant="body2"
                                                 sx={{
                                                     textDecoration: 'line-through',
                                                     color: '#999',
-                                                    mb: 1
+                                                    fontSize: '0.9rem'
                                                 }}
                                             >
                                                 {price.price} kr/kg
                                             </Typography>
                                             <Typography
-                                                variant="h5"
+                                                variant="h6"
                                                 sx={{
                                                     color: '#e74c3c',
                                                     fontWeight: 700,
@@ -262,11 +259,10 @@ const Prices = () => {
                                         </Box>
                                     ) : (
                                         <Typography
-                                            variant="h5"
+                                            variant="h6"
                                             sx={{
                                                 color: '#448f9b',
                                                 fontWeight: 700,
-                                                mb: 2,
                                                 fontFamily: 'Poppins, sans-serif'
                                             }}
                                         >
@@ -283,15 +279,14 @@ const Prices = () => {
                 <Box
                     sx={{
                         textAlign: 'center',
-                        p: 6,
+                        p: 4,
                         backgroundColor: '#448f9b',
-                        borderRadius: 4,
+                        borderRadius: 2,
                         color: 'white'
                     }}
                 >
-                    <LocalOfferOutlined sx={{ fontSize: '4rem', mb: 2, opacity: 0.8 }} />
                     <Typography
-                        variant="h4"
+                        variant="h5"
                         sx={{
                             mb: 2,
                             fontFamily: 'Poppins, sans-serif',
@@ -304,50 +299,33 @@ const Prices = () => {
                         variant="body1"
                         sx={{
                             mb: 3,
-                            opacity: 0.9,
                             fontFamily: 'Poppins, sans-serif',
-                            maxWidth: 600,
+                            maxWidth: 500,
                             mx: 'auto'
                         }}
                     >
-                        Hittar du inte det du söker? Vi tar gärna emot specialbeställningar
-                        och kan skaffa fram det mesta från våra leverantörer på Göteborgs Fiskauktion.
+                        Hittar du inte det du söker? Vi tar gärna emot specialbeställningar.
                     </Typography>
                     <Button
                         component={Link}
                         href="/kontakta_oss"
                         variant="contained"
-                        size="large"
                         sx={{
                             backgroundColor: 'white',
                             color: '#448f9b',
-                            px: 4,
-                            py: 1.5,
+                            px: 3,
+                            py: 1,
                             fontWeight: 600,
                             textTransform: 'none',
-                            borderRadius: 3,
+                            borderRadius: 1,
                             '&:hover': {
-                                backgroundColor: '#f0f9fa'
+                                backgroundColor: '#f8f9fa'
                             }
                         }}
                     >
                         Kontakta oss
                     </Button>
                 </Box>
-
-                {prices.length === 0 && (
-                    <Box sx={{ textAlign: 'center', py: 8 }}>
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: '#666',
-                                fontFamily: 'Poppins, sans-serif'
-                            }}
-                        >
-                            Inga priser tillgängliga för tillfället. Kontakta oss för aktuella priser.
-                        </Typography>
-                    </Box>
-                )}
             </Container>
         </Box>
     );

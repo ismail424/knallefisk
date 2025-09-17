@@ -25,7 +25,7 @@ const Home = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     overflow: 'hidden',
-                    background: 'linear-gradient(135deg, #448f9b 0%, #5ba3b0 100%)'
+                    backgroundColor: '#448f9b'
                 }}
             >
                 {/* Background Video */}
@@ -47,7 +47,7 @@ const Home = () => {
                     <source src="/video/havet.mp4" type="video/mp4" />
                 </Box>
 
-                {/* Overlay */}
+                {/* Simple Overlay */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -55,14 +55,14 @@ const Home = () => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        backgroundColor: 'rgba(68, 143, 155, 0.8)',
+                        backgroundColor: 'rgba(68, 143, 155, 0.7)',
                         zIndex: -1
                     }}
                 />
 
                 {/* Hero Content */}
                 <Container maxWidth="md" sx={{ textAlign: 'center', zIndex: 1, py: 8 }}>
-                    <Box sx={{ mb: 3 }}>
+                    <Box sx={{ mb: 4 }}>
                         <img
                             src="/img/logo.svg"
                             alt="Knallefisk Logo"
@@ -78,18 +78,22 @@ const Home = () => {
                         variant="h3"
                         sx={{
                             color: 'white',
-                            mb: 4,
+                            mb: 6,
                             fontFamily: 'Poppins, sans-serif',
                             fontWeight: 600,
-                            fontSize: { xs: '1.75rem', md: '2.5rem' }
+                            fontSize: { xs: '1.8rem', md: '2.5rem' }
                         }}
                     >
                         Färska delikatesser från hav och sjö
                     </Typography>
 
-
-                    {/* CTA Buttons */}
-                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                    {/* Simple CTA Buttons */}
+                    <Box sx={{
+                        display: 'flex',
+                        gap: 2,
+                        justifyContent: 'center',
+                        flexWrap: 'wrap'
+                    }}>
                         <Button
                             component={Link}
                             href="/bestall_online"
@@ -103,10 +107,11 @@ const Home = () => {
                                 py: 1.5,
                                 fontSize: '1rem',
                                 fontWeight: 600,
-                                borderRadius: 2,
+                                borderRadius: 1,
                                 textTransform: 'none',
                                 '&:hover': {
-                                    backgroundColor: '#f0f9fa'
+                                    backgroundColor: '#f8f9fa',
+                                    color: '#448f9b'
                                 }
                             }}
                         >
@@ -125,7 +130,7 @@ const Home = () => {
                                 py: 1.5,
                                 fontSize: '1rem',
                                 fontWeight: 600,
-                                borderRadius: 2,
+                                borderRadius: 1,
                                 textTransform: 'none',
                                 '&:hover': {
                                     backgroundColor: 'white',
