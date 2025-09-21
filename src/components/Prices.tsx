@@ -1,344 +1,265 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Typography, Card, CardContent, Chip, CircularProgress, Alert, Button } from '@mui/material';
-import Link from 'next/link';
+import { Box, Container, Typography, Card, CardContent, CardMedia, CircularProgress, Alert } from '@mui/material';
 
 interface Price {
-    id: number;
-    title: string;
-    price: number;
-    sale_price: number | null;
-    on_sale: boolean;
-    image: string;
-    is_visible: boolean;
+    id: string;
+    name: string;
+    price: string;
+    sale_price?: string;
     description?: string;
+    category?: string;
+    unit: string;
+    weight?: string;
+    on_sale: boolean;
+    is_visible: boolean;
+    image?: string;
 }
 
+const defaultPrices: Price[] = [
+    {
+        id: '1',
+        name: 'Lax',
+        price: '280',
+        description: 'Färsk norsk lax av högsta kvalitet',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild1.webp'
+    },
+    {
+        id: '2', 
+        name: 'Torsk',
+        price: '220',
+        description: 'Färsk torsk från Västkusten',
+        unit: 'kg',
+        on_sale: true,
+        sale_price: '180',
+        is_visible: true,
+        image: '/img/bild2.webp'
+    },
+    {
+        id: '3',
+        name: 'Räkor',
+        price: '340',
+        description: 'Stora skalade räkor',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild3.webp'
+    },
+    {
+        id: '4',
+        name: 'Sill',
+        price: '95',
+        description: 'Färsk sill från Östersjön',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild4.jpg'
+    },
+    {
+        id: '5',
+        name: 'Musslor',
+        price: '120',
+        description: 'Blåmusslor från västkusten',
+        unit: 'kg',
+        on_sale: true,
+        sale_price: '95',
+        is_visible: true,
+        image: '/img/bild5.webp'
+    },
+    {
+        id: '6',
+        name: 'Kolja',
+        price: '190',
+        description: 'Färsk kolja perfekt för stuvning',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild6.webp'
+    }
+];
+
 const Prices = () => {
-    const [prices, setPrices] = useState<Price[]>([]);
+    const [prices, setPrices] = useState<Price[]>(defaultPrices);
     const [loading, setLoading] = useState(true);
     const [error] = useState("");
 
     useEffect(() => {
-        // Load prices from localStorage (set by admin)
+        // Ladda priser från localStorage (admin-panelen)
         const savedPrices = localStorage.getItem('admin_prices');
         if (savedPrices) {
-            const adminPrices = JSON.parse(savedPrices);
-            // Only show visible prices to customers
-            const visiblePrices = adminPrices.filter((price: Price) => price.is_visible);
-            setPrices(visiblePrices);
-            setLoading(false);
-            return;
-        }
-
-        // Fallback to static prices for demo if no admin prices exist
-        const staticPrices: Price[] = [
-            {
-                id: 1,
-                title: 'Färsk Lax',
-                price: 189,
-                sale_price: null,
-                on_sale: false,
-                image: 'lax.jpg',
-                is_visible: true,
-                description: 'Färsk atlantlax av högsta kvalitet'
-            },
-            {
-                id: 2,
-                title: 'Räkor',
-                price: 245,
-                sale_price: 199,
-                on_sale: true,
-                image: 'rakor.jpg',
-                is_visible: true,
-                description: 'Färska västkuströkor, skalade'
-            },
-            {
-                id: 3,
-                title: 'Torsk',
-                price: 159,
-                sale_price: null,
-                on_sale: false,
-                image: 'torsk.jpg',
-                is_visible: true,
-                description: 'Färsk torsk, filéer utan ben'
-            },
-            {
-                id: 4,
-                title: 'Gravlax',
-                price: 289,
-                sale_price: null,
-                on_sale: false,
-                image: 'gravlax.jpg',
-                is_visible: true,
-                description: 'Hemgjord gravlax med dill'
-            },
-            {
-                id: 5,
-                title: 'Hummer',
-                price: 489,
-                sale_price: 399,
-                on_sale: true,
-                image: 'hummer.jpg',
-                is_visible: true,
-                description: 'Levande västkusthummer'
-            },
-            {
-                id: 6,
-                title: 'Ostron',
-                price: 25,
-                sale_price: null,
-                on_sale: false,
-                image: 'ostron.jpg',
-                is_visible: true,
-                description: 'Färska ostron per styck'
-            },
-            {
-                id: 7,
-                title: 'Musslor',
-                price: 89,
-                sale_price: null,
-                on_sale: false,
-                image: 'musslor.jpg',
-                is_visible: true,
-                description: 'Färska blåmusslor, 1 kg'
-            },
-            {
-                id: 8,
-                title: 'Sill',
-                price: 75,
-                sale_price: 59,
-                on_sale: true,
-                image: 'sill.jpg',
-                is_visible: true,
-                description: 'Inlagd sill, olika sorter'
-            },
-            {
-                id: 9,
-                title: 'Kräftor',
-                price: 299,
-                sale_price: null,
-                on_sale: false,
-                image: 'kraftor.jpg',
-                is_visible: true,
-                description: 'Färska havskräftor'
+            try {
+                const adminPrices = JSON.parse(savedPrices);
+                // Visa bara synliga priser
+                const visiblePrices = adminPrices.filter((price: Price) => price.is_visible !== false);
+                if (visiblePrices.length > 0) {
+                    setPrices(visiblePrices);
+                }
+            } catch (e) {
+                console.error('Error loading admin prices:', e);
             }
-        ];
-
-        setTimeout(() => {
-            setPrices(staticPrices);
-            setLoading(false);
-        }, 800);
+        }
+        setLoading(false);
     }, []);
+
+    const filteredPrices = prices.filter(price => price.is_visible !== false);
 
     if (loading) {
         return (
-            <Box
-                sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    minHeight: '60vh',
-                    flexDirection: 'column',
-                    gap: 2
-                }}
-            >
+            <Box sx={{ 
+                pt: { xs: '260px', md: '220px' }, 
+                pb: 8, 
+                display: 'flex', 
+                justifyContent: 'center', 
+                alignItems: 'center',
+                minHeight: '50vh'
+            }}>
                 <CircularProgress size={60} sx={{ color: '#448f9b' }} />
-                <Typography variant="h6" sx={{ color: '#448f9b', fontFamily: 'Poppins, sans-serif' }}>
-                    Laddar priser...
-                </Typography>
             </Box>
         );
     }
 
     if (error) {
         return (
-            <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Alert severity="error" sx={{ borderRadius: 2 }}>
-                    {error}
-                </Alert>
-            </Container>
+            <Box sx={{ pt: { xs: '260px', md: '220px' }, pb: 8 }}>
+                <Container maxWidth="lg">
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        {error}
+                    </Alert>
+                </Container>
+            </Box>
         );
     }
 
     return (
-        <Box sx={{ py: 4, pt: { xs: '240px', md: '200px' }, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+        <Box sx={{ pt: { xs: '260px', md: '220px' }, pb: 8 }}>
             <Container maxWidth="lg">
                 {/* Header */}
                 <Box sx={{ textAlign: 'center', mb: 4 }}>
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            color: '#448f9b',
-                            fontFamily: 'Poppins, sans-serif',
+                    <Typography 
+                        variant="h3" 
+                        component="h1"
+                        sx={{ 
                             fontWeight: 600,
-                            mb: 2
+                            color: 'rgb(68, 143, 155)',
+                            mb: 1
                         }}
                     >
-                        Våra priser
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            color: '#666',
-                            maxWidth: 500,
-                            mx: 'auto'
-                        }}
-                    >
-                        Priserna uppdateras dagligen från Göteborgs Fiskauktion.
+                        Våra Priser
                     </Typography>
                 </Box>
 
-                {/* Price Grid */}
-                <Box sx={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
-                    gap: 2,
-                    mb: 4 
+                {/* Prices Grid */}
+                <Box sx={{
+                    display: 'grid',
+                    gridTemplateColumns: {
+                        xs: '1fr',
+                        md: 'repeat(2, 1fr)',
+                        lg: 'repeat(3, 1fr)'
+                    },
+                    gap: 2
                 }}>
-                    {prices.map((price) => (
-                        <Card
+                    {filteredPrices.map((price) => (
+                        <Card 
                             key={price.id}
-                            sx={{
+                            sx={{ 
                                 height: '100%',
+                                display: 'flex',
+                                flexDirection: 'column',
                                 borderRadius: 1,
+                                overflow: 'hidden',
                                 border: '1px solid #e0e0e0',
-                                position: 'relative',
-                                backgroundColor: 'white'
+                                backgroundColor: '#fff'
                             }}
                         >
-                                {price.on_sale && (
-                                    <Chip
-                                        label="REA"
-                                        size="small"
-                                        sx={{
-                                            position: 'absolute',
-                                            top: 8,
-                                            right: 8,
-                                            backgroundColor: '#e74c3c',
-                                            color: 'white',
-                                            fontWeight: 600,
-                                            fontSize: '0.7rem'
-                                        }}
-                                    />
-                                )}
+                            {/* Image */}
+                            {price.image && (
+                                <CardMedia
+                                    component="img"
+                                    height="180"
+                                    image={price.image}
+                                    alt={price.name}
+                                    sx={{ 
+                                        objectFit: 'cover'
+                                    }}
+                                />
+                            )}
 
-                                <CardContent sx={{ p: 2, textAlign: 'center' }}>
-                                    <Typography
-                                        variant="h6"
-                                        sx={{
-                                            mb: 1,
-                                            fontFamily: 'Poppins, sans-serif',
-                                            fontWeight: 600,
-                                            color: '#333',
-                                            fontSize: '1.1rem'
-                                        }}
-                                    >
-                                        {price.title}
-                                    </Typography>
-
-                                    <Typography
-                                        variant="body2"
-                                        sx={{
-                                            color: '#666',
-                                            mb: 2,
-                                            fontSize: '0.85rem'
-                                        }}
+                            <CardContent sx={{ 
+                                flexGrow: 1, 
+                                p: 2
+                            }}>
+                                {/* Product Title */}
+                                <Typography 
+                                    variant="h6" 
+                                    component="h3"
+                                    sx={{ 
+                                        fontWeight: 600,
+                                        color: 'rgb(68, 143, 155)',
+                                        mb: 1
+                                    }}
+                                >
+                                    {price.name}
+                                </Typography>
+                                
+                                {/* Description */}
+                                {price.description && (
+                                    <Typography 
+                                        variant="body2" 
+                                        color="text.secondary" 
+                                        sx={{ mb: 2 }}
                                     >
                                         {price.description}
                                     </Typography>
-
-                                    {price.on_sale ? (
+                                )}
+                                
+                                {/* Price Section */}
+                                <Box sx={{ mt: 'auto' }}>
+                                    {price.on_sale && price.sale_price ? (
                                         <Box>
-                                            <Typography
-                                                variant="body2"
-                                                sx={{
-                                                    textDecoration: 'line-through',
-                                                    color: '#999',
-                                                    fontSize: '0.9rem'
-                                                }}
-                                            >
-                                                {price.price} kr/kg
-                                            </Typography>
-                                            <Typography
-                                                variant="h6"
-                                                sx={{
-                                                    color: '#e74c3c',
+                                            <Typography 
+                                                variant="h5" 
+                                                component="div"
+                                                sx={{ 
                                                     fontWeight: 700,
+                                                    color: '#ff4444',
                                                     fontFamily: 'Poppins, sans-serif'
                                                 }}
                                             >
-                                                {price.sale_price} kr/kg
+                                                {price.sale_price}kr/{price.unit || 'kg'}
+                                            </Typography>
+                                            <Typography 
+                                                variant="body2"
+                                                component="div"
+                                                sx={{ 
+                                                    textDecoration: 'line-through',
+                                                    color: '#999',
+                                                    fontWeight: 500
+                                                }}
+                                            >
+                                                {price.price}kr/{price.unit || 'kg'}
                                             </Typography>
                                         </Box>
                                     ) : (
-                                        <Typography
-                                            variant="h6"
-                                            sx={{
-                                                color: '#448f9b',
+                                        <Typography 
+                                            variant="h5" 
+                                            component="div"
+                                            sx={{ 
                                                 fontWeight: 700,
+                                                color: 'rgb(68, 143, 155)',
                                                 fontFamily: 'Poppins, sans-serif'
                                             }}
                                         >
-                                            {price.price} kr/kg
+                                            {price.price}kr/{price.unit || 'kg'}
                                         </Typography>
                                     )}
-                                </CardContent>
-                            </Card>
+                                </Box>
+                            </CardContent>
+                        </Card>
                     ))}
-                </Box>
-
-                {/* Call to Action */}
-                <Box
-                    sx={{
-                        textAlign: 'center',
-                        p: 4,
-                        backgroundColor: '#448f9b',
-                        borderRadius: 2,
-                        color: 'white'
-                    }}
-                >
-                    <Typography
-                        variant="h5"
-                        sx={{
-                            mb: 2,
-                            fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 600
-                        }}
-                    >
-                        Specialbeställningar
-                    </Typography>
-                    <Typography
-                        variant="body1"
-                        sx={{
-                            mb: 3,
-                            fontFamily: 'Poppins, sans-serif',
-                            maxWidth: 500,
-                            mx: 'auto'
-                        }}
-                    >
-                        Hittar du inte det du söker? Vi tar gärna emot specialbeställningar.
-                    </Typography>
-                    <Button
-                        component={Link}
-                        href="/kontakta_oss"
-                        variant="contained"
-                        sx={{
-                            backgroundColor: 'white',
-                            color: '#448f9b',
-                            px: 3,
-                            py: 1,
-                            fontWeight: 600,
-                            textTransform: 'none',
-                            borderRadius: 1,
-                            '&:hover': {
-                                backgroundColor: '#f8f9fa'
-                            }
-                        }}
-                    >
-                        Kontakta oss
-                    </Button>
                 </Box>
             </Container>
         </Box>
