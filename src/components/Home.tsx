@@ -459,7 +459,7 @@ const Home = () => {
                                     fontSize: { xs: '0.9rem', md: '1rem' }
                                 }}
                             >
-                                Priser läggs upp av våra administratörer
+                                Kontakta oss för aktuella priser
                             </Typography>
                         </Box>
                     )}
