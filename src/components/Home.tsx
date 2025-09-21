@@ -1,7 +1,14 @@
 'use client';
 
 import { Box, Container, Typography, Button } from '@mui/material';
-import { ShoppingCart, StorefrontOutlined } from '@mui/icons-material';
+import { 
+    ShoppingCart, 
+    StorefrontOutlined, 
+    CheckCircleOutline,
+    EmojiEvents,
+    FavoriteBorder,
+    Star
+} from '@mui/icons-material';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -54,7 +61,7 @@ const Home = () => {
                     Your browser does not support the video tag.
                 </video>
 
-                {/* Friendly, Warm Overlay */}
+                {/* Centered Vignette Overlay for Better Text Contrast */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -62,20 +69,8 @@ const Home = () => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        background: 'linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(46, 134, 193, 0.6))',
+                        background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 80%, transparent 100%)',
                         zIndex: 2
-                    }}
-                />
-                {/* Soft, Safe Additional Overlay */}
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(52, 152, 219, 0.4) 100%)',
-                        zIndex: 3
                     }}
                 />
 
@@ -99,11 +94,11 @@ const Home = () => {
                         variant="h2"
                         sx={{
                             color: 'white',
-                            mb: { xs: 3, md: 4 },
+                            mb: { xs: 1, md: 1.5 },
                             fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 600,
+                            fontWeight: 700,
                             fontSize: { xs: '2rem', md: '3.2rem' },
-                            lineHeight: 1.2,
+                            lineHeight: 1.1,
                             letterSpacing: '-0.01em'
                         }}
                     >
@@ -113,30 +108,30 @@ const Home = () => {
                     <Typography
                         variant="h4"
                         sx={{
-                            color: 'rgba(255,255,255,0.95)',
-                            mb: { xs: 4, md: 5 },
+                            color: 'white',
+                            mb: { xs: 1, md: 1.5 },
                             fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 400,
+                            fontWeight: 500,
                             fontSize: { xs: '1.3rem', md: '1.6rem' },
                             maxWidth: '700px',
                             mx: 'auto',
-                            lineHeight: 1.4
+                            lineHeight: 1.3
                         }}
                     >
-                        Färska delikatesser från hav och sjö • Kvalitet sedan 2006
+                        Färska fisken över hela disken • Kvalitet sedan 2006
                     </Typography>
 
                     <Typography
                         variant="h6"
                         sx={{
-                            color: 'rgba(255,255,255,0.9)',
-                            mb: { xs: 5, md: 6 },
+                            color: 'white',
+                            mb: { xs: 2, md: 3 },
                             fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 300,
+                            fontWeight: 400,
                             fontSize: { xs: '1.1rem', md: '1.2rem' },
                             maxWidth: '600px',
                             mx: 'auto',
-                            lineHeight: 1.5,
+                            lineHeight: 1.4,
                             fontStyle: 'italic'
                         }}
                     >
@@ -159,24 +154,22 @@ const Home = () => {
                                 size="large"
                                 startIcon={<ShoppingCart />}
                                 sx={{
-                                    background: 'rgba(255, 255, 255, 0.95)',
-                                    color: '#2c5aa0',
+                                    background: '#2c5aa0',
+                                    color: 'white',
                                     px: { xs: 4, md: 6 },
                                     py: { xs: 2, md: 2.5 },
                                     fontSize: { xs: '1.1rem', md: '1.2rem' },
                                     fontWeight: 600,
                                     borderRadius: 25,
                                     textTransform: 'none',
-                                    border: '2px solid rgba(255,255,255,0.3)',
                                     '&:hover': {
-                                        background: 'rgba(255, 255, 255, 1)',
-                                        transform: 'translateY(-2px)',
-                                        color: '#1e3d72'
+                                        background: '#1e3d72',
+                                        transform: 'translateY(-2px)'
                                     },
                                     transition: 'all 0.3s ease'
                                 }}
                             >
-                                🐟 Beställ enkelt online
+                                Beställ online
                             </Button>
                             <Button
                                 component={Link}
@@ -203,7 +196,7 @@ const Home = () => {
                                     transition: 'all 0.3s ease'
                                 }}
                             >
-                                🏠 Besök vår butik
+                                Besök vår butik
                             </Button>
                         </Box>
                         
@@ -216,13 +209,16 @@ const Home = () => {
                             opacity: 0.9
                         }}>
                             <Typography sx={{ color: 'white', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                ✓ Säker betalning
+                                <CheckCircleOutline sx={{ fontSize: '1rem' }} />
+                                Dagsfärsk fisk
                             </Typography>
                             <Typography sx={{ color: 'white', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                ✓ Fri hämtning i butik
+                                <CheckCircleOutline sx={{ fontSize: '1rem' }} />
+                                Fri hämtning i butik
                             </Typography>
                             <Typography sx={{ color: 'white', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                ✓ 19 års erfarenhet
+                                <CheckCircleOutline sx={{ fontSize: '1rem' }} />
+                                19 års erfarenhet
                             </Typography>
                         </Box>
                     </Box>
@@ -298,7 +294,7 @@ const Home = () => {
                                     }
                                 }}
                             >
-                                Välkommen hem! 🏡
+                                Välkommen till oss!
                             </Typography>
                             <Typography
                                 variant="body1"
@@ -340,15 +336,15 @@ const Home = () => {
                             {/* Trust badges */}
                             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', justifyContent: { xs: 'center', md: 'flex-start' } }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#2c5aa0' }}>
-                                    <Typography sx={{ fontSize: '1.2rem' }}>🏆</Typography>
+                                    <EmojiEvents sx={{ fontSize: '1.2rem' }} />
                                     <Typography sx={{ fontSize: '0.9rem', fontWeight: 500 }}>Kvalitetsgaranti</Typography>
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#2c5aa0' }}>
-                                    <Typography sx={{ fontSize: '1.2rem' }}>💙</Typography>
+                                    <FavoriteBorder sx={{ fontSize: '1.2rem' }} />
                                     <Typography sx={{ fontSize: '0.9rem', fontWeight: 500 }}>Familjärt bemötande</Typography>
                                 </Box>
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, color: '#2c5aa0' }}>
-                                    <Typography sx={{ fontSize: '1.2rem' }}>⭐</Typography>
+                                    <Star sx={{ fontSize: '1.2rem' }} />
                                     <Typography sx={{ fontSize: '0.9rem', fontWeight: 500 }}>19 års erfarenhet</Typography>
                                 </Box>
                             </Box>
@@ -384,7 +380,7 @@ const Home = () => {
                                 }
                             }}
                         >
-                            Våra Produkter 🐟
+                            Vår Butik
                         </Typography>
                         <Typography
                             variant="h6"
@@ -397,11 +393,11 @@ const Home = () => {
                                 mx: 'auto'
                             }}
                         >
-                            Utforska vårt sortiment av färska delikatesser från havet
+                            Se vad vi erbjuder
                         </Typography>
                     </Box>
 
-                    {/* Image Grid */}
+                    {/* Image Gallery */}
                     <Box sx={{
                         display: 'grid',
                         gridTemplateColumns: {

@@ -62,18 +62,35 @@ const Header = () => {
                                 marginRight: '10px'
                             }}
                         />
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                fontFamily: 'Poppins, sans-serif',
-                                fontWeight: 700,
-                                color: '#448f9b',
-                                fontSize: { xs: '1.3rem', md: '1.5rem' },
-                                letterSpacing: '-0.3px'
-                            }}
-                        >
-                            Knallefisk
-                        </Typography>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    fontFamily: 'Poppins, sans-serif',
+                                    fontWeight: 700,
+                                    color: '#448f9b',
+                                    fontSize: { xs: '1.3rem', md: '1.5rem' },
+                                    letterSpacing: '-0.3px',
+                                    lineHeight: 1.2
+                                }}
+                            >
+                                Knallefisk
+                            </Typography>
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    fontFamily: 'Poppins, sans-serif',
+                                    fontWeight: 400,
+                                    color: '#666',
+                                    fontSize: { xs: '0.7rem', md: '0.8rem' },
+                                    fontStyle: 'italic',
+                                    lineHeight: 1,
+                                    mt: -0.5
+                                }}
+                            >
+                                Färska fisken över hela disken
+                            </Typography>
+                        </Box>
                     </Box>
 
                     <Box sx={{ flexGrow: 1 }} />
