@@ -1,8 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, Container, Typography, Grid, Card, CardContent, Chip, CircularProgress, Alert, Button } from '@mui/material';
-import { LocalOfferOutlined } from '@mui/icons-material';
+import { Box, Container, Typography, Card, CardContent, Chip, CircularProgress, Alert, Button } from '@mui/material';
 import Link from 'next/link';
 
 interface Price {
@@ -19,10 +18,21 @@ interface Price {
 const Prices = () => {
     const [prices, setPrices] = useState<Price[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const [error] = useState("");
 
     useEffect(() => {
-        // Extended static prices for demo
+        // Load prices from localStorage (set by admin)
+        const savedPrices = localStorage.getItem('admin_prices');
+        if (savedPrices) {
+            const adminPrices = JSON.parse(savedPrices);
+            // Only show visible prices to customers
+            const visiblePrices = adminPrices.filter((price: Price) => price.is_visible);
+            setPrices(visiblePrices);
+            setLoading(false);
+            return;
+        }
+
+        // Fallback to static prices for demo if no admin prices exist
         const staticPrices: Price[] = [
             {
                 id: 1,
@@ -181,18 +191,23 @@ const Prices = () => {
                 </Box>
 
                 {/* Price Grid */}
-                <Grid container spacing={2} sx={{ mb: 4 }}>
+                <Box sx={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr', md: 'repeat(3, 1fr)' },
+                    gap: 2,
+                    mb: 4 
+                }}>
                     {prices.map((price) => (
-                        <Grid item xs={12} sm={6} md={4} key={price.id}>
-                            <Card
-                                sx={{
-                                    height: '100%',
-                                    borderRadius: 1,
-                                    border: '1px solid #e0e0e0',
-                                    position: 'relative',
-                                    backgroundColor: 'white'
-                                }}
-                            >
+                        <Card
+                            key={price.id}
+                            sx={{
+                                height: '100%',
+                                borderRadius: 1,
+                                border: '1px solid #e0e0e0',
+                                position: 'relative',
+                                backgroundColor: 'white'
+                            }}
+                        >
                                 {price.on_sale && (
                                     <Chip
                                         label="REA"
@@ -271,9 +286,8 @@ const Prices = () => {
                                     )}
                                 </CardContent>
                             </Card>
-                        </Grid>
                     ))}
-                </Grid>
+                </Box>
 
                 {/* Call to Action */}
                 <Box
