@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     Box,
     Container,
@@ -58,6 +58,7 @@ const AdminPage = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
+    const [isLoggingIn, setIsLoggingIn] = useState(false);
     const [prices, setPrices] = useState<Price[]>([]);
     const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -66,7 +67,30 @@ const AdminPage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
 
-    useEffect(() => {
+    const checkAuthStatus = useCallback(async () => {
+        try {
+            const response = await fetch('/api/admin/auth', {
+                method: 'GET',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                setIsAuthenticated(data.authenticated);
+                
+                if (data.authenticated) {
+                    loadAdminData();
+                }
+            } else {
+                setIsAuthenticated(false);
+            }
+        } catch (error) {
+            console.error('Auth check failed:', error);
+            setIsAuthenticated(false);
+        }
+    }, []);
+
+    const loadAdminData = () => {
         // Ladda priser från localStorage
         const savedPrices = localStorage.getItem('admin_prices');
         if (savedPrices) {
@@ -79,30 +103,59 @@ const AdminPage = () => {
             const parsedImages = JSON.parse(savedImages);
             setUploadedImages(parsedImages);
         }
+    };
 
-        // Kontrollera om redan autentiserad
-        const authenticated = sessionStorage.getItem('admin_authenticated');
-        if (authenticated === 'true') {
-            setIsAuthenticated(true);
-        }
-    }, []);
+    useEffect(() => {
+        checkAuthStatus();
+    }, [checkAuthStatus]);
 
-    const handleLogin = () => {
-        const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
-        
-        if (password === adminPassword) {
-            setIsAuthenticated(true);
-            sessionStorage.setItem('admin_authenticated', 'true');
-            setLoginError('');
-        } else {
-            setLoginError('Fel lösenord');
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoggingIn(true);
+        setLoginError('');
+
+        try {
+            const response = await fetch('/api/admin/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ password }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setIsAuthenticated(true);
+                setPassword('');
+                loadAdminData();
+            } else {
+                setLoginError(data.error || 'Login failed');
+                if (data.remainingAttempts !== undefined) {
+                    setLoginError(`${data.error} (${data.remainingAttempts} attempts remaining)`);
+                }
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            setLoginError('Connection error. Please try again.');
+        } finally {
+            setIsLoggingIn(false);
         }
     };
 
-    const handleLogout = () => {
-        setIsAuthenticated(false);
-        sessionStorage.removeItem('admin_authenticated');
-        setPassword('');
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/admin/logout', {
+                method: 'POST',
+                credentials: 'include',
+            });
+            setIsAuthenticated(false);
+            setPrices([]);
+            setUploadedImages([]);
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
     };
 
     const savePrices = (newPrices: Price[]) => {
@@ -232,7 +285,7 @@ const AdminPage = () => {
                             label="Lösenord"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            onKeyPress={(e) => e.key === 'Enter' && handleLogin()}
+                            onKeyPress={(e) => e.key === 'Enter' && handleLogin(e)}
                             error={!!loginError}
                             helperText={loginError}
                             sx={{ mb: 3 }}
@@ -241,6 +294,7 @@ const AdminPage = () => {
                             fullWidth 
                             variant="contained" 
                             onClick={handleLogin}
+                            disabled={isLoggingIn}
                             sx={{ 
                                 py: 1.5,
                                 backgroundColor: '#448f9b',
@@ -249,7 +303,7 @@ const AdminPage = () => {
                                 }
                             }}
                         >
-                            Logga in
+                            {isLoggingIn ? 'Loggar in...' : 'Logga in'}
                         </Button>
                     </Card>
                 </Container>

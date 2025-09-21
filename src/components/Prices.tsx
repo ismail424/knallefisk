@@ -30,6 +30,65 @@ interface Price {
     image?: string;
 }
 
+// Default sample prices to show when no admin data exists
+const defaultPrices: Price[] = [
+    {
+        id: '1',
+        name: 'Lax',
+        price: '289',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild1.webp'
+    },
+    {
+        id: '2',
+        name: 'Räkor',
+        price: '149',
+        unit: 'kg',
+        on_sale: true,
+        sale_price: '129',
+        is_visible: true,
+        image: '/img/bild2.webp'
+    },
+    {
+        id: '3',
+        name: 'Torsk',
+        price: '199',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild3.webp'
+    },
+    {
+        id: '4',
+        name: 'Krabba',
+        price: '89',
+        unit: 'st',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild4.jpg'
+    },
+    {
+        id: '5',
+        name: 'Sill',
+        price: '79',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild5.webp'
+    },
+    {
+        id: '6',
+        name: 'Makrill',
+        price: '119',
+        unit: 'kg',
+        on_sale: false,
+        is_visible: true,
+        image: '/img/bild6.webp'
+    }
+];
+
 const Prices = () => {
     const [prices, setPrices] = useState<Price[]>([]);
     const [loading, setLoading] = useState(true);
@@ -58,10 +117,17 @@ const Prices = () => {
                     }));
                 if (visiblePrices.length > 0) {
                     setPrices(visiblePrices);
+                } else {
+                    // Use default prices if no admin prices exist
+                    setPrices(defaultPrices);
                 }
             } catch (e) {
                 console.error('Error loading admin prices:', e);
+                setPrices(defaultPrices);
             }
+        } else {
+            // Use default prices if no localStorage data exists
+            setPrices(defaultPrices);
         }
         setLoading(false);
     }, []);

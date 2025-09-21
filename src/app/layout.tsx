@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="sv">
       <head>
-        <script src="https://kit.fontawesome.com/d929f5c8b7.js" crossOrigin="anonymous"></script>
+        <script async src="https://kit.fontawesome.com/d929f5c8b7.js" crossOrigin="anonymous"></script>
       </head>
       <body>
         <MUIThemeProvider>

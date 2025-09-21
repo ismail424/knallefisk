@@ -67,6 +67,7 @@ export default function Kontakt() {
                   BESTÄLL ONLINE
                 </Button>
               </Box>
+            </Box>
           </Container>
         </Box>
 
