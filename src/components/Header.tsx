@@ -4,7 +4,21 @@ import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, List, ListItem, ListItemText, Box, useMediaQuery, useTheme } from '@mui/material';
+import { 
+    AppBar, 
+    Toolbar, 
+    Typography, 
+    Button, 
+    IconButton, 
+    Drawer, 
+    List, 
+    ListItem, 
+    ListItemText, 
+    Box, 
+    useMediaQuery, 
+    useTheme,
+    Container
+} from '@mui/material';
 import { Menu as MenuIcon, Close as CloseIcon } from '@mui/icons-material';
 
 const Header = () => {
@@ -27,162 +41,145 @@ const Header = () => {
 
     return (
         <>
-            <AppBar
-                position="fixed"
+            <AppBar 
                 elevation={0}
-                sx={{
+                sx={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    backdropFilter: 'blur(15px)',
-                    borderBottom: '1px solid rgba(68, 143, 155, 0.15)',
-                    boxShadow: '0 1px 10px rgba(0,0,0,0.08)',
-                    zIndex: 1100
+                    color: '#333'
                 }}
             >
-                <Toolbar sx={{ px: { xs: 2, md: 6 }, py: 1, minHeight: { xs: 60, md: 70 } }}>
-                    {/* Logo */}
-                    <Box
-                        component={Link}
-                        href="/"
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            textDecoration: 'none',
-                            transition: 'all 0.2s ease',
-                            '&:hover': {
-                                transform: 'scale(1.02)'
-                            }
-                        }}
-                    >
-                        <Image
-                            src="/img/logo.svg"
-                            alt="Knallefisk Logo"
-                            width={35}
-                            height={35}
-                            style={{
-                                marginRight: '10px'
-                            }}
-                        />
-                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    fontFamily: 'Poppins, sans-serif',
-                                    fontWeight: 700,
-                                    color: '#448f9b',
-                                    fontSize: { xs: '1.3rem', md: '1.5rem' },
-                                    letterSpacing: '-0.3px',
-                                    lineHeight: 1.2
-                                }}
-                            >
-                                Knallefisk
-                            </Typography>
-                            <Typography
-                                variant="caption"
-                                sx={{
-                                    fontFamily: 'Poppins, sans-serif',
-                                    fontWeight: 400,
-                                    color: '#666',
-                                    fontSize: { xs: '0.7rem', md: '0.8rem' },
-                                    fontStyle: 'italic',
-                                    lineHeight: 1,
-                                    mt: -0.5
-                                }}
-                            >
-                                Färska fisken över hela disken
-                            </Typography>
-                        </Box>
-                    </Box>
-
-                    <Box sx={{ flexGrow: 1 }} />
-
-                    {/* Desktop Navigation */}
-                    {!isMobile && (
-                        <Box sx={{ display: 'flex', gap: 0.5 }}>
-                            {all_links.map((link, index) => (
-                                <Button
-                                    key={index}
-                                    component={Link}
-                                    href={link.url}
-                                    sx={{
-                                        color: pathname === link.url ? '#448f9b' : '#666',
-                                        fontFamily: 'Poppins, sans-serif',
-                                        fontWeight: pathname === link.url ? 600 : 500,
-                                        fontSize: '0.95rem',
-                                        textTransform: 'none',
-                                        px: 2.5,
-                                        py: 1,
-                                        borderRadius: 2,
-                                        position: 'relative',
-                                        backgroundColor: pathname === link.url ? 'rgba(68, 143, 155, 0.08)' : 'transparent',
-                                        '&:hover': {
-                                            backgroundColor: 'rgba(68, 143, 155, 0.1)',
-                                            color: '#448f9b'
-                                        },
-                                        '&::after': {
-                                            content: '""',
-                                            position: 'absolute',
-                                            bottom: 0,
-                                            left: '50%',
-                                            width: pathname === link.url ? '70%' : '0%',
-                                            height: '2px',
-                                            backgroundColor: '#448f9b',
-                                            transform: 'translateX(-50%)',
-                                            transition: 'width 0.3s ease'
-                                        },
-                                        '&:hover::after': {
-                                            width: '70%'
-                                        },
-                                        transition: 'all 0.3s ease'
-                                    }}
-                                >
-                                    {link.name}
-                                </Button>
-                            ))}
-                        </Box>
-                    )}
-
-                    {/* Mobile Menu Button */}
-                    {isMobile && (
-                        <IconButton
-                            edge="end"
-                            color="inherit"
-                            aria-label="menu"
-                            onClick={toggleMenu}
-                            sx={{
-                                color: '#448f9b',
-                                backgroundColor: 'rgba(68, 143, 155, 0.1)',
-                                borderRadius: 2,
-                                p: 1.5,
-                                '&:hover': {
-                                    backgroundColor: 'rgba(68, 143, 155, 0.15)',
-                                    transform: 'scale(1.05)'
-                                },
-                                transition: 'all 0.2s ease'
+                <Container maxWidth="xl">
+                    <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+                        {/* Logo Section */}
+                        <Box 
+                            component={Link} 
+                            href="/"
+                            sx={{ 
+                                display: 'flex', 
+                                alignItems: 'center',
+                                textDecoration: 'none',
+                                '&:hover': { transform: 'scale(1.02)' },
+                                transition: 'transform 0.2s ease'
                             }}
                         >
-                            {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
-                        </IconButton>
-                    )}
-                </Toolbar>
+                            <Image
+                                src="/img/logo.svg"
+                                alt="Knallefisk Logo"
+                                width={65}
+                                height={65}
+                                style={{ marginRight: '15px' }}
+                            />
+                            <Box>
+                                <Typography 
+                                    variant="h6" 
+                                    sx={{ 
+                                        fontFamily: 'Poppins, sans-serif',
+                                        fontWeight: 700,
+                                        color: '#448f9b',
+                                        fontSize: { xs: '1.2rem', md: '1.4rem' },
+                                        lineHeight: 1.2
+                                    }}
+                                >
+                                    Knallefisk
+                                </Typography>
+                                <Typography 
+                                    variant="caption" 
+                                    sx={{ 
+                                        fontFamily: 'Poppins, sans-serif',
+                                        color: '#666',
+                                        fontSize: { xs: '0.7rem', md: '0.8rem' },
+                                        fontStyle: 'italic',
+                                        display: 'block',
+                                        lineHeight: 1
+                                    }}
+                                >
+                                    Färska fisken över hela disken
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                        {/* Desktop Navigation */}
+                        {!isMobile && (
+                            <Box sx={{ display: 'flex', gap: 1 }}>
+                                {all_links.map((link) => (
+                                    <Button
+                                        key={link.url}
+                                        component={Link}
+                                        href={link.url}
+                                        variant="text"
+                                        sx={{
+                                            fontFamily: 'Poppins, sans-serif',
+                                            textTransform: 'none',
+                                            borderRadius: 2,
+                                            px: 2.5,
+                                            py: 1,
+                                            color: pathname === link.url ? '#448f9b' : '#666',
+                                            fontWeight: pathname === link.url ? 600 : 500,
+                                            backgroundColor: pathname === link.url ? 'rgba(68, 143, 155, 0.08)' : 'transparent',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(68, 143, 155, 0.1)',
+                                                color: '#448f9b'
+                                            }
+                                        }}
+                                    >
+                                        {link.name}
+                                    </Button>
+                                ))}
+                            </Box>
+                        )}
+
+                        {/* Mobile Menu Button */}
+                        {isMobile && (
+                            <IconButton
+                                edge="end"
+                                onClick={toggleMenu}
+                                sx={{
+                                    color: '#448f9b'
+                                }}
+                            >
+                                {isMenuOpen ? <CloseIcon /> : <MenuIcon />}
+                            </IconButton>
+                        )}
+                    </Toolbar>
+                </Container>
             </AppBar>
 
             {/* Mobile Drawer */}
             <Drawer
-                anchor="top"
+                anchor="left"
                 open={isMenuOpen && isMobile}
                 onClose={toggleMenu}
                 sx={{
                     display: { xs: 'block', md: 'none' },
                     '& .MuiDrawer-paper': {
-                        backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                        backdropFilter: 'blur(10px)',
-                        top: { xs: 64, md: 80 },
-                        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-                        borderBottom: '1px solid rgba(68, 143, 155, 0.1)'
+                        width: 280,
+                        backgroundColor: 'white',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.1)'
                     }
                 }}
             >
-                <List sx={{ py: 2 }}>
+                <Box sx={{ pt: 2, pb: 1 }}>
+                    {/* Logo in mobile drawer */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', px: 3, pb: 2, borderBottom: '1px solid #eee' }}>
+                        <Image
+                            src="/img/logo.svg"
+                            alt="Knallefisk Logo"
+                            width={30}
+                            height={30}
+                            style={{ marginRight: '10px' }}
+                        />
+                        <Box>
+                            <Typography variant="h6" sx={{ fontWeight: 700, color: '#448f9b', fontSize: '1.1rem' }}>
+                                Knallefisk
+                            </Typography>
+                            <Typography variant="caption" sx={{ color: '#666', fontSize: '0.7rem' }}>
+                                Färska fisken över hela disken
+                            </Typography>
+                        </Box>
+                    </Box>
+                </Box>
+                
+                <List sx={{ px: 2, py: 1 }}>
                     {all_links.map((link, index) => (
                         <ListItem
                             key={index}
@@ -191,16 +188,16 @@ const Header = () => {
                             onClick={toggleMenu}
                             sx={{
                                 py: 2,
-                                mx: 2,
+                                px: 2,
                                 mb: 1,
                                 borderRadius: 2,
-                                backgroundColor: pathname === link.url ? 'rgba(68, 143, 155, 0.1)' : 'transparent',
-                                border: pathname === link.url ? '1px solid rgba(68, 143, 155, 0.2)' : '1px solid transparent',
+                                backgroundColor: pathname === link.url ? 'rgba(68, 143, 155, 0.12)' : 'transparent',
+                                border: pathname === link.url ? '1px solid rgba(68, 143, 155, 0.3)' : '1px solid transparent',
                                 '&:hover': {
-                                    backgroundColor: 'rgba(68, 143, 155, 0.08)',
-                                    transform: 'translateX(4px)'
+                                    backgroundColor: 'rgba(68, 143, 155, 0.08)'
                                 },
-                                transition: 'all 0.2s ease'
+                                transition: 'all 0.2s ease',
+                                minHeight: 48
                             }}
                         >
                             <ListItemText
@@ -209,8 +206,7 @@ const Header = () => {
                                     fontFamily: 'Poppins, sans-serif',
                                     fontWeight: pathname === link.url ? 600 : 500,
                                     fontSize: '1.1rem',
-                                    color: pathname === link.url ? '#448f9b' : '#555',
-                                    textAlign: 'center'
+                                    color: pathname === link.url ? '#448f9b' : '#555'
                                 }}
                             />
                         </ListItem>

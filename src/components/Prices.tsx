@@ -153,7 +153,7 @@ const Prices = () => {
     }
 
     return (
-        <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+        <Box sx={{ py: 4, pt: { xs: '240px', md: '200px' }, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
             <Container maxWidth="lg">
                 {/* Header */}
                 <Box sx={{ textAlign: 'center', mb: 4 }}>

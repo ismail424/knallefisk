@@ -41,7 +41,7 @@ const Order = () => {
 
     if (submitted) {
         return (
-            <Box sx={{ pt: 12, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+            <Box sx={{ pt: { xs: '240px', md: '200px' }, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
                 <Container maxWidth="md">
                     <Paper
                         sx={{
@@ -89,8 +89,14 @@ const Order = () => {
     }
 
     return (
-        <Box sx={{ pt: 12, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-            <Container maxWidth="md">
+        <Box sx={{ 
+            pt: { xs: '240px', md: '200px' }, 
+            pb: 8, 
+            backgroundColor: '#f9fafb', 
+            minHeight: '100vh',
+            position: 'relative'
+        }}>
+            <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
                 {/* Simple Header */}
                 <Box sx={{ textAlign: 'center', mb: 6 }}>
                     <Typography
@@ -124,24 +130,65 @@ const Order = () => {
                         p: 6,
                         borderRadius: 3,
                         boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                        mb: 4
+                        mb: 4,
+                        position: 'relative',
+                        overflow: 'hidden'
                     }}
                 >
-                    <Typography
-                        variant="h5"
+                    {/* Multiple fish animations in random spots within form */}
+                    <Box
                         sx={{
-                            color: '#448f9b',
-                            fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 600,
-                            mb: 4,
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2
+                            backgroundImage: 'url("http://www.geertjanhendriks.nl/codepen/form/fish.png")',
+                            width: '235px',
+                            height: '104px',
+                            marginLeft: '-235px',
+                            position: 'absolute',
+                            top: '80px',
+                            animation: 'fishSwim1 24s infinite linear',
+                            zIndex: 0,
+                            opacity: 0.15,
+                            '@keyframes fishSwim1': {
+                                '0%': { marginLeft: '-235px' },
+                                '100%': { marginLeft: 'calc(100% + 235px)' }
+                            }
                         }}
-                    >
-                        <ShoppingCart />
-                        Din beställning
-                    </Typography>
+                    />
+                    <Box
+                        sx={{
+                            backgroundImage: 'url("http://www.geertjanhendriks.nl/codepen/form/fish.png")',
+                            width: '235px',
+                            height: '104px',
+                            marginLeft: '-235px',
+                            position: 'absolute',
+                            top: '300px',
+                            animation: 'fishSwim2 20s infinite linear',
+                            animationDelay: '12s',
+                            zIndex: 0,
+                            opacity: 0.1,
+                            '@keyframes fishSwim2': {
+                                '0%': { marginLeft: '-235px' },
+                                '100%': { marginLeft: 'calc(100% + 235px)' }
+                            }
+                        }}
+                    />
+                    
+                    {/* Form content with higher z-index */}
+                    <Box sx={{ position: 'relative', zIndex: 2 }}>
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                color: '#448f9b',
+                                fontFamily: 'Poppins, sans-serif',
+                                fontWeight: 600,
+                                mb: 4,
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 2
+                            }}
+                        >
+                            <ShoppingCart />
+                            Din beställning
+                        </Typography>
 
                     <Box component="form" onSubmit={handleSubmit}>
                         <Box sx={{ display: 'grid', gap: 3 }}>
@@ -251,6 +298,7 @@ const Order = () => {
                         >
                             Skicka beställning
                         </Button>
+                    </Box>
                     </Box>
                 </Paper>
 

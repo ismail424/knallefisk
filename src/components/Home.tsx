@@ -23,7 +23,7 @@ const Home = () => {
     ];
 
     return (
-        <Box sx={{ pt: { xs: 8, md: 10 } }}>
+        <Box>
             {/* Hero Section */}
             <Box
                 sx={{
@@ -61,7 +61,7 @@ const Home = () => {
                     Your browser does not support the video tag.
                 </video>
 
-                {/* Centered Vignette Overlay for Better Text Contrast */}
+                {/* Even Overlay for Better Text Contrast */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -69,13 +69,19 @@ const Home = () => {
                         left: 0,
                         width: '100%',
                         height: '100%',
-                        background: 'radial-gradient(ellipse at center, rgba(0,0,0,0.6) 20%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.15) 80%, transparent 100%)',
+                        background: 'rgba(0,0,0,0.6)',
                         zIndex: 2
                     }}
                 />
 
                 {/* Hero Content */}
-                <Container maxWidth="md" sx={{ textAlign: 'center', zIndex: 4, py: { xs: 6, md: 10 }, position: 'relative' }}>
+                <Container maxWidth="md" sx={{ 
+                    textAlign: 'center', 
+                    zIndex: 4, 
+                    py: { xs: 6, md: 10 }, 
+                    pt: { xs: '260px', md: '220px' },
+                    position: 'relative' 
+                }}>
                     <Box sx={{ mb: { xs: 4, md: 6 } }}>
                         <Image
                             src="/img/logo.svg"
@@ -154,7 +160,7 @@ const Home = () => {
                                 size="large"
                                 startIcon={<ShoppingCart />}
                                 sx={{
-                                    background: '#2c5aa0',
+                                    background: '#1976d2',
                                     color: 'white',
                                     px: { xs: 4, md: 6 },
                                     py: { xs: 2, md: 2.5 },
@@ -163,7 +169,7 @@ const Home = () => {
                                     borderRadius: 25,
                                     textTransform: 'none',
                                     '&:hover': {
-                                        background: '#1e3d72',
+                                        background: '#1565c0',
                                         transform: 'translateY(-2px)'
                                     },
                                     transition: 'all 0.3s ease'
