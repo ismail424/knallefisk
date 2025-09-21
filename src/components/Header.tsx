@@ -45,11 +45,13 @@ const Header = () => {
                 elevation={0}
                 sx={{ 
                     backgroundColor: 'rgba(255, 255, 255, 0.98)',
-                    color: '#333'
+                    color: '#333',
+                    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
                 }}
+                
             >
                 <Container maxWidth="xl">
-                    <Toolbar sx={{ justifyContent: 'space-between', py: 1 }}>
+                    <Toolbar sx={{ justifyContent: 'space-between', py: 1.5 }}>
                         {/* Logo Section */}
                         <Box 
                             component={Link} 
@@ -65,9 +67,9 @@ const Header = () => {
                             <Image
                                 src="/img/logo.svg"
                                 alt="Knallefisk Logo"
-                                width={65}
-                                height={65}
-                                style={{ marginRight: '15px' }}
+                                width={60}
+                                height={60}
+                                style={{ marginRight: '12px' }}
                             />
                             <Box>
                                 <Typography 
@@ -87,13 +89,13 @@ const Header = () => {
                                     sx={{ 
                                         fontFamily: 'Poppins, sans-serif',
                                         color: '#666',
-                                        fontSize: { xs: '0.7rem', md: '0.8rem' },
+                                        fontSize: { xs: '0.65rem', md: '0.75rem' },
                                         fontStyle: 'italic',
                                         display: 'block',
                                         lineHeight: 1
                                     }}
                                 >
-                                    Färska fisken över hela disken
+                                    Färska fisk sedan 2006
                                 </Typography>
                             </Box>
                         </Box>

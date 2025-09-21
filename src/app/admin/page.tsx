@@ -36,7 +36,6 @@ interface Price {
     title: string;
     price: string;
     sale_price?: string;
-    description?: string;
     category?: string;
     unit: string;
     weight?: string;
@@ -198,6 +197,14 @@ const AdminPage = () => {
         }
     };
 
+    // Inline editing functions
+    const updatePriceInline = (id: string, field: keyof Price, value: string | boolean) => {
+        const updatedPrices = prices.map(p => 
+            p.id === id ? { ...p, [field]: value } : p
+        );
+        savePrices(updatedPrices);
+    };
+
     if (!isAuthenticated) {
         return (
             <Box sx={{ 
@@ -252,37 +259,45 @@ const AdminPage = () => {
 
     return (
         <Box sx={{ 
-            pt: { xs: '260px', md: '220px' }, 
-            pb: 8,
-            px: { xs: 2, md: 4 },
-            minHeight: '100vh' 
+            pt: { xs: '240px', md: '200px' }, 
+            pb: 4,
+            px: { xs: 1, md: 2 },
+            minHeight: '100vh',
+            backgroundColor: '#f8f9fa'
         }}>
-            <Container maxWidth="lg">
+            <Container maxWidth="xl">
                 {/* Header */}
                 <Box sx={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
-                    alignItems: { xs: 'flex-start', md: 'center' },
-                    flexDirection: { xs: 'column', md: 'row' },
-                    gap: { xs: 2, md: 0 },
-                    mb: 4 
+                    alignItems: 'center',
+                    mb: 3,
+                    p: { xs: 2, md: 3 },
+                    backgroundColor: 'white',
+                    borderRadius: 1,
+                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                 }}>
                     <Typography 
-                        variant="h3" 
+                        variant="h4" 
                         sx={{ 
-                            color: '#448f9b', 
-                            fontFamily: 'Poppins, sans-serif',
-                            fontSize: { xs: '1.75rem', md: '3rem' }
+                            color: 'rgb(68, 143, 155)', 
+                            fontWeight: 600,
+                            fontSize: { xs: '1.5rem', md: '2rem' }
                         }}
                     >
-                        Prishantering
+                        Admin
                     </Typography>
                     <Button 
                         variant="outlined" 
                         onClick={handleLogout}
-                        size={isMobile ? "small" : "medium"}
+                        size="small"
                         sx={{
-                            alignSelf: { xs: 'flex-start', md: 'auto' }
+                            borderColor: 'rgb(68, 143, 155)',
+                            color: 'rgb(68, 143, 155)',
+                            '&:hover': {
+                                borderColor: 'rgb(68, 143, 155)',
+                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
+                            }
                         }}
                     >
                         Logga ut
@@ -290,7 +305,7 @@ const AdminPage = () => {
                 </Box>
 
                 {successMessage && (
-                    <Alert severity="success" sx={{ mb: 3 }}>
+                    <Alert severity="success" sx={{ mb: 2, mx: { xs: 0, md: 0 } }}>
                         {successMessage}
                     </Alert>
                 )}
@@ -298,8 +313,8 @@ const AdminPage = () => {
                 {/* Action Buttons */}
                 <Box sx={{ 
                     display: 'flex', 
-                    gap: { xs: 1, md: 2 }, 
-                    mb: 4,
+                    gap: 1, 
+                    mb: 3,
                     flexDirection: { xs: 'column', sm: 'row' }
                 }}>
                     <Button
@@ -310,7 +325,6 @@ const AdminPage = () => {
                                 title: '',
                                 price: '',
                                 sale_price: '',
-                                description: '',
                                 category: '',
                                 unit: 'kg',
                                 weight: '',
@@ -322,23 +336,31 @@ const AdminPage = () => {
                             setIsDialogOpen(true);
                         }}
                         sx={{ 
-                            backgroundColor: '#448f9b',
-                            py: { xs: 1.5, md: 1 },
+                            backgroundColor: 'rgb(68, 143, 155)',
+                            py: 1,
                             '&:hover': {
-                                backgroundColor: '#357a84'
+                                backgroundColor: 'rgb(58, 123, 135)'
                             }
                         }}
-                        size={isMobile ? "small" : "medium"}
+                        size="small"
                         fullWidth={isMobile}
                     >
-                        Nytt Pris
+                        Lägg till
                     </Button>
                     <Button
                         variant="outlined"
                         startIcon={<UploadIcon />}
                         component="label"
-                        size={isMobile ? "small" : "medium"}
-                        sx={{ py: { xs: 1.5, md: 1 } }}
+                        size="small"
+                        sx={{ 
+                            py: 1,
+                            borderColor: 'rgb(68, 143, 155)',
+                            color: 'rgb(68, 143, 155)',
+                            '&:hover': {
+                                borderColor: 'rgb(68, 143, 155)',
+                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
+                            }
+                        }}
                         fullWidth={isMobile}
                     >
                         Ladda upp bild
@@ -353,11 +375,19 @@ const AdminPage = () => {
                         variant="outlined"
                         startIcon={<LibraryBooksIcon />}
                         onClick={() => setIsImageLibraryOpen(true)}
-                        size={isMobile ? "small" : "medium"}
-                        sx={{ py: { xs: 1.5, md: 1 } }}
+                        size="small"
+                        sx={{ 
+                            py: 1,
+                            borderColor: 'rgb(68, 143, 155)',
+                            color: 'rgb(68, 143, 155)',
+                            '&:hover': {
+                                borderColor: 'rgb(68, 143, 155)',
+                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
+                            }
+                        }}
                         fullWidth={isMobile}
                     >
-                        Bildbibliotek ({uploadedImages.length})
+                        Bildbibliotek
                     </Button>
                 </Box>
 
@@ -366,10 +396,10 @@ const AdminPage = () => {
                     display: 'grid',
                     gridTemplateColumns: {
                         xs: '1fr',
-                        sm: 'repeat(2, 1fr)',
-                        md: 'repeat(3, 1fr)'
+                        md: 'repeat(2, 1fr)',
+                        lg: 'repeat(3, 1fr)'
                     },
-                    gap: { xs: 2, md: 3 }
+                    gap: 2
                 }}>
                     {prices.map((price) => (
                         <Card 
@@ -377,13 +407,21 @@ const AdminPage = () => {
                             sx={{ 
                                 height: '100%',
                                 display: 'flex',
-                                flexDirection: 'column'
+                                flexDirection: 'column',
+                                backgroundColor: 'white',
+                                border: '1px solid #e0e0e0',
+                                borderRadius: 1,
+                                overflow: 'hidden',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                '&:hover': {
+                                    boxShadow: '0 4px 8px rgba(0,0,0,0.15)'
+                                }
                             }}
                         >
                             {price.image && (
                                 <CardMedia
                                     component="img"
-                                    height={isMobile ? "150" : "200"}
+                                    height="120"
                                     image={price.image}
                                     alt={price.title}
                                     sx={{ objectFit: 'cover' }}
@@ -391,98 +429,143 @@ const AdminPage = () => {
                             )}
                             <CardContent sx={{ 
                                 flexGrow: 1,
-                                p: { xs: 2, md: 3 },
-                                '&:last-child': { pb: { xs: 2, md: 3 } }
+                                p: 2
                             }}>
-                                <Box sx={{ 
-                                    display: 'flex', 
-                                    justifyContent: 'space-between', 
-                                    alignItems: 'flex-start', 
-                                    mb: 2,
-                                    flexDirection: { xs: 'column', sm: 'row' },
-                                    gap: { xs: 1, sm: 0 }
-                                }}>
-                                    <Typography 
-                                        variant="h6" 
-                                        sx={{ 
-                                            flex: 1,
-                                            fontSize: { xs: '1rem', md: '1.25rem' }
-                                        }}
-                                    >
-                                        {price.title}
-                                    </Typography>
-                                    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
-                                        {!price.is_visible && (
-                                            <Chip 
-                                                icon={<VisibilityOffIcon />} 
-                                                label="Dold" 
-                                                size="small" 
-                                                color="default"
-                                                sx={{ mb: 0.5 }}
-                                            />
-                                        )}
-                                        {price.on_sale && (
-                                            <Chip 
-                                                label="REA" 
-                                                size="small" 
-                                                color="error"
-                                                sx={{ mb: 0.5 }}
-                                            />
-                                        )}
-                                    </Box>
-                                </Box>
-                                
-                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
-                                    {price.on_sale && price.sale_price ? (
-                                        <>
-                                            <Typography 
-                                                variant="body2" 
-                                                sx={{ textDecoration: 'line-through', color: 'gray' }}
-                                            >
-                                                {price.price} kr
-                                            </Typography>
-                                            <Typography variant="h6" sx={{ color: 'red', fontWeight: 'bold' }}>
-                                                {price.sale_price} kr
-                                            </Typography>
-                                        </>
-                                    ) : (
-                                        <Typography variant="h6" sx={{ fontSize: { xs: '1rem', md: '1.25rem' } }}>
-                                            {price.price} kr
-                                        </Typography>
+                                {/* Title */}
+                                <Typography 
+                                    variant="h6" 
+                                    sx={{ 
+                                        fontSize: '1rem',
+                                        fontWeight: 600,
+                                        mb: 1,
+                                        color: '#333'
+                                    }}
+                                >
+                                    {price.title}
+                                </Typography>
+
+                                {/* Status Chips */}
+                                <Box sx={{ display: 'flex', gap: 0.5, mb: 2, flexWrap: 'wrap' }}>
+                                    {!price.is_visible && (
+                                        <Chip 
+                                            icon={<VisibilityOffIcon />} 
+                                            label="Dold" 
+                                            size="small" 
+                                            color="default"
+                                        />
+                                    )}
+                                    {price.on_sale && (
+                                        <Chip 
+                                            label="REA" 
+                                            size="small" 
+                                            color="error"
+                                        />
                                     )}
                                 </Box>
                                 
-                                {price.description && (
-                                    <Typography 
-                                        variant="body2" 
-                                        color="text.secondary" 
-                                        sx={{ 
-                                            mb: 2,
-                                            fontSize: { xs: '0.875rem', md: '0.875rem' }
-                                        }}
-                                    >
-                                        {price.description}
-                                    </Typography>
-                                )}
+                                {/* Inline Price Editing */}
+                                <Box sx={{ mb: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
+                                        <TextField
+                                            label="Pris"
+                                            value={price.price}
+                                            onChange={(e) => updatePriceInline(price.id, 'price', e.target.value)}
+                                            size="small"
+                                            sx={{ 
+                                                width: '80px',
+                                                '& .MuiInputBase-input': {
+                                                    fontSize: '0.875rem'
+                                                }
+                                            }}
+                                        />
+                                        <Typography variant="caption" color="text.secondary">
+                                            kr/{price.unit}
+                                        </Typography>
+                                    </Box>
+                                    
+                                    {/* Quick Toggles */}
+                                    <Box sx={{ 
+                                        display: 'flex', 
+                                        flexDirection: 'column',
+                                        gap: 0.5
+                                    }}>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={price.is_visible}
+                                                    onChange={(e) => updatePriceInline(price.id, 'is_visible', e.target.checked)}
+                                                    size="small"
+                                                />
+                                            }
+                                            label={<Typography variant="caption">Synlig</Typography>}
+                                            sx={{ margin: 0 }}
+                                        />
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={price.on_sale}
+                                                    onChange={(e) => updatePriceInline(price.id, 'on_sale', e.target.checked)}
+                                                    size="small"
+                                                />
+                                            }
+                                            label={<Typography variant="caption">REA</Typography>}
+                                            sx={{ margin: 0 }}
+                                        />
+                                    </Box>
+                                    
+                                    {/* Sale Price Field */}
+                                    {price.on_sale && (
+                                        <Box sx={{ mt: 1 }}>
+                                            <TextField
+                                                label="REA-pris"
+                                                value={price.sale_price || ''}
+                                                onChange={(e) => updatePriceInline(price.id, 'sale_price', e.target.value)}
+                                                size="small"
+                                                sx={{ 
+                                                    width: '80px',
+                                                    '& .MuiInputBase-input': {
+                                                        fontSize: '0.875rem'
+                                                    }
+                                                }}
+                                            />
+                                            <Typography variant="caption" component="span" sx={{ ml: 1 }} color="text.secondary">
+                                                kr/{price.unit}
+                                            </Typography>
+                                        </Box>
+                                    )}
+                                </Box>
                                 
+                                {/* Action Buttons */}
                                 <Box sx={{ 
                                     display: 'flex', 
                                     justifyContent: 'space-between',
-                                    mt: 'auto'
+                                    mt: 'auto',
+                                    pt: 1,
+                                    borderTop: '1px solid #f0f0f0'
                                 }}>
                                     <IconButton 
                                         onClick={() => handleEditPrice(price)}
-                                        color="primary"
-                                        size={isMobile ? "small" : "medium"}
+                                        size="small"
+                                        sx={{
+                                            color: 'rgb(68, 143, 155)',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
+                                            }
+                                        }}
                                     >
-                                        <EditIcon />
+                                        <EditIcon fontSize="small" />
                                     </IconButton>
                                     <IconButton 
                                         onClick={() => handleDeletePrice(price.id)}
-                                        color="error"
-                                        size={isMobile ? "small" : "medium"}
+                                        size="small"
+                                        sx={{
+                                            color: '#d32f2f',
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(211, 47, 47, 0.04)'
+                                            }
+                                        }}
                                     >
-                                        <DeleteIcon />
+                                        <DeleteIcon fontSize="small" />
                                     </IconButton>
                                 </Box>
                             </CardContent>
@@ -536,14 +619,6 @@ const AdminPage = () => {
                                     onChange={(e) => setCurrentPrice({ ...currentPrice, unit: e.target.value })}
                                 />
                             </Box>
-                            <TextField
-                                fullWidth
-                                label="Beskrivning"
-                                multiline
-                                rows={2}
-                                value={currentPrice.description || ''}
-                                onChange={(e) => setCurrentPrice({ ...currentPrice, description: e.target.value })}
-                            />
                             <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                                 <FormControlLabel
                                     control={

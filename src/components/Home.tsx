@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Container, Typography, Button } from '@mui/material';
+import { Box, Container, Typography, Button, Card, CardContent, CardMedia } from '@mui/material';
 import { 
     ShoppingCart, 
     StorefrontOutlined, 
@@ -11,8 +11,39 @@ import {
 } from '@mui/icons-material';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState, useEffect } from 'react';
+
+interface AdminPrice {
+    id: string;
+    title: string;
+    price: string;
+    sale_price?: string;
+    unit: string;
+    on_sale: boolean;
+    is_visible: boolean;
+    image?: string;
+}
 
 const Home = () => {
+    const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>([]);
+
+    useEffect(() => {
+        // Load prices from admin panel
+        const savedPrices = localStorage.getItem('admin_prices');
+        if (savedPrices) {
+            try {
+                const adminPrices = JSON.parse(savedPrices);
+                // Get first 3 visible prices for featured section
+                const visiblePrices = adminPrices
+                    .filter((price: AdminPrice) => price.is_visible !== false)
+                    .slice(0, 3);
+                setFeaturedPrices(visiblePrices);
+            } catch (e) {
+                console.error('Error loading admin prices:', e);
+            }
+        }
+    }, []);
+
     const images = [
         { src: "/img/bild1.webp", alt: "En bild på en färsk lax sida!" },
         { src: "/img/bild7.webp", alt: "Räkmacka" },
@@ -157,22 +188,22 @@ const Home = () => {
                                 component={Link}
                                 href="/bestall_online"
                                 variant="contained"
-                                size="large"
+                                size="small"
                                 startIcon={<ShoppingCart />}
                                 sx={{
-                                    background: '#1976d2',
+                                    background: 'rgb(68, 143, 155)',
                                     color: 'white',
-                                    px: { xs: 4, md: 6 },
-                                    py: { xs: 2, md: 2.5 },
-                                    fontSize: { xs: '1.1rem', md: '1.2rem' },
+                                    px: { xs: 2, md: 2.5 },
+                                    py: { xs: 1, md: 1.2 },
+                                    fontSize: { xs: '0.9rem', md: '1rem' },
                                     fontWeight: 600,
-                                    borderRadius: 25,
+                                    borderRadius: 6,
                                     textTransform: 'none',
                                     '&:hover': {
-                                        background: '#1565c0',
-                                        transform: 'translateY(-2px)'
+                                        background: 'rgb(58, 123, 135)',
+                                        transform: 'translateY(-1px)'
                                     },
-                                    transition: 'all 0.3s ease'
+                                    transition: 'all 0.2s ease'
                                 }}
                             >
                                 Beställ online
@@ -181,25 +212,25 @@ const Home = () => {
                                 component={Link}
                                 href="/hitta_butik"
                                 variant="outlined"
-                                size="large"
+                                size="small"
                                 startIcon={<StorefrontOutlined />}
                                 sx={{
                                     borderColor: 'rgba(255,255,255,0.9)',
                                     color: 'white',
-                                    px: { xs: 4, md: 6 },
-                                    py: { xs: 2, md: 2.5 },
-                                    fontSize: { xs: '1.1rem', md: '1.2rem' },
+                                    px: { xs: 2, md: 2.5 },
+                                    py: { xs: 1, md: 1.2 },
+                                    fontSize: { xs: '0.9rem', md: '1rem' },
                                     fontWeight: 600,
-                                    borderRadius: 25,
+                                    borderRadius: 6,
                                     textTransform: 'none',
                                     borderWidth: '2px',
-                                    backgroundColor: 'rgba(255,255,255,0.15)',
+                                    backgroundColor: 'rgba(255,255,255,0.1)',
                                     '&:hover': {
-                                        backgroundColor: 'rgba(255,255,255,0.25)',
+                                        backgroundColor: 'rgba(255,255,255,0.2)',
                                         borderColor: 'white',
-                                        transform: 'translateY(-2px)'
+                                        transform: 'translateY(-1px)'
                                     },
-                                    transition: 'all 0.3s ease'
+                                    transition: 'all 0.2s ease'
                                 }}
                             >
                                 Besök vår butik
@@ -230,6 +261,194 @@ const Home = () => {
                     </Box>
                 </Container>
             </Box>
+
+            {/* Featured Prices Section */}
+            {featuredPrices.length > 0 && (
+                <Box sx={{ py: { xs: 6, md: 8 }, backgroundColor: 'white' }}>
+                    <Container maxWidth="lg">
+                        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
+                            <Typography 
+                                variant="h3" 
+                                component="h2"
+                                sx={{ 
+                                    fontWeight: 600,
+                                    color: 'rgb(68, 143, 155)',
+                                    mb: 2,
+                                    fontSize: { xs: '2rem', md: '2.5rem' }
+                                }}
+                            >
+                                Dagens Priser
+                            </Typography>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: '#666',
+                                    fontWeight: 400,
+                                    fontSize: { xs: '1rem', md: '1.1rem' }
+                                }}
+                            >
+                                Färsk fisk till bästa pris
+                            </Typography>
+                        </Box>
+
+                        <Box sx={{
+                            display: 'grid',
+                            gridTemplateColumns: {
+                                xs: '1fr',
+                                md: 'repeat(2, 1fr)',
+                                lg: 'repeat(3, 1fr)'
+                            },
+                            gap: 2
+                        }}>
+                            {featuredPrices.map((price) => (
+                                <Card 
+                                    key={price.id}
+                                    sx={{ 
+                                        height: '100%',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        borderRadius: 1,
+                                        overflow: 'hidden',
+                                        border: '1px solid #ddd',
+                                        backgroundColor: '#fff',
+                                        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                                        '&:hover': {
+                                            boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                                        }
+                                    }}
+                                >
+                                    {/* Image */}
+                                    {price.image && (
+                                        <Box sx={{ position: 'relative' }}>
+                                            <CardMedia
+                                                component="img"
+                                                height="160"
+                                                image={price.image}
+                                                alt={price.title}
+                                                sx={{ 
+                                                    objectFit: 'cover'
+                                                }}
+                                            />
+                                            {/* Sale Badge */}
+                                            {price.on_sale && (
+                                                <Box
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: 8,
+                                                        right: 8,
+                                                        backgroundColor: '#d32f2f',
+                                                        color: 'white',
+                                                        px: 1,
+                                                        py: 0.5,
+                                                        borderRadius: 0.5,
+                                                        fontSize: '0.75rem',
+                                                        fontWeight: 600,
+                                                        textTransform: 'uppercase'
+                                                    }}
+                                                >
+                                                    REA
+                                                </Box>
+                                            )}
+                                        </Box>
+                                    )}
+
+                                    <CardContent sx={{ 
+                                        flexGrow: 1, 
+                                        p: 2,
+                                        display: 'flex',
+                                        flexDirection: 'column'
+                                    }}>
+                                        {/* Product Title */}
+                                        <Typography 
+                                            variant="h6" 
+                                            component="h3"
+                                            sx={{ 
+                                                fontWeight: 500,
+                                                color: '#333',
+                                                mb: 1,
+                                                fontSize: '1.1rem',
+                                                fontFamily: 'system-ui, -apple-system, sans-serif'
+                                            }}
+                                        >
+                                            {price.title}
+                                        </Typography>
+                                        
+                                        {/* Price Section */}
+                                        <Box sx={{ mt: 'auto' }}>
+                                            {price.on_sale && price.sale_price ? (
+                                                <Box>
+                                                    <Typography 
+                                                        variant="h6" 
+                                                        component="div"
+                                                        sx={{ 
+                                                            fontWeight: 600,
+                                                            color: '#2e7d32',
+                                                            fontSize: '1.2rem',
+                                                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                            mb: 0.5
+                                                        }}
+                                                    >
+                                                        {price.sale_price}kr/{price.unit || 'st'}
+                                                    </Typography>
+                                                    <Typography 
+                                                        variant="body2" 
+                                                        component="div"
+                                                        sx={{ 
+                                                            textDecoration: 'line-through',
+                                                            color: '#666',
+                                                            fontSize: '0.9rem',
+                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                        }}
+                                                    >
+                                                        Ordinarie: {price.price}kr/{price.unit || 'st'}
+                                                    </Typography>
+                                                </Box>
+                                            ) : (
+                                                <Typography 
+                                                    variant="h6" 
+                                                    component="div"
+                                                    sx={{ 
+                                                        fontWeight: 600,
+                                                        color: '#333',
+                                                        fontSize: '1.2rem',
+                                                        fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                    }}
+                                                >
+                                                    {price.price}kr/{price.unit || 'st'}
+                                                </Typography>
+                                            )}
+                                        </Box>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </Box>
+
+                        <Box sx={{ textAlign: 'center', mt: 4 }}>
+                            <Button
+                                component={Link}
+                                href="/priser"
+                                variant="outlined"
+                                sx={{
+                                    borderColor: 'rgb(68, 143, 155)',
+                                    color: 'rgb(68, 143, 155)',
+                                    px: 3,
+                                    py: 1.5,
+                                    fontSize: '1rem',
+                                    fontWeight: 600,
+                                    borderRadius: 8,
+                                    textTransform: 'none',
+                                    '&:hover': {
+                                        borderColor: 'rgb(68, 143, 155)',
+                                        backgroundColor: 'rgba(68, 143, 155, 0.04)'
+                                    }
+                                }}
+                            >
+                                Se alla priser
+                            </Button>
+                        </Box>
+                    </Container>
+                </Box>
+            )}
 
             {/* Enhanced About Section with Trust Elements */}
             <Box sx={{ py: { xs: 8, md: 12 }, backgroundColor: '#f8fafc' }}>
@@ -267,7 +486,7 @@ const Home = () => {
                                     width: 80,
                                     height: 80,
                                     borderRadius: '50%',
-                                    background: 'linear-gradient(135deg, #52a3d9, #3498db)',
+                                    background: 'linear-gradient(135deg, rgba(68, 143, 155, 0.3), rgba(68, 143, 155, 0.2))',
                                     opacity: 0.1,
                                     zIndex: -1
                                 }}
@@ -281,7 +500,7 @@ const Home = () => {
                                 variant="h3"
                                 sx={{
                                     mb: 3,
-                                    color: '#2c5aa0',
+                                    color: 'rgb(68, 143, 155)',
                                     fontFamily: 'Poppins, sans-serif',
                                     fontWeight: 700,
                                     fontSize: { xs: '2rem', md: '2.5rem' },
@@ -295,7 +514,7 @@ const Home = () => {
                                         transform: { xs: 'translateX(-50%)', md: 'none' },
                                         width: 60,
                                         height: 4,
-                                        backgroundColor: '#52a3d9',
+                                        backgroundColor: 'rgb(68, 143, 155)',
                                         borderRadius: 2
                                     }
                                 }}
@@ -367,7 +586,7 @@ const Home = () => {
                         <Typography
                             variant="h3"
                             sx={{
-                                color: '#2c5aa0',
+                                color: 'rgb(68, 143, 155)',
                                 fontFamily: 'Poppins, sans-serif',
                                 fontWeight: 700,
                                 fontSize: { xs: '2rem', md: '2.5rem' },
@@ -381,7 +600,7 @@ const Home = () => {
                                     transform: 'translateX(-50%)',
                                     width: 80,
                                     height: 4,
-                                    backgroundColor: '#52a3d9',
+                                    backgroundColor: 'rgb(68, 143, 155)',
                                     borderRadius: 2
                                 }
                             }}
