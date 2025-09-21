@@ -8,12 +8,7 @@ import {
     TextField,
     Button,
     Paper,
-    Grid,
-    Card,
-    CardContent,
-    Alert,
-    Divider,
-    Chip
+    Alert
 } from '@mui/material';
 import { ShoppingCart, Schedule, Phone, PersonOutline, MessageOutlined, CheckCircle } from '@mui/icons-material';
 
@@ -35,62 +30,54 @@ const Order = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Here you would typically send the order to your backend
         console.log('Order submitted:', formData);
         setSubmitted(true);
 
-        // Reset form after 3 seconds
         setTimeout(() => {
             setFormData({ name: '', phone: '', date: '', message: '' });
             setSubmitted(false);
         }, 3000);
     };
 
-    const popularItems = [
-        { name: 'Färsk Lax', description: '500g filéer', price: '189 kr' },
-        { name: 'Räkor', description: 'Skalade västkuströkor', price: '199 kr' },
-        { name: 'Gravlax', description: 'Hemgjord med dill', price: '289 kr' },
-        { name: 'Hummer', description: 'Levande västkusthummer', price: '399 kr' }
-    ];
-
     if (submitted) {
         return (
-            <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+            <Box sx={{ pt: 12, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
                 <Container maxWidth="md">
                     <Paper
                         sx={{
-                            p: 4,
-                            borderRadius: 1,
+                            p: 6,
+                            borderRadius: 3,
                             textAlign: 'center',
-                            border: '1px solid #e0e0e0',
-                            backgroundColor: 'white'
+                            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
                         }}
                     >
-                        <CheckCircle sx={{ fontSize: '3rem', color: '#4caf50', mb: 2 }} />
+                        <CheckCircle sx={{ fontSize: '4rem', color: '#4caf50', mb: 3 }} />
                         <Typography
                             variant="h4"
                             sx={{
                                 color: '#448f9b',
                                 fontFamily: 'Poppins, sans-serif',
                                 fontWeight: 600,
-                                mb: 2
+                                mb: 3
                             }}
                         >
                             Tack för din beställning!
                         </Typography>
                         <Typography
-                            variant="body1"
+                            variant="h6"
                             sx={{
                                 color: '#666',
+                                fontFamily: 'Poppins, sans-serif',
                                 mb: 2
                             }}
                         >
                             Vi kontaktar dig på {formData.phone} för att bekräfta.
                         </Typography>
                         <Typography
-                            variant="body2"
+                            variant="body1"
                             sx={{
-                                color: '#666'
+                                color: '#666',
+                                fontFamily: 'Poppins, sans-serif'
                             }}
                         >
                             Hämtning: {formData.date}
@@ -102,298 +89,192 @@ const Order = () => {
     }
 
     return (
-        <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
-            <Container maxWidth="lg">
-                {/* Header */}
-                <Box sx={{ textAlign: 'center', mb: 4 }}>
+        <Box sx={{ pt: 12, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+            <Container maxWidth="md">
+                {/* Simple Header */}
+                <Box sx={{ textAlign: 'center', mb: 6 }}>
                     <Typography
-                        variant="h4"
+                        variant="h3"
                         sx={{
                             color: '#448f9b',
                             fontFamily: 'Poppins, sans-serif',
                             fontWeight: 600,
-                            mb: 2
+                            mb: 3
                         }}
                     >
-                        Beställ online
+                        Beställ Online
                     </Typography>
                     <Typography
-                        variant="body1"
+                        variant="h6"
                         sx={{
                             color: '#666',
-                            maxWidth: 500,
-                            mx: 'auto'
+                            fontFamily: 'Poppins, sans-serif',
+                            maxWidth: 600,
+                            mx: 'auto',
+                            lineHeight: 1.6
                         }}
                     >
-                        Beställ och hämta i butik.
+                        Beställ enkelt online och hämta i butik. Vi kontaktar dig för att bekräfta din beställning.
                     </Typography>
                 </Box>
 
-                <Grid container spacing={3}>
-                    {/* Order Form */}
-                    <Grid item xs={12} md={8}>
-                        <Paper
-                            sx={{
-                                p: 3,
-                                borderRadius: 1,
-                                border: '1px solid #e0e0e0',
-                                backgroundColor: 'white'
-                            }}
-                        >
-                            <Typography
-                                variant="h4"
-                                sx={{
-                                    color: '#448f9b',
-                                    fontFamily: 'Poppins, sans-serif',
-                                    fontWeight: 600,
-                                    mb: 3,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 2
-                                }}
-                            >
-                                <ShoppingCart />
-                                Din beställning
-                            </Typography>
+                {/* Clean Order Form */}
+                <Paper
+                    sx={{
+                        p: 6,
+                        borderRadius: 3,
+                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                        mb: 4
+                    }}
+                >
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            color: '#448f9b',
+                            fontFamily: 'Poppins, sans-serif',
+                            fontWeight: 600,
+                            mb: 4,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2
+                        }}
+                    >
+                        <ShoppingCart />
+                        Din beställning
+                    </Typography>
 
-                            <Box component="form" onSubmit={handleSubmit}>
-                                <Grid container spacing={3}>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Namn och efternamn"
-                                            name="name"
-                                            value={formData.name}
-                                            onChange={handleChange}
-                                            required
-                                            InputProps={{
-                                                startAdornment: <PersonOutline sx={{ color: '#448f9b', mr: 1 }} />
-                                            }}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 2
-                                                }
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Telefonnummer"
-                                            name="phone"
-                                            type="tel"
-                                            value={formData.phone}
-                                            onChange={handleChange}
-                                            required
-                                            InputProps={{
-                                                startAdornment: <Phone sx={{ color: '#448f9b', mr: 1 }} />
-                                            }}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 2
-                                                }
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Hämtningsdatum"
-                                            name="date"
-                                            type="date"
-                                            value={formData.date}
-                                            onChange={handleChange}
-                                            required
-                                            InputLabelProps={{ shrink: true }}
-                                            InputProps={{
-                                                startAdornment: <Schedule sx={{ color: '#448f9b', mr: 1 }} />
-                                            }}
-                                            helperText="Välj när du vill hämta din beställning"
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 2
-                                                }
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <TextField
-                                            fullWidth
-                                            label="Beställning och beskrivning"
-                                            name="message"
-                                            multiline
-                                            rows={6}
-                                            value={formData.message}
-                                            onChange={handleChange}
-                                            required
-                                            placeholder="Beskriv din beställning här... t.ex. 1kg färsk lax, 500g räkor, 2 hummer..."
-                                            InputProps={{
-                                                startAdornment: <MessageOutlined sx={{ color: '#448f9b', mr: 1, alignSelf: 'flex-start', mt: 1 }} />
-                                            }}
-                                            sx={{
-                                                '& .MuiOutlinedInput-root': {
-                                                    borderRadius: 2
-                                                }
-                                            }}
-                                        />
-                                    </Grid>
-                                </Grid>
-
-                                <Box sx={{ mt: 4 }}>
-                                    <Button
-                                        type="submit"
-                                        variant="contained"
-                                        size="large"
-                                        fullWidth
-                                        startIcon={<ShoppingCart />}
-                                        sx={{
-                                            backgroundColor: '#448f9b',
-                                            py: 2,
-                                            fontSize: '1.2rem',
-                                            fontWeight: 600,
-                                            textTransform: 'none',
-                                            borderRadius: 3,
-                                            '&:hover': {
-                                                backgroundColor: '#3c7d88',
-                                                transform: 'translateY(-2px)'
-                                            },
-                                            transition: 'all 0.3s ease'
-                                        }}
-                                    >
-                                        Skicka beställning
-                                    </Button>
-                                </Box>
+                    <Box component="form" onSubmit={handleSubmit}>
+                        <Box sx={{ display: 'grid', gap: 3 }}>
+                            <Box sx={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                                gap: 3 
+                            }}>
+                                <TextField
+                                    fullWidth
+                                    label="Namn och efternamn"
+                                    name="name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="Förnamn Efternamn"
+                                    InputProps={{
+                                        startAdornment: <PersonOutline sx={{ color: '#448f9b', mr: 1 }} />
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 2
+                                        }
+                                    }}
+                                />
+                                <TextField
+                                    fullWidth
+                                    label="Telefonnummer"
+                                    name="phone"
+                                    type="tel"
+                                    value={formData.phone}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="070 123 45 67"
+                                    InputProps={{
+                                        startAdornment: <Phone sx={{ color: '#448f9b', mr: 1 }} />
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 2
+                                        }
+                                    }}
+                                />
                             </Box>
-                        </Paper>
+                            
+                            <TextField
+                                fullWidth
+                                label="Hämtningsdatum"
+                                name="date"
+                                type="date"
+                                value={formData.date}
+                                onChange={handleChange}
+                                required
+                                InputLabelProps={{ shrink: true }}
+                                InputProps={{
+                                    startAdornment: <Schedule sx={{ color: '#448f9b', mr: 1 }} />
+                                }}
+                                helperText="Välj när du vill hämta din beställning"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: 2
+                                    }
+                                }}
+                            />
+                            
+                            <TextField
+                                fullWidth
+                                label="Beställning och beskrivning"
+                                name="message"
+                                multiline
+                                rows={6}
+                                value={formData.message}
+                                onChange={handleChange}
+                                required
+                                placeholder="Beskriv din beställning här... t.ex. 1kg färsk lax, 500g räkor, 2 hummer..."
+                                InputProps={{
+                                    startAdornment: <MessageOutlined sx={{ color: '#448f9b', mr: 1, alignSelf: 'flex-start', mt: 1 }} />
+                                }}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: 2
+                                    }
+                                }}
+                            />
+                        </Box>
 
-                        {/* Order Instructions */}
-                        <Alert
-                            severity="info"
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            startIcon={<ShoppingCart />}
                             sx={{
+                                mt: 4,
+                                backgroundColor: '#448f9b',
+                                py: 2,
+                                fontSize: '1.2rem',
+                                fontWeight: 600,
+                                textTransform: 'none',
                                 borderRadius: 3,
-                                '& .MuiAlert-icon': {
-                                    color: '#448f9b'
-                                }
+                                '&:hover': {
+                                    backgroundColor: '#3c7d88',
+                                    transform: 'translateY(-2px)'
+                                },
+                                transition: 'all 0.3s ease'
                             }}
                         >
-                            <Typography variant="body2" sx={{ fontFamily: 'Poppins, sans-serif' }}>
-                                <strong>Så fungerar det:</strong> Vi tar emot din beställning och kontaktar dig inom 2 timmar för att bekräfta pris och tillgänglighet. Du betalar när du hämtar i butik.
-                            </Typography>
-                        </Alert>
-                    </Grid>
+                            Skicka beställning
+                        </Button>
+                    </Box>
+                </Paper>
 
-                    {/* Sidebar */}
-                    <Grid item xs={12} lg={4}>
-                        {/* Popular Items */}
-                        <Card
-                            sx={{
-                                borderRadius: 4,
-                                boxShadow: '0 4px 20px rgba(68, 143, 155, 0.1)',
-                                mb: 3
-                            }}
-                        >
-                            <CardContent sx={{ p: 3 }}>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        color: '#448f9b',
-                                        fontFamily: 'Poppins, sans-serif',
-                                        fontWeight: 600,
-                                        mb: 2
-                                    }}
-                                >
-                                    Populära produkter
-                                </Typography>
-                                {popularItems.map((item, index) => (
-                                    <Box key={index}>
-                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1 }}>
-                                            <Box>
-                                                <Typography
-                                                    variant="subtitle1"
-                                                    sx={{
-                                                        fontFamily: 'Poppins, sans-serif',
-                                                        fontWeight: 600,
-                                                        color: '#333'
-                                                    }}
-                                                >
-                                                    {item.name}
-                                                </Typography>
-                                                <Typography
-                                                    variant="body2"
-                                                    sx={{
-                                                        color: '#666',
-                                                        fontFamily: 'Poppins, sans-serif'
-                                                    }}
-                                                >
-                                                    {item.description}
-                                                </Typography>
-                                            </Box>
-                                            <Chip
-                                                label={item.price}
-                                                sx={{
-                                                    backgroundColor: '#448f9b',
-                                                    color: 'white',
-                                                    fontWeight: 600
-                                                }}
-                                            />
-                                        </Box>
-                                        {index < popularItems.length - 1 && <Divider sx={{ my: 2 }} />}
-                                    </Box>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        {/* Contact Info */}
-                        <Card
-                            sx={{
-                                borderRadius: 4,
-                                boxShadow: '0 4px 20px rgba(68, 143, 155, 0.1)',
-                                background: 'linear-gradient(135deg, #448f9b 0%, #5ba3b0 100%)',
-                                color: 'white'
-                            }}
-                        >
-                            <CardContent sx={{ p: 3 }}>
-                                <Typography
-                                    variant="h6"
-                                    sx={{
-                                        fontFamily: 'Poppins, sans-serif',
-                                        fontWeight: 600,
-                                        mb: 2
-                                    }}
-                                >
-                                    Behöver du hjälp?
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    sx={{
-                                        opacity: 0.9,
-                                        mb: 2,
-                                        fontFamily: 'Poppins, sans-serif'
-                                    }}
-                                >
-                                    Ring oss så hjälper vi dig med din beställning:
-                                </Typography>
-                                <Typography
-                                    variant="body1"
-                                    sx={{
-                                        fontWeight: 600,
-                                        mb: 1
-                                    }}
-                                >
-                                    📞 073 535 09 17
-                                </Typography>
-                                <Typography
-                                    variant="body1"
-                                    sx={{
-                                        fontWeight: 600
-                                    }}
-                                >
-                                    📞 070 836 59 71
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Grid>
-                </Grid>
+                {/* Simple Instructions */}
+                <Alert
+                    severity="info"
+                    sx={{
+                        borderRadius: 3,
+                        p: 3,
+                        '& .MuiAlert-icon': {
+                            color: '#448f9b'
+                        }
+                    }}
+                >
+                    <Typography 
+                        variant="body1" 
+                        sx={{ 
+                            fontFamily: 'Poppins, sans-serif',
+                            fontSize: '1rem'
+                        }}
+                    >
+                        <strong>Så fungerar det:</strong> Vi tar emot din beställning och du plockar upp den på upphämtningsdatum.
+                    </Typography>
+                </Alert>
             </Container>
         </Box>
     );

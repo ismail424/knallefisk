@@ -1,53 +1,133 @@
 'use client';
 
-import { Box, Container, Typography, Grid, Card, CardContent, TextField, Button, Paper } from '@mui/material';
-import { Email, Phone, LocationOn, AccessTime, Send } from '@mui/icons-material';
-import { useState } from 'react';
+import { Box, Container, Typography, Card, CardContent } from '@mui/material';
+import { Email, Phone, LocationOn, AccessTime } from '@mui/icons-material';
 
 export default function KontaktaOssPage() {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    message: ''
-  });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle form submission here
-    console.log('Form submitted:', formData);
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
   const contactInfo = [
     {
-      icon: <Email sx={{ fontSize: '2rem', color: '#448f9b' }} />,
+      icon: <Email sx={{ fontSize: '3rem', color: '#448f9b' }} />,
       title: 'Email',
       details: ['rsacic@yahoo.se', 'almir.hamza@hotmail.com']
     },
     {
-      icon: <Phone sx={{ fontSize: '2rem', color: '#448f9b' }} />,
+      icon: <Phone sx={{ fontSize: '3rem', color: '#448f9b' }} />,
       title: 'Telefon',
       details: ['073 535 09 17', '070 836 59 71']
     },
     {
-      icon: <LocationOn sx={{ fontSize: '2rem', color: '#448f9b' }} />,
+      icon: <LocationOn sx={{ fontSize: '3rem', color: '#448f9b' }} />,
       title: 'Våra butiker',
       details: ['Ålgårdsvägen 3, 506 30 Borås', 'Örbyvägen 27, 511 61 Skene']
+    },
+    {
+      icon: <AccessTime sx={{ fontSize: '3rem', color: '#448f9b' }} />,
+      title: 'Öppettider',
+      details: [
+        'Borås: Tis-Tor 10-18, Fre 10-19, Lör 10-15',
+        'Skene: Tor 10-18, Fre 10-19, Lör 10-15'
+      ]
     }
   ];
 
   return (
-    <Box sx={{ py: 4, backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+    <Box sx={{ pt: 12, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
       <Container maxWidth="lg">
-        {/* Header */}
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
+        {/* Simple Header */}
+        <Box sx={{ textAlign: 'center', mb: 8 }}>
+          <Typography
+            variant="h3"
+            sx={{
+              color: '#448f9b',
+              fontFamily: 'Poppins, sans-serif',
+              fontWeight: 600,
+              mb: 3
+            }}
+          >
+            Kontakta oss
+          </Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: '#666',
+              fontFamily: 'Poppins, sans-serif',
+              maxWidth: 600,
+              mx: 'auto',
+              lineHeight: 1.6
+            }}
+          >
+            Vi finns här för att hjälpa dig med alla dina frågor om våra färska produkter från havet
+          </Typography>
+        </Box>
+
+        {/* Contact Cards Grid */}
+        <Box sx={{ 
+          display: 'grid',
+          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+          gap: 4,
+          mb: 8
+        }}>
+          {contactInfo.map((contact, index) => (
+            <Card
+              key={index}
+              sx={{
+                height: '100%',
+                borderRadius: 3,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                border: '1px solid rgba(68, 143, 155, 0.1)',
+                transition: 'transform 0.2s ease',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 30px rgba(0,0,0,0.12)'
+                }
+              }}
+            >
+              <CardContent sx={{ p: 4, textAlign: 'center', height: '100%' }}>
+                <Box sx={{ mb: 3 }}>
+                  {contact.icon}
+                </Box>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: '#333',
+                    fontFamily: 'Poppins, sans-serif',
+                    fontWeight: 600,
+                    mb: 2,
+                    fontSize: '1.3rem'
+                  }}
+                >
+                  {contact.title}
+                </Typography>
+                {contact.details.map((detail, idx) => (
+                  <Typography
+                    key={idx}
+                    variant="body1"
+                    sx={{
+                      color: '#666',
+                      fontFamily: 'Poppins, sans-serif',
+                      mb: 1,
+                      fontSize: '1rem',
+                      lineHeight: 1.5
+                    }}
+                  >
+                    {detail}
+                  </Typography>
+                ))}
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+
+        {/* Simple Call to Action */}
+        <Box 
+          sx={{ 
+            textAlign: 'center',
+            p: 6,
+            backgroundColor: 'white',
+            borderRadius: 3,
+            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+          }}
+        >
           <Typography
             variant="h4"
             sx={{
@@ -57,193 +137,21 @@ export default function KontaktaOssPage() {
               mb: 2
             }}
           >
-            Kontakta oss
+            Välkommen!
           </Typography>
           <Typography
-            variant="body1"
+            variant="h6"
             sx={{
               color: '#666',
-              maxWidth: 500,
-              mx: 'auto'
+              fontFamily: 'Poppins, sans-serif',
+              maxWidth: 800,
+              mx: 'auto',
+              lineHeight: 1.6
             }}
           >
-            Vi hjälper dig gärna med frågor om våra produkter.
+            Kom och besök oss i butiken eller kontakta oss direkt. Vi ser fram emot att hjälpa dig hitta de bästa produkterna från havet!
           </Typography>
         </Box>
-
-        <Grid container spacing={4}>
-          {/* Contact Information */}
-          <Grid item xs={12} md={4}>
-            {contactInfo.map((contact, index) => (
-              <Card
-                key={index}
-                sx={{
-                  mb: 2,
-                  borderRadius: 1,
-                  border: '1px solid #e0e0e0',
-                  backgroundColor: 'white'
-                }}
-              >
-                <CardContent sx={{ p: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                    {contact.icon}
-                    <Box>
-                      <Typography
-                        variant="h6"
-                        sx={{
-                          color: '#333',
-                          fontFamily: 'Poppins, sans-serif',
-                          fontWeight: 600,
-                          mb: 0.5,
-                          fontSize: '1.1rem'
-                        }}
-                      >
-                        {contact.title}
-                      </Typography>
-                      {contact.details.map((detail, idx) => (
-                        <Typography
-                          key={idx}
-                          variant="body2"
-                          sx={{
-                            color: '#666',
-                            fontSize: '0.9rem'
-                          }}
-                        >
-                          {detail}
-                        </Typography>
-                      ))}
-                    </Box>
-                  </Box>
-                </CardContent>
-              </Card>
-            ))}
-
-            {/* Opening Hours */}
-            <Card
-              sx={{
-                borderRadius: 1,
-                backgroundColor: '#448f9b',
-                color: 'white'
-              }}
-            >
-              <CardContent sx={{ p: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                  <AccessTime sx={{ fontSize: '2rem' }} />
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontFamily: 'Poppins, sans-serif',
-                      fontWeight: 600,
-                      fontSize: '1.1rem'
-                    }}
-                  >
-                    Öppettider
-                  </Typography>
-                </Box>
-                <Typography variant="body2" sx={{ mb: 1, fontSize: '0.9rem' }}>
-                  <strong>Borås:</strong> Tis-Tor 10-18, Fre 10-19, Lör 10-15
-                </Typography>
-                <Typography variant="body2" sx={{ fontSize: '0.9rem' }}>
-                  <strong>Skene:</strong> Tis-Tor 10-18, Fre 10-19, Lör 10-15
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Contact Form */}
-          <Grid item xs={12} md={8}>
-            <Paper
-              sx={{
-                p: 3,
-                borderRadius: 1,
-                border: '1px solid #e0e0e0',
-                backgroundColor: 'white'
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  color: '#448f9b',
-                  fontFamily: 'Poppins, sans-serif',
-                  fontWeight: 600,
-                  mb: 3
-                }}
-              >
-                Skicka ett meddelande
-              </Typography>
-
-              <Box component="form" onSubmit={handleSubmit}>
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="Namn"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      label="E-post"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Telefon (valfritt)"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      label="Meddelande"
-                      name="message"
-                      multiline
-                      rows={4}
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      placeholder="Skriv ditt meddelande här..."
-                    />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      startIcon={<Send />}
-                      sx={{
-                        backgroundColor: '#448f9b',
-                        px: 3,
-                        py: 1,
-                        fontWeight: 600,
-                        textTransform: 'none',
-                        '&:hover': {
-                          backgroundColor: '#3c7d88'
-                        }
-                      }}
-                    >
-                      Skicka meddelande
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
       </Container>
     </Box>
   );
