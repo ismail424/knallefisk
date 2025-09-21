@@ -31,54 +31,23 @@ interface AdminPrice {
     image?: string;
 }
 
-// Default featured prices to show when no admin data exists
-const defaultFeaturedPrices: AdminPrice[] = [
-    {
-        id: '1',
-        title: 'Lax',
-        price: '289',
-        unit: 'kg',
-        on_sale: false,
-        is_visible: true,
-        image: '/img/bild1.webp'
-    },
-    {
-        id: '2',
-        title: 'Räkor',
-        price: '149',
-        unit: 'kg',
-        on_sale: true,
-        sale_price: '129',
-        is_visible: true,
-        image: '/img/bild2.webp'
-    },
-    {
-        id: '3',
-        title: 'Torsk',
-        price: '199',
-        unit: 'kg',
-        on_sale: false,
-        is_visible: true,
-        image: '/img/bild3.webp'
-    }
-];
-
 const Home = () => {
-    const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>(defaultFeaturedPrices);
+    const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>([]);
 
     useEffect(() => {
-        // Load prices from admin panel
+        // Load prices from admin panel - only show real admin prices
         const savedPrices = localStorage.getItem('admin_prices');
+        console.log('Home - Raw saved prices:', savedPrices);
         if (savedPrices) {
             try {
                 const adminPrices = JSON.parse(savedPrices);
+                console.log('Home - Parsed admin prices:', adminPrices);
                 // Get first 3 visible prices for featured section
                 const visiblePrices = adminPrices
                     .filter((price: AdminPrice) => price.is_visible !== false)
                     .slice(0, 3);
-                if (visiblePrices.length > 0) {
-                    setFeaturedPrices(visiblePrices);
-                }
+                console.log('Home - Filtered visible prices:', visiblePrices);
+                setFeaturedPrices(visiblePrices);
             } catch (e) {
                 console.error('Error loading admin prices:', e);
             }
@@ -97,7 +66,7 @@ const Home = () => {
     ];
 
     return (
-        <Box sx={{ pt: { xs: '220px', md: '180px' } }}>
+        <Box sx={{ pt: { xs: '60px', md: '40px' } }}>
             {/* Hero Section with Video Background */}
             <Box sx={{ 
                 position: 'relative', 
@@ -309,161 +278,191 @@ const Home = () => {
                         </Typography>
                     </Box>
 
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: {
-                            xs: '1fr',
-                            md: 'repeat(2, 1fr)',
-                            lg: 'repeat(3, 1fr)'
-                        },
-                        gap: 2
-                    }}>
-                        {featuredPrices.map((price) => (
-                            <Card 
-                                key={price.id}
-                                sx={{ 
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    borderRadius: 1,
-                                    overflow: 'hidden',
-                                    border: '1px solid #ddd',
-                                    backgroundColor: '#fff',
-                                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                                    '&:hover': {
-                                        boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                                    }
-                                }}
-                            >
-                                {/* Image */}
-                                {price.image && (
-                                    <Box sx={{ position: 'relative' }}>
-                                        <CardMedia
-                                            component="img"
-                                            height="160"
-                                            image={price.image}
-                                            alt={price.title}
-                                            sx={{ 
-                                                objectFit: 'cover'
-                                            }}
-                                        />
-                                        {/* Sale Badge */}
-                                        {price.on_sale && (
-                                            <Box
-                                                sx={{
-                                                    position: 'absolute',
-                                                    top: 8,
-                                                    right: 8,
-                                                    backgroundColor: '#d32f2f',
-                                                    color: 'white',
-                                                    px: 1,
-                                                    py: 0.5,
-                                                    borderRadius: 0.5,
-                                                    fontSize: '0.75rem',
-                                                    fontWeight: 600,
-                                                    textTransform: 'uppercase'
-                                                }}
-                                            >
-                                                REA
-                                            </Box>
-                                        )}
-                                    </Box>
-                                )}
-
-                                <CardContent sx={{ 
-                                    flexGrow: 1, 
-                                    p: 2,
-                                    display: 'flex',
-                                    flexDirection: 'column'
-                                }}>
-                                    {/* Product Title */}
-                                    <Typography 
-                                        variant="h6" 
-                                        component="h3"
+                    {featuredPrices.length > 0 ? (
+                        <>
+                            <Box sx={{
+                                display: 'grid',
+                                gridTemplateColumns: {
+                                    xs: '1fr',
+                                    md: 'repeat(2, 1fr)',
+                                    lg: 'repeat(3, 1fr)'
+                                },
+                                gap: 2
+                            }}>
+                                {featuredPrices.map((price) => (
+                                    <Card 
+                                        key={price.id}
                                         sx={{ 
-                                            fontWeight: 500,
-                                            color: '#333',
-                                            mb: 1,
-                                            fontSize: '1.1rem',
-                                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                                            height: '100%',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            borderRadius: 1,
+                                            overflow: 'hidden',
+                                            border: '1px solid #ddd',
+                                            backgroundColor: '#fff',
+                                            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                                            '&:hover': {
+                                                boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
+                                            }
                                         }}
                                     >
-                                        {price.title}
-                                    </Typography>
-                                    
-                                    {/* Price Section */}
-                                    <Box sx={{ mt: 'auto' }}>
-                                        {price.on_sale && price.sale_price ? (
-                                            <Box>
-                                                <Typography 
-                                                    variant="h6" 
-                                                    component="div"
+                                        {/* Image */}
+                                        {price.image && (
+                                            <Box sx={{ position: 'relative' }}>
+                                                <CardMedia
+                                                    component="img"
+                                                    height="160"
+                                                    image={price.image}
+                                                    alt={price.title}
                                                     sx={{ 
-                                                        fontWeight: 600,
-                                                        color: '#2e7d32',
-                                                        fontSize: '1.2rem',
-                                                        fontFamily: 'system-ui, -apple-system, sans-serif',
-                                                        mb: 0.5
+                                                        objectFit: 'cover'
                                                     }}
-                                                >
-                                                    {price.sale_price}kr/{price.unit || 'st'}
-                                                </Typography>
-                                                <Typography 
-                                                    variant="body2" 
-                                                    component="div"
-                                                    sx={{ 
-                                                        textDecoration: 'line-through',
-                                                        color: '#666',
-                                                        fontSize: '0.9rem',
-                                                        fontFamily: 'system-ui, -apple-system, sans-serif'
-                                                    }}
-                                                >
-                                                    Ordinarie: {price.price}kr/{price.unit || 'st'}
-                                                </Typography>
+                                                />
+                                                {/* Sale Badge */}
+                                                {price.on_sale && (
+                                                    <Box
+                                                        sx={{
+                                                            position: 'absolute',
+                                                            top: 8,
+                                                            right: 8,
+                                                            backgroundColor: '#d32f2f',
+                                                            color: 'white',
+                                                            px: 1,
+                                                            py: 0.5,
+                                                            borderRadius: 0.5,
+                                                            fontSize: '0.75rem',
+                                                            fontWeight: 600,
+                                                            textTransform: 'uppercase'
+                                                        }}
+                                                    >
+                                                        REA
+                                                    </Box>
+                                                )}
                                             </Box>
-                                        ) : (
+                                        )}
+
+                                        <CardContent sx={{ 
+                                            flexGrow: 1, 
+                                            p: 2,
+                                            display: 'flex',
+                                            flexDirection: 'column'
+                                        }}>
+                                            {/* Product Title */}
                                             <Typography 
                                                 variant="h6" 
-                                                component="div"
+                                                component="h3"
                                                 sx={{ 
-                                                    fontWeight: 600,
+                                                    fontWeight: 500,
                                                     color: '#333',
-                                                    fontSize: '1.2rem',
+                                                    mb: 1,
+                                                    fontSize: '1.1rem',
                                                     fontFamily: 'system-ui, -apple-system, sans-serif'
                                                 }}
                                             >
-                                                {price.price}kr/{price.unit || 'st'}
+                                                {price.title}
                                             </Typography>
-                                        )}
-                                    </Box>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </Box>
+                                            
+                                            {/* Price Section */}
+                                            <Box sx={{ mt: 'auto' }}>
+                                                {price.on_sale && price.sale_price ? (
+                                                    <Box>
+                                                        <Typography 
+                                                            variant="h6" 
+                                                            component="div"
+                                                            sx={{ 
+                                                                fontWeight: 600,
+                                                                color: '#2e7d32',
+                                                                fontSize: '1.2rem',
+                                                                fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                                mb: 0.5
+                                                            }}
+                                                        >
+                                                            {price.sale_price}kr/{price.unit || 'st'}
+                                                        </Typography>
+                                                        <Typography 
+                                                            variant="body2" 
+                                                            component="div"
+                                                            sx={{ 
+                                                                textDecoration: 'line-through',
+                                                                color: '#666',
+                                                                fontSize: '0.9rem',
+                                                                fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                            }}
+                                                        >
+                                                            Ordinarie: {price.price}kr/{price.unit || 'st'}
+                                                        </Typography>
+                                                    </Box>
+                                                ) : (
+                                                    <Typography 
+                                                        variant="h6" 
+                                                        component="div"
+                                                        sx={{ 
+                                                            fontWeight: 600,
+                                                            color: '#333',
+                                                            fontSize: '1.2rem',
+                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                        }}
+                                                    >
+                                                        {price.price}kr/{price.unit || 'st'}
+                                                    </Typography>
+                                                )}
+                                            </Box>
+                                        </CardContent>
+                                    </Card>
+                                ))}
+                            </Box>
 
-                    <Box sx={{ textAlign: 'center', mt: 4 }}>
-                        <Button
-                            component={Link}
-                            href="/priser"
-                            variant="outlined"
-                            sx={{
-                                borderColor: 'rgb(68, 143, 155)',
-                                color: 'rgb(68, 143, 155)',
-                                px: 3,
-                                py: 1.5,
-                                fontSize: '1rem',
-                                fontWeight: 600,
-                                borderRadius: 8,
-                                textTransform: 'none',
-                                '&:hover': {
-                                    borderColor: 'rgb(68, 143, 155)',
-                                    backgroundColor: 'rgba(68, 143, 155, 0.04)'
-                                }
-                            }}
-                        >
-                            Se alla priser
-                        </Button>
-                    </Box>
+                            <Box sx={{ textAlign: 'center', mt: 4 }}>
+                                <Button
+                                    component={Link}
+                                    href="/priser"
+                                    variant="outlined"
+                                    sx={{
+                                        borderColor: 'rgb(68, 143, 155)',
+                                        color: 'rgb(68, 143, 155)',
+                                        px: 3,
+                                        py: 1.5,
+                                        fontSize: '1rem',
+                                        fontWeight: 600,
+                                        borderRadius: 8,
+                                        textTransform: 'none',
+                                        '&:hover': {
+                                            borderColor: 'rgb(68, 143, 155)',
+                                            backgroundColor: 'rgba(68, 143, 155, 0.04)'
+                                        }
+                                    }}
+                                >
+                                    Se alla priser
+                                </Button>
+                            </Box>
+                        </>
+                    ) : (
+                        <Box sx={{ 
+                            textAlign: 'center', 
+                            py: { xs: 4, md: 6 },
+                            color: '#666'
+                        }}>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    mb: 2,
+                                    fontWeight: 400,
+                                    fontSize: { xs: '1.1rem', md: '1.2rem' }
+                                }}
+                            >
+                                Inga priser att visa just nu
+                            </Typography>
+                            <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                    color: '#888',
+                                    fontSize: { xs: '0.9rem', md: '1rem' }
+                                }}
+                            >
+                                Priser läggs upp av våra administratörer
+                            </Typography>
+                        </Box>
+                    )}
                 </Container>
             </Box>
 
