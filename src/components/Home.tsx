@@ -42,10 +42,10 @@ const Home = () => {
                 if (response.ok) {
                     const adminPrices = await response.json();
                     console.log('Home - Loaded admin prices from API:', adminPrices);
-                    // Get first 3 visible prices for featured section
+                    // Get first 6 visible prices for featured section
                     const visiblePrices = adminPrices
                         .filter((price: AdminPrice) => price.is_visible !== false)
-                        .slice(0, 3);
+                        .slice(0, 6);
                     console.log('Home - Filtered visible prices:', visiblePrices);
                     setFeaturedPrices(visiblePrices);
                 }
@@ -59,7 +59,7 @@ const Home = () => {
                         const adminPrices = JSON.parse(savedPrices);
                         const visiblePrices = adminPrices
                             .filter((price: AdminPrice) => price.is_visible !== false)
-                            .slice(0, 3);
+                            .slice(0, 6);
                         setFeaturedPrices(visiblePrices);
                     } catch (e) {
                         console.error('Error parsing localStorage prices:', e);
@@ -309,6 +309,7 @@ const Home = () => {
                                 display: 'grid',
                                 gridTemplateColumns: {
                                     xs: '1fr',
+                                    sm: 'repeat(2, 1fr)',
                                     md: 'repeat(2, 1fr)',
                                     lg: 'repeat(3, 1fr)'
                                 },
@@ -392,43 +393,45 @@ const Home = () => {
                                                 {price.on_sale && price.sale_price ? (
                                                     <Box>
                                                         <Typography 
-                                                            variant="h6" 
+                                                            variant="h5" 
                                                             component="div"
                                                             sx={{ 
-                                                                fontWeight: 600,
-                                                                color: '#2e7d32',
-                                                                fontSize: '1.2rem',
+                                                                fontWeight: 700,
+                                                                color: '#d32f2f',
+                                                                fontSize: { xs: '1.5rem', md: '1.8rem' },
                                                                 fontFamily: 'system-ui, -apple-system, sans-serif',
-                                                                mb: 0.5
+                                                                mb: 0.5,
+                                                                letterSpacing: '0.5px'
                                                             }}
                                                         >
-                                                            {price.sale_price}kr/{price.unit || 'st'}
+                                                            {price.sale_price} kr<Typography component="span" sx={{ fontSize: '0.7em', fontWeight: 500, ml: 0.5 }}>/{price.unit || 'st'}</Typography>
                                                         </Typography>
                                                         <Typography 
-                                                            variant="body2" 
+                                                            variant="body1" 
                                                             component="div"
                                                             sx={{ 
                                                                 textDecoration: 'line-through',
                                                                 color: '#666',
-                                                                fontSize: '0.9rem',
+                                                                fontSize: { xs: '0.95rem', md: '1rem' },
                                                                 fontFamily: 'system-ui, -apple-system, sans-serif'
                                                             }}
                                                         >
-                                                            Ordinarie: {price.price}kr/{price.unit || 'st'}
+                                                            Ordinarie: {price.price} kr<Typography component="span" sx={{ fontSize: '0.9em', ml: 0.5 }}>/{price.unit || 'st'}</Typography>
                                                         </Typography>
                                                     </Box>
                                                 ) : (
                                                     <Typography 
-                                                        variant="h6" 
+                                                        variant="h5" 
                                                         component="div"
                                                         sx={{ 
-                                                            fontWeight: 600,
-                                                            color: '#333',
-                                                            fontSize: '1.2rem',
-                                                            fontFamily: 'system-ui, -apple-system, sans-serif'
+                                                            fontWeight: 700,
+                                                            color: '#2e7d32',
+                                                            fontSize: { xs: '1.5rem', md: '1.8rem' },
+                                                            fontFamily: 'system-ui, -apple-system, sans-serif',
+                                                            letterSpacing: '0.5px'
                                                         }}
                                                     >
-                                                        {price.price}kr/{price.unit || 'st'}
+                                                        {price.price} kr<Typography component="span" sx={{ fontSize: '0.7em', fontWeight: 500, ml: 0.5 }}>/{price.unit || 'st'}</Typography>
                                                     </Typography>
                                                 )}
                                             </Box>

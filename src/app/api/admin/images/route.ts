@@ -56,7 +56,16 @@ export async function GET() {
             ORDER BY created_at DESC
         `;
 
-        return NextResponse.json(images);
+        // Transform to expected format
+        const imageList = images.map(img => ({
+            id: img.id,
+            name: img.name,
+            url: img.url,
+            size: img.size,
+            uploadDate: img.uploaddate
+        }));
+
+        return NextResponse.json(imageList);
     } catch (error) {
         console.error('Error loading images:', error);
         return NextResponse.json({ error: 'Failed to load images' }, { status: 500 });
@@ -112,7 +121,15 @@ export async function POST(request: NextRequest) {
             RETURNING id::text, name, url, size_bytes as size, created_at as uploadDate
         `;
 
-        return NextResponse.json(imageRecord[0]);
+        const imageData = {
+            id: imageRecord[0].id,
+            name: imageRecord[0].name,
+            url: imageRecord[0].url,
+            size: imageRecord[0].size,
+            uploadDate: imageRecord[0].uploaddate
+        };
+
+        return NextResponse.json(imageData);
     } catch (error) {
         console.error('Error uploading image:', error);
         return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
