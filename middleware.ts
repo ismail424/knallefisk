@@ -2,16 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { AuthUtils } from '@/lib/auth';
 
 export function middleware(request: NextRequest) {
-  // Only apply middleware to admin routes (except login API)
-  if (request.nextUrl.pathname.startsWith('/admin') && 
+  // Only apply middleware to admin sub-routes, not the main admin page
+  if (request.nextUrl.pathname.startsWith('/admin/') && 
       !request.nextUrl.pathname.startsWith('/api/admin')) {
     
     const token = AuthUtils.getTokenFromRequest(request);
     
     if (!token) {
-      // Redirect to admin login page
-      const url = request.nextUrl.clone();
-      url.pathname = '/admin';
+      // Redirect to main admin page for login
+      const url = new URL('/admin', request.url);
       url.searchParams.set('unauthorized', 'true');
       return NextResponse.redirect(url);
     }
@@ -19,7 +18,7 @@ export function middleware(request: NextRequest) {
     const payload = AuthUtils.verifyToken(token);
     
     if (!payload || payload.role !== 'admin') {
-      // Clear invalid token and redirect
+      // Clear invalid token and redirect to admin login
       const response = NextResponse.redirect(new URL('/admin', request.url));
       response.cookies.set('admin-token', '', {
         httpOnly: true,
@@ -37,7 +36,7 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/admin/:path*',
+    '/admin/:path+', // Only protect admin sub-routes, not /admin itself
     '/api/admin/:path*'
   ]
 };
