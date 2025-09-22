@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import emailjs from '@emailjs/browser';
 import {
     Box,
     Container,
@@ -8,18 +9,28 @@ import {
     TextField,
     Button,
     Paper,
-    Alert
+    Alert,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem
 } from '@mui/material';
-import { ShoppingCart, Schedule, Phone, PersonOutline, MessageOutlined, CheckCircle } from '@mui/icons-material';
+import { ShoppingCart, Schedule, Phone, PersonOutline, MessageOutlined, CheckCircle, Email, LocationOn } from '@mui/icons-material';
 
 const Order = () => {
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
+        email: '',
         date: '',
-        message: ''
+        message: '',
+        location: ''
     });
     const [submitted, setSubmitted] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    // Initialize EmailJS
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
@@ -28,15 +39,48 @@ const Order = () => {
         });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Order submitted:', formData);
-        setSubmitted(true);
+        setLoading(true);
+        
+        try {
+            // Prepare template params for EmailJS
+            const templateParams = {
+                from_name: formData.name,
+                from_number: formData.phone,
+                reply_to: formData.email,
+                message: formData.message,
+                from_date: formData.date,
+                location: formData.location
+            };
 
-        setTimeout(() => {
-            setFormData({ name: '', phone: '', date: '', message: '' });
-            setSubmitted(false);
-        }, 3000);
+            // Send email using EmailJS
+            await emailjs.send(
+                process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+                process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+                templateParams
+            );
+
+            console.log('Order submitted successfully:', formData);
+            setSubmitted(true);
+
+            setTimeout(() => {
+                setFormData({ 
+                    name: '', 
+                    phone: '', 
+                    email: '', 
+                    date: '', 
+                    message: '', 
+                    location: '' 
+                });
+                setSubmitted(false);
+                setLoading(false);
+            }, 3000);
+        } catch (error) {
+            console.error('Error sending email:', error);
+            setLoading(false);
+            // You might want to show an error message to the user here
+        }
     };
 
     if (submitted) {
@@ -71,7 +115,17 @@ const Order = () => {
                                 mb: 2
                             }}
                         >
-                            Vi kontaktar dig på {formData.phone} för att bekräfta.
+                            Vi kontaktar dig på {formData.phone} eller {formData.email}
+                        </Typography>
+                        <Typography
+                            variant="body1"
+                            sx={{
+                                color: '#666',
+                                fontFamily: 'Poppins, sans-serif',
+                                mb: 1
+                            }}
+                        >
+                            Hämtning: {formData.date}
                         </Typography>
                         <Typography
                             variant="body1"
@@ -80,7 +134,7 @@ const Order = () => {
                                 fontFamily: 'Poppins, sans-serif'
                             }}
                         >
-                            Hämtning: {formData.date}
+                            Plats: {formData.location}
                         </Typography>
                     </Paper>
                 </Container>
@@ -236,23 +290,71 @@ const Order = () => {
                             
                             <TextField
                                 fullWidth
-                                label="Hämtningsdatum"
-                                name="date"
-                                type="date"
-                                value={formData.date}
+                                label="E-postadress"
+                                name="email"
+                                type="email"
+                                value={formData.email}
                                 onChange={handleChange}
                                 required
-                                InputLabelProps={{ shrink: true }}
+                                placeholder="din@email.se"
                                 InputProps={{
-                                    startAdornment: <Schedule sx={{ color: '#448f9b', mr: 1 }} />
+                                    startAdornment: <Email sx={{ color: '#448f9b', mr: 1 }} />
                                 }}
-                                helperText="Välj när du vill hämta din beställning"
+                                helperText="Vi använder din e-post för att skicka bekräftelse"
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: 2
                                     }
                                 }}
                             />
+
+                            <Box sx={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                                gap: 3 
+                            }}>
+                                <TextField
+                                    fullWidth
+                                    label="Hämtningsdatum"
+                                    name="date"
+                                    type="date"
+                                    value={formData.date}
+                                    onChange={handleChange}
+                                    required
+                                    InputLabelProps={{ shrink: true }}
+                                    InputProps={{
+                                        startAdornment: <Schedule sx={{ color: '#448f9b', mr: 1 }} />
+                                    }}
+                                    helperText="Välj när du vill hämta din beställning"
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 2
+                                        }
+                                    }}
+                                />
+                                
+                                <FormControl 
+                                    fullWidth 
+                                    required
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: 2
+                                        }
+                                    }}
+                                >
+                                    <InputLabel>Hämtningsplats</InputLabel>
+                                    <Select
+                                        name="location"
+                                        value={formData.location}
+                                        onChange={(e) => setFormData({...formData, location: e.target.value})}
+                                        label="Hämtningsplats"
+                                        startAdornment={<LocationOn sx={{ color: '#448f9b', mr: 1 }} />}
+                                    >
+                                        <MenuItem value="Skene">Skene</MenuItem>
+                                        <MenuItem value="Borås">Borås</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
                             
                             <TextField
                                 fullWidth
@@ -280,6 +382,7 @@ const Order = () => {
                             variant="contained"
                             size="large"
                             fullWidth
+                            disabled={loading}
                             startIcon={<ShoppingCart />}
                             sx={{
                                 mt: 4,
@@ -293,10 +396,13 @@ const Order = () => {
                                     backgroundColor: '#3c7d88',
                                     transform: 'translateY(-2px)'
                                 },
+                                '&:disabled': {
+                                    backgroundColor: '#cccccc'
+                                },
                                 transition: 'all 0.3s ease'
                             }}
                         >
-                            Skicka beställning
+                            {loading ? 'Skickar...' : 'Skicka beställning'}
                         </Button>
                     </Box>
                     </Box>
