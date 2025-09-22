@@ -49,6 +49,7 @@ interface UploadedImage {
     name: string;
     url: string;
     uploadDate: string;
+    size?: number;
 }
 
 const AdminPage = () => {
@@ -66,6 +67,7 @@ const AdminPage = () => {
     const [currentPrice, setCurrentPrice] = useState<Partial<Price>>({});
     const [isEditing, setIsEditing] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+    const [isUploading, setIsUploading] = useState(false);
 
     const checkAuthStatus = useCallback(async () => {
         try {
@@ -90,18 +92,33 @@ const AdminPage = () => {
         }
     }, []);
 
-    const loadAdminData = () => {
-        // Ladda priser från localStorage
-        const savedPrices = localStorage.getItem('admin_prices');
-        if (savedPrices) {
-            setPrices(JSON.parse(savedPrices));
-        }
+    const loadAdminData = async () => {
+        try {
+            // Ladda priser från Vercel Blob
+            const pricesResponse = await fetch('/api/admin/prices');
+            if (pricesResponse.ok) {
+                const pricesData = await pricesResponse.json();
+                setPrices(pricesData);
+            }
 
-        // Ladda uppladdade bilder från localStorage
-        const savedImages = localStorage.getItem('admin_images');
-        if (savedImages) {
-            const parsedImages = JSON.parse(savedImages);
-            setUploadedImages(parsedImages);
+            // Ladda bilder från Vercel Blob
+            const imagesResponse = await fetch('/api/admin/images');
+            if (imagesResponse.ok) {
+                const imagesData = await imagesResponse.json();
+                setUploadedImages(imagesData);
+            }
+        } catch (error) {
+            console.error('Error loading admin data:', error);
+            // Fallback to localStorage for existing users
+            const savedPrices = localStorage.getItem('admin_prices');
+            if (savedPrices) {
+                setPrices(JSON.parse(savedPrices));
+            }
+            
+            const savedImages = localStorage.getItem('admin_images');
+            if (savedImages) {
+                setUploadedImages(JSON.parse(savedImages));
+            }
         }
     };
 
@@ -158,41 +175,101 @@ const AdminPage = () => {
         }
     };
 
-    const savePrices = (newPrices: Price[]) => {
-        setPrices(newPrices);
-        localStorage.setItem('admin_prices', JSON.stringify(newPrices));
+    const savePrices = async (newPrices: Price[]) => {
+        try {
+            // Update local state immediately
+            setPrices(newPrices);
+            
+            // Save to Vercel Blob
+            const response = await fetch('/api/admin/prices', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newPrices),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save prices');
+            }
+
+            // Keep localStorage as backup for now
+            localStorage.setItem('admin_prices', JSON.stringify(newPrices));
+        } catch (error) {
+            console.error('Error saving prices:', error);
+            // Still save to localStorage as fallback
+            localStorage.setItem('admin_prices', JSON.stringify(newPrices));
+        }
     };
 
     const saveImages = (newImages: UploadedImage[]) => {
         setUploadedImages(newImages);
+        // Keep localStorage as backup
         localStorage.setItem('admin_images', JSON.stringify(newImages));
     };
 
-    const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const result = e.target?.result as string;
-                if (result) {
-                    const newImage: UploadedImage = {
-                        id: Date.now().toString(),
-                        name: file.name,
-                        url: result,
-                        uploadDate: new Date().toISOString()
-                    };
-                    const updatedImages = [...uploadedImages, newImage];
-                    saveImages(updatedImages);
-                    setSuccessMessage('Bild uppladdad!');
-                    setTimeout(() => setSuccessMessage(''), 3000);
-                    event.target.value = '';
-                }
-            };
-            reader.readAsDataURL(file);
+    const handleDeleteImage = async (imageUrl: string, imageId: string) => {
+        if (!confirm('Är du säker på att du vill ta bort denna bild från Vercel Blob?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/admin/images?url=${encodeURIComponent(imageUrl)}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                const updatedImages = uploadedImages.filter(img => img.id !== imageId);
+                setUploadedImages(updatedImages);
+                localStorage.setItem('admin_images', JSON.stringify(updatedImages));
+                setSuccessMessage('Bild borttagen från Vercel Blob!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Delete failed');
+            }
+        } catch (error) {
+            console.error('Error deleting image:', error);
+            setSuccessMessage(`Fel vid borttagning: ${error}`);
+            setTimeout(() => setSuccessMessage(''), 5000);
         }
     };
 
-    const handleSavePrice = () => {
+    const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await fetch('/api/admin/images', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const newImage = await response.json();
+                const updatedImages = [...uploadedImages, newImage];
+                setUploadedImages(updatedImages);
+                setSuccessMessage('Bild uppladdad till Vercel Blob!');
+                setTimeout(() => setSuccessMessage(''), 3000);
+            } else {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Upload failed');
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            setSuccessMessage(`Fel vid uppladdning: ${error}`);
+            setTimeout(() => setSuccessMessage(''), 5000);
+        } finally {
+            setIsUploading(false);
+            event.target.value = '';
+        }
+    };
+
+    const handleSavePrice = async () => {
         if (!currentPrice.title || !currentPrice.price) {
             alert('Titel och pris krävs');
             return;
@@ -202,7 +279,7 @@ const AdminPage = () => {
             const updatedPrices = prices.map(p => 
                 p.id === currentPrice.id ? { ...currentPrice } as Price : p
             );
-            savePrices(updatedPrices);
+            await savePrices(updatedPrices);
         } else {
             const newPrice: Price = {
                 ...currentPrice,
@@ -212,7 +289,7 @@ const AdminPage = () => {
                 is_visible: currentPrice.is_visible !== false
             } as Price;
             
-            savePrices([...prices, newPrice]);
+            await savePrices([...prices, newPrice]);
         }
 
         setIsDialogOpen(false);
@@ -227,10 +304,10 @@ const AdminPage = () => {
         setIsDialogOpen(true);
     };
 
-    const handleDeletePrice = (id: string) => {
+    const handleDeletePrice = async (id: string) => {
         if (confirm('Är du säker på att du vill ta bort detta pris?')) {
             const updatedPrices = prices.filter(p => p.id !== id);
-            savePrices(updatedPrices);
+            await savePrices(updatedPrices);
             setSuccessMessage('Pris borttaget!');
             setTimeout(() => setSuccessMessage(''), 3000);
         }
@@ -241,21 +318,12 @@ const AdminPage = () => {
         setIsImageLibraryOpen(false);
     };
 
-    const deleteImage = (imageId: string) => {
-        if (confirm('Är du säker på att du vill ta bort denna bild?')) {
-            const updatedImages = uploadedImages.filter(img => img.id !== imageId);
-            saveImages(updatedImages);
-            setSuccessMessage('Bild borttagen!');
-            setTimeout(() => setSuccessMessage(''), 3000);
-        }
-    };
-
     // Inline editing functions
-    const updatePriceInline = (id: string, field: keyof Price, value: string | boolean) => {
+    const updatePriceInline = async (id: string, field: keyof Price, value: string | boolean) => {
         const updatedPrices = prices.map(p => 
             p.id === id ? { ...p, [field]: value } : p
         );
-        savePrices(updatedPrices);
+        await savePrices(updatedPrices);
     };
 
     if (!isAuthenticated) {
@@ -406,6 +474,7 @@ const AdminPage = () => {
                         startIcon={<UploadIcon />}
                         component="label"
                         size="small"
+                        disabled={isUploading}
                         sx={{ 
                             py: 1,
                             borderColor: 'rgb(68, 143, 155)',
@@ -417,7 +486,7 @@ const AdminPage = () => {
                         }}
                         fullWidth={isMobile}
                     >
-                        Ladda upp bild
+                        {isUploading ? 'Laddar upp...' : 'Ladda upp bild'}
                         <input
                             type="file"
                             hidden
@@ -897,17 +966,30 @@ const AdminPage = () => {
                                         onClick={() => selectImageFromLibrary(image.url)}
                                     />
                                     <CardContent sx={{ p: 1 }}>
-                                        <Typography variant="caption" noWrap>
+                                        <Typography variant="caption" noWrap title={image.name}>
                                             {image.name}
                                         </Typography>
-                                        <IconButton 
-                                            size="small" 
-                                            onClick={() => deleteImage(image.id)}
-                                            sx={{ float: 'right' }}
-                                            color="error"
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
+                                        {image.size && (
+                                            <Typography variant="caption" sx={{ display: 'block', color: 'gray', fontSize: '0.7rem' }}>
+                                                {(image.size / 1024).toFixed(1)} KB
+                                            </Typography>
+                                        )}
+                                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 0.5 }}>
+                                            <Chip 
+                                                label="Använd" 
+                                                size="small" 
+                                                onClick={() => selectImageFromLibrary(image.url)}
+                                                sx={{ fontSize: '0.65rem', height: '20px' }}
+                                            />
+                                            <IconButton 
+                                                size="small" 
+                                                onClick={() => handleDeleteImage(image.url, image.id)}
+                                                color="error"
+                                                sx={{ p: 0.5 }}
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
                                     </CardContent>
                                 </Card>
                             ))}

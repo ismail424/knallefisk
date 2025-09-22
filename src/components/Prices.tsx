@@ -36,35 +36,64 @@ const Prices = () => {
     const [error] = useState("");
 
     useEffect(() => {
-        // Ladda priser från localStorage (admin-panelen) - visa bara riktiga adminpriser
-        const savedPrices = localStorage.getItem('admin_prices');
-        console.log('Raw saved prices:', savedPrices);
-        if (savedPrices) {
+        // Ladda priser från Vercel Blob via API - visa bara riktiga adminpriser
+        const loadPrices = async () => {
             try {
-                const adminPrices = JSON.parse(savedPrices);
-                console.log('Parsed admin prices:', adminPrices);
-                // Konvertera admin format (title) till display format (name) och visa bara synliga priser
-                const visiblePrices = adminPrices
-                    .filter((price: AdminPrice) => price.is_visible !== false)
-                    .map((price: AdminPrice): Price => ({
-                        id: price.id,
-                        name: price.title, // Använd title från admin som name
-                        price: price.price,
-                        sale_price: price.sale_price,
-                        category: price.category,
-                        unit: price.unit,
-                        weight: price.weight,
-                        on_sale: price.on_sale,
-                        is_visible: price.is_visible,
-                        image: price.image
-                    }));
-                console.log('Filtered visible prices:', visiblePrices);
-                setPrices(visiblePrices);
-            } catch (e) {
-                console.error('Error loading admin prices:', e);
+                const response = await fetch('/api/admin/prices');
+                if (response.ok) {
+                    const adminPrices = await response.json();
+                    console.log('Prices - Loaded admin prices from API:', adminPrices);
+                    // Konvertera admin format (title) till display format (name) och visa bara synliga priser
+                    const visiblePrices = adminPrices
+                        .filter((price: AdminPrice) => price.is_visible !== false)
+                        .map((price: AdminPrice): Price => ({
+                            id: price.id,
+                            name: price.title, // Använd title från admin som name
+                            price: price.price,
+                            sale_price: price.sale_price,
+                            category: price.category,
+                            unit: price.unit,
+                            weight: price.weight,
+                            on_sale: price.on_sale,
+                            is_visible: price.is_visible,
+                            image: price.image
+                        }));
+                    console.log('Prices - Filtered visible prices:', visiblePrices);
+                    setPrices(visiblePrices);
+                }
+            } catch (error) {
+                console.error('Error loading prices from API:', error);
+                // Fallback to localStorage for existing users
+                const savedPrices = localStorage.getItem('admin_prices');
+                console.log('Prices - Fallback to localStorage:', savedPrices);
+                if (savedPrices) {
+                    try {
+                        const adminPrices = JSON.parse(savedPrices);
+                        const visiblePrices = adminPrices
+                            .filter((price: AdminPrice) => price.is_visible !== false)
+                            .map((price: AdminPrice): Price => ({
+                                id: price.id,
+                                name: price.title,
+                                price: price.price,
+                                sale_price: price.sale_price,
+                                category: price.category,
+                                unit: price.unit,
+                                weight: price.weight,
+                                on_sale: price.on_sale,
+                                is_visible: price.is_visible,
+                                image: price.image
+                            }));
+                        setPrices(visiblePrices);
+                    } catch (e) {
+                        console.error('Error parsing localStorage prices:', e);
+                    }
+                }
+            } finally {
+                setLoading(false);
             }
-        }
-        setLoading(false);
+        };
+        
+        loadPrices();
     }, []);
 
     const filteredPrices = prices.filter(price => price.is_visible !== false);

@@ -35,23 +35,40 @@ const Home = () => {
     const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>([]);
 
     useEffect(() => {
-        // Load prices from admin panel - only show real admin prices
-        const savedPrices = localStorage.getItem('admin_prices');
-        console.log('Home - Raw saved prices:', savedPrices);
-        if (savedPrices) {
+        // Load prices from Vercel Blob via API
+        const loadPrices = async () => {
             try {
-                const adminPrices = JSON.parse(savedPrices);
-                console.log('Home - Parsed admin prices:', adminPrices);
-                // Get first 3 visible prices for featured section
-                const visiblePrices = adminPrices
-                    .filter((price: AdminPrice) => price.is_visible !== false)
-                    .slice(0, 3);
-                console.log('Home - Filtered visible prices:', visiblePrices);
-                setFeaturedPrices(visiblePrices);
-            } catch (e) {
-                console.error('Error loading admin prices:', e);
+                const response = await fetch('/api/admin/prices');
+                if (response.ok) {
+                    const adminPrices = await response.json();
+                    console.log('Home - Loaded admin prices from API:', adminPrices);
+                    // Get first 3 visible prices for featured section
+                    const visiblePrices = adminPrices
+                        .filter((price: AdminPrice) => price.is_visible !== false)
+                        .slice(0, 3);
+                    console.log('Home - Filtered visible prices:', visiblePrices);
+                    setFeaturedPrices(visiblePrices);
+                }
+            } catch (error) {
+                console.error('Error loading prices from API:', error);
+                // Fallback to localStorage for existing users
+                const savedPrices = localStorage.getItem('admin_prices');
+                console.log('Home - Fallback to localStorage:', savedPrices);
+                if (savedPrices) {
+                    try {
+                        const adminPrices = JSON.parse(savedPrices);
+                        const visiblePrices = adminPrices
+                            .filter((price: AdminPrice) => price.is_visible !== false)
+                            .slice(0, 3);
+                        setFeaturedPrices(visiblePrices);
+                    } catch (e) {
+                        console.error('Error parsing localStorage prices:', e);
+                    }
+                }
             }
-        }
+        };
+        
+        loadPrices();
     }, []);
 
     const images = [
@@ -66,11 +83,13 @@ const Home = () => {
     ];
 
     return (
-        <Box sx={{ pt: { xs: '60px', md: '40px' } }}>
+        <Box sx={{ pt: { xs: '90px', md: '80px' } }}>
             {/* Hero Section with Video Background */}
             <Box sx={{ 
-                position: 'relative', 
-                height: { xs: '60vh', md: '70vh' }, 
+                position: 'relative',
+                height: { xs: 'calc(100vh - 90px)', md: 'calc(100vh - 80px)' },
+                minHeight: { xs: '600px', md: '700px' },
+                maxHeight: { xs: '800px', md: 'none' },
                 overflow: 'hidden',
                 display: 'flex',
                 alignItems: 'center',
@@ -114,18 +133,23 @@ const Home = () => {
                 <Container maxWidth="md" sx={{ 
                     textAlign: 'center', 
                     zIndex: 4, 
-                    py: { xs: 8, md: 12 }, 
-                    pt: { xs: '280px', md: '240px' },
-                    position: 'relative' 
+                    py: { xs: 4, md: 12 }, 
+                    pt: { xs: 4, md: 6 },
+                    pb: { xs: 4, md: 12 },
+                    position: 'relative',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    height: '100%'
                 }}>
-                    <Box sx={{ mb: { xs: 4, md: 6 } }}>
+                    <Box sx={{ mb: { xs: 3, md: 6 } }}>
                         <Image
                             src="/img/logo.svg"
                             alt="Knallefisk Logo"
                             width={350}
                             height={175}
                             style={{
-                                maxWidth: '350px',
+                                maxWidth: '280px',
                                 width: '100%',
                                 height: 'auto'
                             }}
@@ -139,7 +163,7 @@ const Home = () => {
                             mb: { xs: 1, md: 1.5 },
                             fontFamily: 'Poppins, sans-serif',
                             fontWeight: 700,
-                            fontSize: { xs: '2rem', md: '3.2rem' },
+                            fontSize: { xs: '1.8rem', md: '3.2rem' },
                             lineHeight: 1.1,
                             letterSpacing: '-0.01em'
                         }}
@@ -151,10 +175,10 @@ const Home = () => {
                         variant="h4"
                         sx={{
                             color: 'white',
-                            mb: { xs: 3, md: 4 },
+                            mb: { xs: 2.5, md: 4 },
                             fontFamily: 'Poppins, sans-serif',
                             fontWeight: 500,
-                            fontSize: { xs: '1.3rem', md: '1.6rem' },
+                            fontSize: { xs: '1.1rem', md: '1.6rem' },
                             maxWidth: '700px',
                             mx: 'auto',
                             lineHeight: 1.3
@@ -164,13 +188,13 @@ const Home = () => {
                     </Typography>
 
                     {/* Call-to-Action Section */}
-                    <Box sx={{ mb: { xs: 5, md: 6 } }}>
+                    <Box sx={{ mb: { xs: 4, md: 6 } }}>
                         <Box sx={{
                             display: 'flex',
                             gap: { xs: 2, md: 3 },
                             justifyContent: 'center',
                             flexWrap: 'wrap',
-                            mb: { xs: 4, md: 5 }
+                            mb: { xs: 3, md: 5 }
                         }}>
                             <Button
                                 component={Link}
@@ -229,20 +253,20 @@ const Home = () => {
                         <Box sx={{
                             display: 'flex',
                             justifyContent: 'center',
-                            gap: { xs: 2, md: 4 },
+                            gap: { xs: 1.5, md: 4 },
                             flexWrap: 'wrap',
                             opacity: 0.9
                         }}>
-                            <Typography sx={{ color: 'white', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <CheckCircleOutline sx={{ fontSize: '1rem' }} />
+                            <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
                                 Dagsfärsk fisk
                             </Typography>
-                            <Typography sx={{ color: 'white', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <CheckCircleOutline sx={{ fontSize: '1rem' }} />
+                            <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
                                 Fri hämtning i butik
                             </Typography>
-                            <Typography sx={{ color: 'white', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <CheckCircleOutline sx={{ fontSize: '1rem' }} />
+                            <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                                <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
                                 19 års erfarenhet
                             </Typography>
                         </Box>
@@ -250,35 +274,36 @@ const Home = () => {
                 </Container>
             </Box>
 
-            {/* Featured Prices Section */}
-            <Box sx={{ py: { xs: 6, md: 8 }, backgroundColor: 'white' }}>
-                <Container maxWidth="lg">
-                    <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-                        <Typography 
-                            variant="h3" 
-                            component="h2"
-                            sx={{ 
-                                fontWeight: 600,
-                                color: 'rgb(68, 143, 155)',
-                                mb: 2,
-                                fontSize: { xs: '2rem', md: '2.5rem' }
-                            }}
-                        >
-                            Dagens Priser
-                        </Typography>
-                        <Typography 
-                            variant="h6" 
-                            sx={{ 
-                                color: '#666',
-                                fontWeight: 400,
-                                fontSize: { xs: '1rem', md: '1.1rem' }
-                            }}
-                        >
-                            Färsk fisk till bästa pris
-                        </Typography>
-                    </Box>
+            {/* Featured Prices Section - Only show if there are prices */}
+            {featuredPrices.length > 0 && (
+                <Box sx={{ py: { xs: 6, md: 8 }, backgroundColor: 'white' }}>
+                    <Container maxWidth="lg">
+                        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
+                            <Typography 
+                                variant="h3" 
+                                component="h2"
+                                sx={{ 
+                                    fontWeight: 600,
+                                    color: 'rgb(68, 143, 155)',
+                                    mb: 2,
+                                    fontSize: { xs: '2rem', md: '2.5rem' }
+                                }}
+                            >
+                                Dagens Priser
+                            </Typography>
+                            <Typography 
+                                variant="h6" 
+                                sx={{ 
+                                    color: '#666',
+                                    fontWeight: 400,
+                                    fontSize: { xs: '1rem', md: '1.1rem' }
+                                }}
+                            >
+                                Färsk fisk till bästa pris
+                            </Typography>
+                        </Box>
 
-                    {featuredPrices.length > 0 ? (
+                        {featuredPrices.length > 0 ? (
                         <>
                             <Box sx={{
                                 display: 'grid',
@@ -465,6 +490,7 @@ const Home = () => {
                     )}
                 </Container>
             </Box>
+            )}
 
             {/* About Section with Trust Elements */}
             <Box sx={{ py: { xs: 8, md: 12 }, backgroundColor: '#f8fafc' }}>
