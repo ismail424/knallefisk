@@ -83,11 +83,11 @@ const Home = () => {
     ];
 
     return (
-        <Box sx={{ pt: { xs: '90px', md: '80px' } }}>
+        <Box sx={{ pt: { xs: '70px', md: '80px' } }}>
             {/* Hero Section with Video Background */}
             <Box sx={{ 
                 position: 'relative',
-                height: { xs: 'calc(100vh - 90px)', md: 'calc(100vh - 80px)' },
+                height: { xs: 'calc(100vh - 70px)', md: 'calc(100vh - 80px)' },
                 minHeight: { xs: '600px', md: '700px' },
                 maxHeight: { xs: '800px', md: 'none' },
                 overflow: 'hidden',

@@ -34,7 +34,7 @@ const HittaButik = () => {
   ];
 
   return (
-    <Box sx={{ pt: { xs: '240px', md: '200px' }, pb: 6, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+    <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 6, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
       <Container maxWidth="lg">
         {/* Simple Page Header */}
         <Box sx={{ textAlign: 'center', mb: 6 }}>

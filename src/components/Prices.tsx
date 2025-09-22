@@ -101,7 +101,7 @@ const Prices = () => {
     if (loading) {
         return (
             <Box sx={{ 
-                pt: { xs: '260px', md: '220px' }, 
+                pt: { xs: '140px', md: '120px' }, 
                 pb: 8, 
                 display: 'flex', 
                 justifyContent: 'center', 
@@ -115,7 +115,7 @@ const Prices = () => {
 
     if (error) {
         return (
-            <Box sx={{ pt: { xs: '260px', md: '220px' }, pb: 8 }}>
+            <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8 }}>
                 <Container maxWidth="lg">
                     <Alert severity="error" sx={{ mb: 3 }}>
                         {error}
@@ -126,7 +126,7 @@ const Prices = () => {
     }
 
     return (
-        <Box sx={{ pt: { xs: '260px', md: '220px' }, pb: 8 }}>
+        <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8 }}>
             <Container maxWidth="lg">
                 {/* Header */}
                 <Box sx={{ textAlign: 'center', mb: 4 }}>

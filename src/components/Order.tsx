@@ -85,7 +85,7 @@ const Order = () => {
 
     if (submitted) {
         return (
-            <Box sx={{ pt: { xs: '240px', md: '200px' }, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
+            <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
                 <Container maxWidth="md">
                     <Paper
                         sx={{
@@ -144,7 +144,7 @@ const Order = () => {
 
     return (
         <Box sx={{ 
-            pt: { xs: '240px', md: '200px' }, 
+            pt: { xs: '140px', md: '120px' }, 
             pb: 8, 
             backgroundColor: '#f9fafb', 
             minHeight: '100vh',
