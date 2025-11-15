@@ -274,6 +274,110 @@ const Home = () => {
                 </Container>
             </Box>
 
+            {/* Special Offer - Karp */}
+            <Box sx={{ 
+                py: { xs: 4, md: 6 }, 
+                backgroundColor: '#fff3e0',
+                borderTop: '4px solid #ff9800',
+                borderBottom: '4px solid #ff9800'
+            }}>
+                <Container maxWidth="lg">
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        gap: 3,
+                        alignItems: 'center'
+                    }}>
+                        {/* Image */}
+                        <Box sx={{
+                            position: 'relative',
+                            width: { xs: '100%', md: '400px' },
+                            height: { xs: '250px', md: '300px' },
+                            borderRadius: 2,
+                            overflow: 'hidden',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                            flexShrink: 0
+                        }}>
+                            <Image
+                                src="/img/karp.webp"
+                                alt="Levande karp - specialerbjudande"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                priority
+                            />
+                        </Box>
+
+                        {/* Content */}
+                        <Box sx={{ flex: 1, textAlign: { xs: 'center', md: 'left' } }}>
+                            <Typography
+                                sx={{
+                                    display: 'inline-block',
+                                    backgroundColor: '#d32f2f',
+                                    color: 'white',
+                                    px: 2,
+                                    py: 0.5,
+                                    borderRadius: 1,
+                                    fontWeight: 700,
+                                    fontSize: { xs: '0.9rem', md: '1rem' },
+                                    mb: 2
+                                }}
+                            >
+                                SPECIALERBJUDANDE
+                            </Typography>
+                            <Typography
+                                variant="h3"
+                                sx={{
+                                    fontWeight: 700,
+                                    color: '#333',
+                                    mb: 2,
+                                    fontSize: { xs: '1.75rem', md: '2.5rem' }
+                                }}
+                            >
+                                Levande Karp
+                            </Typography>
+                            <Typography
+                                variant="h4"
+                                sx={{
+                                    fontWeight: 700,
+                                    color: '#ff9800',
+                                    mb: 2,
+                                    fontSize: { xs: '2rem', md: '3rem' }
+                                }}
+                            >
+                                169 kr/kg
+                            </Typography>
+                            <Typography
+                                sx={{
+                                    color: '#666',
+                                    fontSize: { xs: '1rem', md: '1.1rem' },
+                                    mb: 3
+                                }}
+                            >
+                                Viktigt att beställa i förväg för att säkerställa tillgänglighet!
+                            </Typography>
+                            <Button
+                                component={Link}
+                                href="/bestall_online"
+                                variant="contained"
+                                size="large"
+                                sx={{
+                                    backgroundColor: '#ff9800',
+                                    color: 'white',
+                                    px: 4,
+                                    py: 1.5,
+                                    fontSize: { xs: '1rem', md: '1.1rem' },
+                                    fontWeight: 600,
+                                    '&:hover': {
+                                        backgroundColor: '#f57c00'
+                                    }
+                                }}
+                            >
+                                Beställ Nu
+                            </Button>
+                        </Box>
+                    </Box>
+                </Container>
+            </Box>
 
             {/* Featured Prices Section - Only show if there are prices */}
             {featuredPrices.length > 0 && (

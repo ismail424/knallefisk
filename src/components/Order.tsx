@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 import {
     Box,
@@ -151,6 +152,106 @@ const Order = () => {
             position: 'relative'
         }}>
             <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
+                {/* Special Offer - Karp Banner */}
+                <Paper
+                    sx={{
+                        mb: 4,
+                        borderRadius: 3,
+                        overflow: 'hidden',
+                        border: '4px solid #ff9800',
+                        boxShadow: '0 6px 24px rgba(255, 152, 0, 0.3)'
+                    }}
+                >
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        backgroundColor: '#fff3e0'
+                    }}>
+                        {/* Image */}
+                        <Box sx={{
+                            position: 'relative',
+                            width: { xs: '100%', sm: '250px' },
+                            height: { xs: '200px', sm: '100%' },
+                            minHeight: { sm: '250px' },
+                            flexShrink: 0
+                        }}>
+                            <Image
+                                src="/img/karp.webp"
+                                alt="Levande karp - specialerbjudande"
+                                fill
+                                style={{ objectFit: 'cover' }}
+                                priority
+                            />
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 12,
+                                    left: 12,
+                                    backgroundColor: '#d32f2f',
+                                    color: 'white',
+                                    px: 2,
+                                    py: 0.5,
+                                    borderRadius: 1,
+                                    fontWeight: 700,
+                                    fontSize: '0.85rem',
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)'
+                                }}
+                            >
+                                SPECIALERBJUDANDE
+                            </Box>
+                        </Box>
+
+                        {/* Content */}
+                        <Box sx={{ 
+                            p: { xs: 3, sm: 4 },
+                            flex: 1,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                variant="h4"
+                                sx={{
+                                    fontWeight: 700,
+                                    color: '#333',
+                                    mb: 1,
+                                    fontSize: { xs: '1.5rem', sm: '2rem' }
+                                }}
+                            >
+                                Levande Karp
+                            </Typography>
+                            <Typography
+                                variant="h3"
+                                sx={{
+                                    fontWeight: 700,
+                                    color: '#ff9800',
+                                    mb: 2,
+                                    fontSize: { xs: '2rem', sm: '2.5rem' }
+                                }}
+                            >
+                                169 kr/kg
+                            </Typography>
+                            <Alert 
+                                severity="warning" 
+                                sx={{ 
+                                    mb: 0,
+                                    backgroundColor: '#fff8e1',
+                                    '& .MuiAlert-icon': {
+                                        color: '#ff9800'
+                                    }
+                                }}
+                            >
+                                <Typography sx={{ fontWeight: 600, fontSize: '0.95rem' }}>
+                                    Viktigt: Måste beställas i förväg!
+                                </Typography>
+                                <Typography sx={{ fontSize: '0.85rem', mt: 0.5 }}>
+                                    Fyll i formuläret nedan för att säkerställa tillgänglighet
+                                </Typography>
+                            </Alert>
+                        </Box>
+                    </Box>
+                </Paper>
+
                 {/* Simple Header */}
                 <Box sx={{ textAlign: 'center', mb: 6 }}>
                     <Typography
