@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
     Box,
     Container,
@@ -68,6 +68,10 @@ const AdminPage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [isUploading, setIsUploading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+
+    // Debounce save function to prevent race conditions
+    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const checkAuthStatus = useCallback(async () => {
         try {
@@ -109,16 +113,6 @@ const AdminPage = () => {
             }
         } catch (error) {
             console.error('Error loading admin data:', error);
-            // Fallback to localStorage for existing users
-            const savedPrices = localStorage.getItem('admin_prices');
-            if (savedPrices) {
-                setPrices(JSON.parse(savedPrices));
-            }
-            
-            const savedImages = localStorage.getItem('admin_images');
-            if (savedImages) {
-                setUploadedImages(JSON.parse(savedImages));
-            }
         }
     };
 
@@ -175,37 +169,134 @@ const AdminPage = () => {
         }
     };
 
-    const savePrices = async (newPrices: Price[]) => {
+    // Create a new price
+    const createPrice = async (price: Omit<Price, 'id'>) => {
         try {
-            // Update local state immediately
-            setPrices(newPrices);
+            setIsSaving(true);
             
-            // Save to Vercel Blob
             const response = await fetch('/api/admin/prices', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newPrices),
+                body: JSON.stringify(price),
             });
 
             if (!response.ok) {
-                throw new Error('Failed to save prices');
+                throw new Error('Failed to create price');
             }
 
-            // Keep localStorage as backup for now
-            localStorage.setItem('admin_prices', JSON.stringify(newPrices));
+            const newPrice = await response.json();
+            setPrices([...prices, newPrice]);
+            setSuccessMessage('Pris skapat!');
+            setTimeout(() => setSuccessMessage(''), 3000);
+            
+            return newPrice;
         } catch (error) {
-            console.error('Error saving prices:', error);
-            // Still save to localStorage as fallback
-            localStorage.setItem('admin_prices', JSON.stringify(newPrices));
+            console.error('Error creating price:', error);
+            setSuccessMessage('Fel vid skapning - försök igen');
+            setTimeout(() => setSuccessMessage(''), 3000);
+            throw error;
+        } finally {
+            setIsSaving(false);
         }
     };
 
-    const saveImages = (newImages: UploadedImage[]) => {
-        setUploadedImages(newImages);
-        // Keep localStorage as backup
-        localStorage.setItem('admin_images', JSON.stringify(newImages));
+    // Update specific fields of a price (PATCH)
+    const updatePriceFields = async (id: string, updates: Partial<Price>) => {
+        // Clear any pending save
+        if (saveTimeoutRef.current) {
+            clearTimeout(saveTimeoutRef.current);
+        }
+
+        // Update local state immediately for responsive UI
+        setPrices(prices.map(p => p.id === id ? { ...p, ...updates } : p));
+        
+        // Debounce the actual API call
+        saveTimeoutRef.current = setTimeout(async () => {
+            try {
+                setIsSaving(true);
+                
+                const response = await fetch('/api/admin/prices', {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id, ...updates }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update price');
+                }
+
+                const updatedPrice = await response.json();
+                setPrices(prices.map(p => p.id === id ? updatedPrice : p));
+            } catch (error) {
+                console.error('Error updating price:', error);
+                setSuccessMessage('Fel vid uppdatering - försök igen');
+                setTimeout(() => setSuccessMessage(''), 3000);
+                
+                // Reload data on error
+                loadAdminData();
+            } finally {
+                setIsSaving(false);
+            }
+        }, 500); // Wait 500ms after last change before saving
+    };
+
+    // Update entire price (PUT)
+    const updatePrice = async (price: Price) => {
+        try {
+            setIsSaving(true);
+            
+            const response = await fetch('/api/admin/prices', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(price),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to update price');
+            }
+
+            const updatedPrice = await response.json();
+            setPrices(prices.map(p => p.id === price.id ? updatedPrice : p));
+            setSuccessMessage('Pris uppdaterat!');
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } catch (error) {
+            console.error('Error updating price:', error);
+            setSuccessMessage('Fel vid uppdatering - försök igen');
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    // Delete a price
+    const deletePrice = async (id: string) => {
+        try {
+            setIsSaving(true);
+            
+            const response = await fetch(`/api/admin/prices?id=${id}`, {
+                method: 'DELETE',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to delete price');
+            }
+
+            setPrices(prices.filter(p => p.id !== id));
+            setSuccessMessage('Pris borttaget!');
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } catch (error) {
+            console.error('Error deleting price:', error);
+            setSuccessMessage('Fel vid borttagning - försök igen');
+            setTimeout(() => setSuccessMessage(''), 3000);
+        } finally {
+            setIsSaving(false);
+        }
     };
 
     const handleDeleteImage = async (imageUrl: string, imageId: string) => {
@@ -221,7 +312,6 @@ const AdminPage = () => {
             if (response.ok) {
                 const updatedImages = uploadedImages.filter(img => img.id !== imageId);
                 setUploadedImages(updatedImages);
-                localStorage.setItem('admin_images', JSON.stringify(updatedImages));
                 setSuccessMessage('Bild borttagen från Vercel Blob!');
                 setTimeout(() => setSuccessMessage(''), 3000);
             } else {
@@ -276,26 +366,26 @@ const AdminPage = () => {
         }
 
         if (isEditing && currentPrice.id) {
-            const updatedPrices = prices.map(p => 
-                p.id === currentPrice.id ? { ...currentPrice } as Price : p
-            );
-            await savePrices(updatedPrices);
+            // Update existing price
+            await updatePrice(currentPrice as Price);
         } else {
-            const newPrice: Price = {
-                ...currentPrice,
-                id: Date.now().toString(),
+            // Create new price
+            await createPrice({
+                title: currentPrice.title,
+                price: currentPrice.price,
+                sale_price: currentPrice.sale_price,
+                category: currentPrice.category,
                 unit: currentPrice.unit || 'kg',
+                weight: currentPrice.weight,
                 on_sale: currentPrice.on_sale || false,
-                is_visible: currentPrice.is_visible !== false
-            } as Price;
-            
-            await savePrices([...prices, newPrice]);
+                is_visible: currentPrice.is_visible !== false,
+                image: currentPrice.image
+            });
         }
 
         setIsDialogOpen(false);
         setCurrentPrice({});
-        setSuccessMessage(isEditing ? 'Pris uppdaterat!' : 'Pris skapat!');
-        setTimeout(() => setSuccessMessage(''), 3000);
+        setIsEditing(false);
     };
 
     const handleEditPrice = (price: Price) => {
@@ -306,10 +396,7 @@ const AdminPage = () => {
 
     const handleDeletePrice = async (id: string) => {
         if (confirm('Är du säker på att du vill ta bort detta pris?')) {
-            const updatedPrices = prices.filter(p => p.id !== id);
-            await savePrices(updatedPrices);
-            setSuccessMessage('Pris borttaget!');
-            setTimeout(() => setSuccessMessage(''), 3000);
+            await deletePrice(id);
         }
     };
 
@@ -320,10 +407,7 @@ const AdminPage = () => {
 
     // Inline editing functions
     const updatePriceInline = async (id: string, field: keyof Price, value: string | boolean) => {
-        const updatedPrices = prices.map(p => 
-            p.id === id ? { ...p, [field]: value } : p
-        );
-        await savePrices(updatedPrices);
+        await updatePriceFields(id, { [field]: value });
     };
 
     if (!isAuthenticated) {
@@ -429,6 +513,12 @@ const AdminPage = () => {
                 {successMessage && (
                     <Alert severity="success" sx={{ mb: 2, mx: { xs: 0, md: 0 } }}>
                         {successMessage}
+                    </Alert>
+                )}
+
+                {isSaving && (
+                    <Alert severity="info" sx={{ mb: 2, mx: { xs: 0, md: 0 } }}>
+                        Sparar ändringar...
                     </Alert>
                 )}
 
@@ -861,41 +951,52 @@ const AdminPage = () => {
                                     component="label"
                                     size="small"
                                     fullWidth
+                                    disabled={isUploading}
                                 >
-                                    Ladda upp ny bild till bibliotek
+                                    {isUploading ? 'Laddar upp...' : 'Ladda upp ny bild till bibliotek'}
                                     <input
                                         type="file"
                                         hidden
                                         accept="image/*"
-                                        onChange={(e) => {
+                                        onChange={async (e) => {
                                             const file = e.target.files?.[0];
-                                            if (file) {
-                                                const reader = new FileReader();
-                                                reader.onload = (event) => {
-                                                    const result = event.target?.result as string;
-                                                    if (result) {
-                                                        const newImage: UploadedImage = {
-                                                            id: Date.now().toString(),
-                                                            name: file.name,
-                                                            url: result,
-                                                            uploadDate: new Date().toISOString()
-                                                        };
-                                                        
-                                                        const updatedImages = [...uploadedImages, newImage];
-                                                        saveImages(updatedImages);
-                                                        
-                                                        setCurrentPrice({ 
-                                                            ...currentPrice, 
-                                                            image: result 
-                                                        });
-                                                        
-                                                        setSuccessMessage('Bild uppladdad till bibliotek!');
-                                                        setTimeout(() => setSuccessMessage(''), 3000);
-                                                    }
-                                                };
-                                                reader.readAsDataURL(file);
+                                            if (!file) return;
+
+                                            setIsUploading(true);
+                                            try {
+                                                const formData = new FormData();
+                                                formData.append('file', file);
+
+                                                const response = await fetch('/api/admin/images', {
+                                                    method: 'POST',
+                                                    body: formData,
+                                                });
+
+                                                if (response.ok) {
+                                                    const newImage = await response.json();
+                                                    const updatedImages = [...uploadedImages, newImage];
+                                                    setUploadedImages(updatedImages);
+                                                    
+                                                    // Automatically select this image for the current price
+                                                    setCurrentPrice({ 
+                                                        ...currentPrice, 
+                                                        image: newImage.url 
+                                                    });
+                                                    
+                                                    setSuccessMessage('Bild uppladdad till Vercel Blob!');
+                                                    setTimeout(() => setSuccessMessage(''), 3000);
+                                                } else {
+                                                    const errorData = await response.json();
+                                                    throw new Error(errorData.error || 'Upload failed');
+                                                }
+                                            } catch (error) {
+                                                console.error('Error uploading image:', error);
+                                                setSuccessMessage(`Fel vid uppladdning: ${error}`);
+                                                setTimeout(() => setSuccessMessage(''), 5000);
+                                            } finally {
+                                                setIsUploading(false);
+                                                e.target.value = '';
                                             }
-                                            e.target.value = '';
                                         }}
                                     />
                                 </Button>

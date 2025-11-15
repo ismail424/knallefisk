@@ -263,7 +263,7 @@ const Home = () => {
                             </Typography>
                             <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
-                                Fri hämtning i butik
+                                Kvalitet du kan lita på
                             </Typography>
                             <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
@@ -273,6 +273,7 @@ const Home = () => {
                     </Box>
                 </Container>
             </Box>
+
 
             {/* Featured Prices Section - Only show if there are prices */}
             {featuredPrices.length > 0 && (
