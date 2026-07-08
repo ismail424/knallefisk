@@ -11,7 +11,7 @@ export interface AuthPayload {
 
 export class AuthUtils {
   private static readonly JWT_SECRET = process.env.JWT_SECRET!;
-  private static readonly SESSION_TIMEOUT = parseInt(process.env.ADMIN_SESSION_TIMEOUT || '3600000'); // 1 hour
+  private static readonly SESSION_TIMEOUT = parseInt(process.env.ADMIN_SESSION_TIMEOUT || '2592000000'); // 30 days
 
   static async hashPassword(password: string): Promise<string> {
     const saltRounds = 12;

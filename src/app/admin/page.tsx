@@ -7,6 +7,7 @@ import {
     Typography,
     Button,
     Alert,
+    Snackbar,
     useMediaQuery,
     useTheme
 } from '@mui/material';
@@ -16,10 +17,17 @@ import {
     LibraryBooks as LibraryBooksIcon
 } from '@mui/icons-material';
 import { AdminPrice, UploadedImage } from '../../lib/types';
+import { compressImage } from '../../lib/compress-image';
 import LoginForm from './components/LoginForm';
 import PriceCard from './components/PriceCard';
 import PriceDialog from './components/PriceDialog';
 import ImageLibraryDialog from './components/ImageLibraryDialog';
+import ConfirmDialog from './components/ConfirmDialog';
+
+interface ConfirmState {
+    message: string;
+    action: () => void;
+}
 
 const AdminPage = () => {
     const theme = useTheme();
@@ -37,7 +45,7 @@ const AdminPage = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [statusMessage, setStatusMessage] = useState<{ text: string; severity: 'success' | 'error' } | null>(null);
     const [isUploading, setIsUploading] = useState(false);
-    const [isSaving, setIsSaving] = useState(false);
+    const [confirmDialog, setConfirmDialog] = useState<ConfirmState | null>(null);
 
     // Debounce save to avoid one API call per keystroke
     const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -137,8 +145,6 @@ const AdminPage = () => {
 
     const createPrice = async (price: Omit<AdminPrice, 'id'>) => {
         try {
-            setIsSaving(true);
-
             const response = await fetch('/api/admin/prices', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -151,12 +157,10 @@ const AdminPage = () => {
 
             const newPrice = await response.json();
             setPrices(prev => [...prev, newPrice]);
-            showStatus('Pris skapat!');
+            showStatus('✓ Pris skapat!');
         } catch (error) {
             console.error('Error creating price:', error);
             showStatus('Fel vid skapande - försök igen', 'error');
-        } finally {
-            setIsSaving(false);
         }
     };
 
@@ -170,8 +174,6 @@ const AdminPage = () => {
 
         saveTimeoutRef.current = setTimeout(async () => {
             try {
-                setIsSaving(true);
-
                 const response = await fetch('/api/admin/prices', {
                     method: 'PATCH',
                     headers: { 'Content-Type': 'application/json' },
@@ -184,20 +186,17 @@ const AdminPage = () => {
 
                 const updatedPrice = await response.json();
                 setPrices(prev => prev.map(p => p.id === id ? updatedPrice : p));
+                showStatus('✓ Sparat');
             } catch (error) {
                 console.error('Error updating price:', error);
                 showStatus('Fel vid uppdatering - försök igen', 'error');
                 loadAdminData();
-            } finally {
-                setIsSaving(false);
             }
         }, 500);
     };
 
     const updatePrice = async (price: AdminPrice) => {
         try {
-            setIsSaving(true);
-
             const response = await fetch('/api/admin/prices', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
@@ -210,23 +209,15 @@ const AdminPage = () => {
 
             const updatedPrice = await response.json();
             setPrices(prev => prev.map(p => p.id === price.id ? updatedPrice : p));
-            showStatus('Pris uppdaterat!');
+            showStatus('✓ Pris uppdaterat!');
         } catch (error) {
             console.error('Error updating price:', error);
             showStatus('Fel vid uppdatering - försök igen', 'error');
-        } finally {
-            setIsSaving(false);
         }
     };
 
-    const handleDeletePrice = async (id: string) => {
-        if (!confirm('Är du säker på att du vill ta bort detta pris?')) {
-            return;
-        }
-
+    const deletePrice = async (id: string) => {
         try {
-            setIsSaving(true);
-
             const response = await fetch(`/api/admin/prices?id=${id}`, {
                 method: 'DELETE',
             });
@@ -236,20 +227,28 @@ const AdminPage = () => {
             }
 
             setPrices(prev => prev.filter(p => p.id !== id));
-            showStatus('Pris borttaget!');
+            showStatus('✓ Pris borttaget!');
         } catch (error) {
             console.error('Error deleting price:', error);
             showStatus('Fel vid borttagning - försök igen', 'error');
-        } finally {
-            setIsSaving(false);
         }
+    };
+
+    const handleDeletePrice = (id: string) => {
+        const price = prices.find(p => p.id === id);
+        setConfirmDialog({
+            message: `Vill du ta bort "${price?.title || 'detta pris'}"?`,
+            action: () => deletePrice(id)
+        });
     };
 
     const uploadImage = async (file: File): Promise<UploadedImage | null> => {
         setIsUploading(true);
         try {
+            // Shrink phone photos in the browser so they never hit the 10MB limit
+            const compressed = await compressImage(file);
             const formData = new FormData();
-            formData.append('file', file);
+            formData.append('file', compressed);
 
             const response = await fetch('/api/admin/images', {
                 method: 'POST',
@@ -263,7 +262,7 @@ const AdminPage = () => {
 
             const newImage: UploadedImage = await response.json();
             setUploadedImages(prev => [newImage, ...prev]);
-            showStatus('Bild uppladdad!');
+            showStatus('✓ Bild uppladdad!');
             return newImage;
         } catch (error) {
             console.error('Error uploading image:', error);
@@ -281,11 +280,7 @@ const AdminPage = () => {
         event.target.value = '';
     };
 
-    const handleDeleteImage = async (imageUrl: string, imageId: string) => {
-        if (!confirm('Är du säker på att du vill ta bort denna bild? Produkter som använder den blir utan bild.')) {
-            return;
-        }
-
+    const deleteImage = async (imageUrl: string, imageId: string) => {
         try {
             const response = await fetch(`/api/admin/images?url=${encodeURIComponent(imageUrl)}`, {
                 method: 'DELETE',
@@ -299,11 +294,18 @@ const AdminPage = () => {
             setUploadedImages(prev => prev.filter(img => img.id !== imageId));
             // API clears the image from prices that used it - mirror that locally
             setPrices(prev => prev.map(p => p.image === imageUrl ? { ...p, image: undefined } : p));
-            showStatus('Bild borttagen!');
+            showStatus('✓ Bild borttagen!');
         } catch (error) {
             console.error('Error deleting image:', error);
             showStatus(`Fel vid borttagning: ${error instanceof Error ? error.message : error}`, 'error');
         }
+    };
+
+    const handleDeleteImage = (imageUrl: string, imageId: string) => {
+        setConfirmDialog({
+            message: 'Vill du ta bort denna bild? Produkter som använder den blir utan bild.',
+            action: () => deleteImage(imageUrl, imageId)
+        });
     };
 
     const handleSavePrice = async () => {
@@ -423,18 +425,6 @@ const AdminPage = () => {
                     </Button>
                 </Box>
 
-                {statusMessage && (
-                    <Alert severity={statusMessage.severity} sx={{ mb: 2 }}>
-                        {statusMessage.text}
-                    </Alert>
-                )}
-
-                {isSaving && (
-                    <Alert severity="info" sx={{ mb: 2 }}>
-                        Sparar ändringar...
-                    </Alert>
-                )}
-
                 {/* Action Buttons */}
                 <Box sx={{
                     display: 'flex',
@@ -543,6 +533,31 @@ const AdminPage = () => {
                     onDelete={handleDeleteImage}
                     onClose={() => setIsImageLibraryOpen(false)}
                 />
+
+                <ConfirmDialog
+                    open={!!confirmDialog}
+                    message={confirmDialog?.message || ''}
+                    onConfirm={() => {
+                        confirmDialog?.action();
+                        setConfirmDialog(null);
+                    }}
+                    onCancel={() => setConfirmDialog(null)}
+                />
+
+                {/* Save/error feedback near the thumb on mobile */}
+                <Snackbar
+                    open={!!statusMessage}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+                >
+                    <Alert
+                        severity={statusMessage?.severity || 'success'}
+                        variant="filled"
+                        icon={false}
+                        sx={{ fontSize: '1.15rem', px: 3, py: 1 }}
+                    >
+                        {statusMessage?.text}
+                    </Alert>
+                </Snackbar>
             </Container>
         </Box>
     );

@@ -7,15 +7,15 @@ import {
     CardContent,
     Typography,
     TextField,
-    Switch,
-    FormControlLabel,
-    IconButton,
+    Button,
     Chip
 } from '@mui/material';
 import {
     Edit as EditIcon,
     Delete as DeleteIcon,
+    Visibility as VisibilityIcon,
     VisibilityOff as VisibilityOffIcon,
+    LocalOffer as LocalOfferIcon,
     ImageOutlined as ImageOutlinedIcon
 } from '@mui/icons-material';
 import { AdminPrice } from '../../../lib/types';
@@ -27,6 +27,17 @@ interface PriceCardProps {
     onDelete: (id: string) => void;
 }
 
+const priceInputSx = {
+    '& .MuiInputBase-input': {
+        fontSize: '1.4rem',
+        fontWeight: 600,
+        py: 1.5
+    },
+    '& .MuiInputLabel-root': {
+        fontSize: '1.05rem'
+    }
+};
+
 const PriceCard = ({ price, onFieldChange, onEdit, onDelete }: PriceCardProps) => (
     <Card sx={{
         height: '100%',
@@ -34,140 +45,121 @@ const PriceCard = ({ price, onFieldChange, onEdit, onDelete }: PriceCardProps) =
         flexDirection: 'column',
         backgroundColor: 'white',
         border: '1px solid #e0e0e0',
-        borderRadius: 1,
+        borderRadius: 2,
         overflow: 'hidden',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        '&:hover': {
-            boxShadow: '0 4px 8px rgba(0,0,0,0.15)'
-        }
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
     }}>
         {price.image ? (
             <CardMedia
                 component="img"
-                height="120"
+                height="140"
                 image={price.image}
                 alt={price.title}
                 sx={{ objectFit: 'cover' }}
             />
         ) : (
             <Box sx={{
-                height: 120,
+                height: 140,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: '#f0f4f5',
                 color: '#9ab8bd'
             }}>
-                <ImageOutlinedIcon sx={{ fontSize: '2.5rem' }} />
+                <ImageOutlinedIcon sx={{ fontSize: '3rem' }} />
             </Box>
         )}
-        <CardContent sx={{ flexGrow: 1, p: 2 }}>
-            <Typography variant="h6" sx={{
-                fontSize: '1rem',
-                fontWeight: 600,
-                mb: 1,
-                color: '#333'
-            }}>
-                {price.title}
-            </Typography>
-
-            <Box sx={{ display: 'flex', gap: 0.5, mb: 2, flexWrap: 'wrap' }}>
+        <CardContent sx={{ flexGrow: 1, p: 2.5, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                <Typography sx={{
+                    fontSize: '1.25rem',
+                    fontWeight: 600,
+                    color: '#333',
+                    flexGrow: 1
+                }}>
+                    {price.title}
+                </Typography>
                 {!price.is_visible && (
-                    <Chip icon={<VisibilityOffIcon />} label="Dold" size="small" color="default" />
-                )}
-                {price.on_sale && (
-                    <Chip label="REA" size="small" color="error" />
+                    <Chip label="Dold" color="default" sx={{ fontSize: '0.9rem' }} />
                 )}
             </Box>
 
-            <Box sx={{ mb: 2 }}>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1.5 }}>
-                    <TextField
-                        label="Pris"
-                        value={price.price}
-                        onChange={(e) => onFieldChange(price.id, 'price', e.target.value)}
-                        size="small"
-                        sx={{
-                            width: '80px',
-                            '& .MuiInputBase-input': { fontSize: '0.875rem' }
-                        }}
-                    />
-                    <Typography variant="caption" color="text.secondary">
-                        kr/{price.unit}
-                    </Typography>
-                </Box>
+            <TextField
+                label={`Pris (kr/${price.unit || 'kg'})`}
+                value={price.price}
+                onChange={(e) => onFieldChange(price.id, 'price', e.target.value)}
+                fullWidth
+                inputMode="decimal"
+                inputProps={{ inputMode: 'decimal' }}
+                sx={priceInputSx}
+            />
 
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={price.is_visible}
-                                onChange={(e) => onFieldChange(price.id, 'is_visible', e.target.checked)}
-                                size="small"
-                            />
-                        }
-                        label={<Typography variant="caption">Synlig</Typography>}
-                        sx={{ margin: 0 }}
-                    />
-                    <FormControlLabel
-                        control={
-                            <Switch
-                                checked={price.on_sale}
-                                onChange={(e) => onFieldChange(price.id, 'on_sale', e.target.checked)}
-                                size="small"
-                            />
-                        }
-                        label={<Typography variant="caption">REA</Typography>}
-                        sx={{ margin: 0 }}
-                    />
-                </Box>
+            {price.on_sale && (
+                <TextField
+                    label={`REA-pris (kr/${price.unit || 'kg'})`}
+                    value={price.sale_price || ''}
+                    onChange={(e) => onFieldChange(price.id, 'sale_price', e.target.value)}
+                    fullWidth
+                    inputMode="decimal"
+                    inputProps={{ inputMode: 'decimal' }}
+                    color="error"
+                    sx={priceInputSx}
+                />
+            )}
 
-                {price.on_sale && (
-                    <Box sx={{ mt: 1 }}>
-                        <TextField
-                            label="REA-pris"
-                            value={price.sale_price || ''}
-                            onChange={(e) => onFieldChange(price.id, 'sale_price', e.target.value)}
-                            size="small"
-                            sx={{
-                                width: '80px',
-                                '& .MuiInputBase-input': { fontSize: '0.875rem' }
-                            }}
-                        />
-                        <Typography variant="caption" component="span" sx={{ ml: 1 }} color="text.secondary">
-                            kr/{price.unit}
-                        </Typography>
-                    </Box>
-                )}
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
+                <Button
+                    variant={price.is_visible ? 'contained' : 'outlined'}
+                    color={price.is_visible ? 'success' : 'inherit'}
+                    startIcon={price.is_visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                    onClick={() => onFieldChange(price.id, 'is_visible', !price.is_visible)}
+                    sx={{ minHeight: 52, fontSize: '1rem', textTransform: 'none' }}
+                >
+                    {price.is_visible ? 'Synlig' : 'Dold'}
+                </Button>
+                <Button
+                    variant={price.on_sale ? 'contained' : 'outlined'}
+                    color="error"
+                    startIcon={<LocalOfferIcon />}
+                    onClick={() => onFieldChange(price.id, 'on_sale', !price.on_sale)}
+                    sx={{ minHeight: 52, fontSize: '1rem', textTransform: 'none' }}
+                >
+                    {price.on_sale ? 'REA på' : 'REA av'}
+                </Button>
             </Box>
 
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
+                gap: 1.5,
                 mt: 'auto',
-                pt: 1,
+                pt: 1.5,
                 borderTop: '1px solid #f0f0f0'
             }}>
-                <IconButton
+                <Button
+                    startIcon={<EditIcon />}
                     onClick={() => onEdit(price)}
-                    size="small"
                     sx={{
-                        color: 'rgb(68, 143, 155)',
-                        '&:hover': { backgroundColor: 'rgba(68, 143, 155, 0.04)' }
+                        minHeight: 48,
+                        fontSize: '1rem',
+                        textTransform: 'none',
+                        color: 'rgb(68, 143, 155)'
                     }}
                 >
-                    <EditIcon fontSize="small" />
-                </IconButton>
-                <IconButton
+                    Redigera
+                </Button>
+                <Button
+                    startIcon={<DeleteIcon />}
                     onClick={() => onDelete(price.id)}
-                    size="small"
                     sx={{
-                        color: '#d32f2f',
-                        '&:hover': { backgroundColor: 'rgba(211, 47, 47, 0.04)' }
+                        minHeight: 48,
+                        fontSize: '1rem',
+                        textTransform: 'none',
+                        color: '#d32f2f'
                     }}
                 >
-                    <DeleteIcon fontSize="small" />
-                </IconButton>
+                    Ta bort
+                </Button>
             </Box>
         </CardContent>
     </Card>

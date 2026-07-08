@@ -70,7 +70,7 @@ export async function POST(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: parseInt(process.env.ADMIN_SESSION_TIMEOUT || '3600000') / 1000,
+      maxAge: parseInt(process.env.ADMIN_SESSION_TIMEOUT || '2592000000') / 1000,
       path: '/'
     });
 

@@ -76,6 +76,7 @@ const PriceDialog = ({
                             label="Pris"
                             value={price.price || ''}
                             onChange={(e) => onChange({ ...price, price: e.target.value })}
+                            inputProps={{ inputMode: 'decimal' }}
                         />
                         <TextField
                             fullWidth
@@ -100,6 +101,7 @@ const PriceDialog = ({
                                 value={price.sale_price || ''}
                                 onChange={(e) => onChange({ ...price, sale_price: e.target.value })}
                                 size="small"
+                                inputProps={{ inputMode: 'decimal' }}
                                 sx={{ minWidth: 120 }}
                             />
                         )}
@@ -194,21 +196,45 @@ const PriceDialog = ({
                             )}
                         </Box>
 
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            size="small"
-                            fullWidth
-                            disabled={isUploading}
-                        >
-                            {isUploading ? 'Laddar upp...' : 'Ladda upp ny bild till bibliotek'}
-                            <input
-                                type="file"
-                                hidden
-                                accept="image/*"
-                                onChange={handleUpload}
-                            />
-                        </Button>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5 }}>
+                            <Button
+                                variant="contained"
+                                component="label"
+                                fullWidth
+                                disabled={isUploading}
+                                sx={{
+                                    minHeight: 52,
+                                    fontSize: '1rem',
+                                    textTransform: 'none',
+                                    backgroundColor: '#448f9b',
+                                    '&:hover': { backgroundColor: '#357a84' }
+                                }}
+                            >
+                                {isUploading ? 'Laddar upp...' : '📷 Ta en bild'}
+                                <input
+                                    type="file"
+                                    hidden
+                                    accept="image/*"
+                                    capture="environment"
+                                    onChange={handleUpload}
+                                />
+                            </Button>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                fullWidth
+                                disabled={isUploading}
+                                sx={{ minHeight: 52, fontSize: '1rem', textTransform: 'none' }}
+                            >
+                                {isUploading ? 'Laddar upp...' : 'Välj bild från mobilen'}
+                                <input
+                                    type="file"
+                                    hidden
+                                    accept="image/*"
+                                    onChange={handleUpload}
+                                />
+                            </Button>
+                        </Box>
                     </Box>
                 </Box>
             </DialogContent>
