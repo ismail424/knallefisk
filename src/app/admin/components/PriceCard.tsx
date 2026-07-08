@@ -8,14 +8,14 @@ import {
     Typography,
     TextField,
     Button,
-    Chip
+    Chip,
+    ToggleButtonGroup,
+    ToggleButton
 } from '@mui/material';
 import {
     Edit as EditIcon,
     Delete as DeleteIcon,
-    Visibility as VisibilityIcon,
-    VisibilityOff as VisibilityOffIcon,
-    LocalOffer as LocalOfferIcon,
+    Check as CheckIcon,
     ImageOutlined as ImageOutlinedIcon
 } from '@mui/icons-material';
 import { AdminPrice } from '../../../lib/types';
@@ -37,6 +37,25 @@ const priceInputSx = {
         fontSize: '1.05rem'
     }
 };
+
+const toggleGroupSx = (activeColor: string) => ({
+    width: '100%',
+    '& .MuiToggleButton-root': {
+        flex: 1,
+        minHeight: 52,
+        fontSize: '1rem',
+        textTransform: 'none',
+        color: '#666',
+        '&.Mui-selected': {
+            backgroundColor: activeColor,
+            color: 'white',
+            fontWeight: 600,
+            '&:hover': {
+                backgroundColor: activeColor
+            }
+        }
+    }
+});
 
 const PriceCard = ({ price, onFieldChange, onEdit, onDelete }: PriceCardProps) => (
     <Card sx={{
@@ -107,25 +126,46 @@ const PriceCard = ({ price, onFieldChange, onEdit, onDelete }: PriceCardProps) =
                 />
             )}
 
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1.5 }}>
-                <Button
-                    variant={price.is_visible ? 'contained' : 'outlined'}
-                    color={price.is_visible ? 'success' : 'inherit'}
-                    startIcon={price.is_visible ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                    onClick={() => onFieldChange(price.id, 'is_visible', !price.is_visible)}
-                    sx={{ minHeight: 52, fontSize: '1rem', textTransform: 'none' }}
+            <Box>
+                <Typography sx={{ fontSize: '0.95rem', color: '#666', mb: 0.5 }}>
+                    Visas på hemsidan?
+                </Typography>
+                <ToggleButtonGroup
+                    value={price.is_visible ? 'yes' : 'no'}
+                    exclusive
+                    onChange={(_, value) => value && onFieldChange(price.id, 'is_visible', value === 'yes')}
+                    sx={toggleGroupSx('#2e7d32')}
                 >
-                    {price.is_visible ? 'Synlig' : 'Dold'}
-                </Button>
-                <Button
-                    variant={price.on_sale ? 'contained' : 'outlined'}
-                    color="error"
-                    startIcon={<LocalOfferIcon />}
-                    onClick={() => onFieldChange(price.id, 'on_sale', !price.on_sale)}
-                    sx={{ minHeight: 52, fontSize: '1rem', textTransform: 'none' }}
+                    <ToggleButton value="yes">
+                        {price.is_visible && <CheckIcon sx={{ mr: 0.5 }} />}
+                        Ja, synlig
+                    </ToggleButton>
+                    <ToggleButton value="no" sx={{ '&.Mui-selected': { backgroundColor: '#616161 !important' } }}>
+                        {!price.is_visible && <CheckIcon sx={{ mr: 0.5 }} />}
+                        Nej, dold
+                    </ToggleButton>
+                </ToggleButtonGroup>
+            </Box>
+
+            <Box>
+                <Typography sx={{ fontSize: '0.95rem', color: '#666', mb: 0.5 }}>
+                    REA-pris?
+                </Typography>
+                <ToggleButtonGroup
+                    value={price.on_sale ? 'yes' : 'no'}
+                    exclusive
+                    onChange={(_, value) => value && onFieldChange(price.id, 'on_sale', value === 'yes')}
+                    sx={toggleGroupSx('#d32f2f')}
                 >
-                    {price.on_sale ? 'REA på' : 'REA av'}
-                </Button>
+                    <ToggleButton value="yes">
+                        {price.on_sale && <CheckIcon sx={{ mr: 0.5 }} />}
+                        Ja, REA
+                    </ToggleButton>
+                    <ToggleButton value="no" sx={{ '&.Mui-selected': { backgroundColor: '#616161 !important' } }}>
+                        {!price.on_sale && <CheckIcon sx={{ mr: 0.5 }} />}
+                        Nej
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </Box>
 
             <Box sx={{
