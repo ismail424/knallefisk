@@ -22,7 +22,7 @@ const Footer = () => {
                             fontFamily: 'Poppins, sans-serif'
                         }}
                     >
-                        © 2025 Knallefisk - Färska delikatesser från hav och sjö
+                        © {new Date().getFullYear()} Knallefisk – Färska delikatesser från hav och sjö
                     </Typography>
                 </Box>
             </Container>

@@ -10,7 +10,13 @@
       "Bash(npm install:*)",
       "Bash(npm run dev:*)",
       "Bash(curl:*)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(npx next *)",
+      "Bash(grep -c \"sql\\\\`\" /home/atom/Desktop/knallefisk/src/app/api/admin/prices/route.ts)",
+      "Bash(grep -rhoE \"'[^']*[åäöÅÄÖ][^']*'|\\\\\"[^\\\\\"]*[åäöÅÄÖ][^\\\\\"]*\\\\\"|>[A-ZÅÄÖ][^<>{}]{3,}<\" /home/atom/Desktop/knallefisk/src/components/Order.tsx /home/atom/Desktop/knallefisk/src/components/Prices.tsx /home/atom/Desktop/knallefisk/src/components/Header.tsx /home/atom/Desktop/knallefisk/src/components/Navbar.tsx /home/atom/Desktop/knallefisk/src/app/kontakt/page.tsx /home/atom/Desktop/knallefisk/src/app/layout.tsx /home/atom/Desktop/knallefisk/src/app/hitta_butik/layout.tsx /home/atom/Desktop/knallefisk/src/app/kontakt/layout.tsx)",
+      "Bash(grep -rhoE \"label: '[^']+'|name: '[^']+'|>[A-ZÅÄÖ][a-zåäöA-ZÅÄÖ ,!?–-]{2,}<\" /home/atom/Desktop/knallefisk/src/components/Navbar.tsx /home/atom/Desktop/knallefisk/src/components/Header.tsx /home/atom/Desktop/knallefisk/src/app/kontakt/page.tsx)",
+      "Bash(sed -i 's/Beställ Online - Knallefisk/Beställ online - Knallefisk/g' src/app/bestall_online/page.tsx)",
+      "Bash(git rm *)"
     ],
     "deny": [],
     "ask": []

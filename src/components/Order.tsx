@@ -163,7 +163,7 @@ const Order = () => {
                             mb: 3
                         }}
                     >
-                        Beställ Online
+                        Beställ online
                     </Typography>
                     <Typography
                         variant="h6"

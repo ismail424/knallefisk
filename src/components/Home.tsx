@@ -73,13 +73,13 @@ const Home = () => {
     }, []);
 
     const images = [
-        { src: "/img/bild1.webp", alt: "En bild på en färsk lax sida!" },
+        { src: "/img/bild1.webp", alt: "En bild på en färsk laxsida!" },
         { src: "/img/bild7.webp", alt: "Räkmacka" },
         { src: "/img/bild8.webp", alt: "Laxmacka" },
         { src: "/img/bild4.jpg", alt: "Bild på framsidan av vår butik" },
-        { src: "/img/bild5.webp", alt: "En fin fisk tallrik!" },
+        { src: "/img/bild5.webp", alt: "En fin fisktallrik!" },
         { src: "/img/bild6.webp", alt: "Ett gäng fina fiskar" },
-        { src: "/img/bild2.webp", alt: "En fin räka tallrik" },
+        { src: "/img/bild2.webp", alt: "En fin räktallrik" },
         { src: "/img/bild3.webp", alt: "En stor fin krabba" }
     ];
 
@@ -270,7 +270,7 @@ const Home = () => {
                             </Typography>
                             <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                 <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
-                                19 års erfarenhet
+                                20 års erfarenhet
                             </Typography>
                         </Box>
                     </Box>
@@ -292,7 +292,7 @@ const Home = () => {
                                     fontSize: { xs: '2rem', md: '2.5rem' }
                                 }}
                             >
-                                Dagens Priser
+                                Dagens priser
                             </Typography>
                             <Typography 
                                 variant="h6" 
@@ -514,7 +514,7 @@ const Home = () => {
                             <Box
                                 component="img"
                                 src="/img/store_front.webp"
-                                alt="Bild på framsidan av fisk affären"
+                                alt="Bild på framsidan av fiskaffären"
                                 sx={{
                                     width: '100%',
                                     height: 'auto',
@@ -602,7 +602,7 @@ const Home = () => {
                                 }
                             }}
                         >
-                            Vår Butik
+                            Vår butik
                         </Typography>
                         <Typography
                             variant="h6"

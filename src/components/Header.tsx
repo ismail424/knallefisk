@@ -30,7 +30,7 @@ const Header = () => {
     const all_links = [
         {name: 'Hem', url: '/'},
         {name: 'Priser', url: '/priser'},
-        {name: 'Hitta Butik', url: '/hitta_butik'},
+        {name: 'Hitta butik', url: '/hitta_butik'},
         {name: 'Kontakta oss', url: '/kontakta_oss'},
         {name: 'Beställ online', url: '/bestall_online'},
     ];

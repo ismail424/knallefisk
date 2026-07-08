@@ -50,7 +50,7 @@ const HittaButik = () => {
               mb: 2
             }}
           >
-            Hitta Vår Butik
+            Hitta vår butik
           </Typography>
           <Typography
             variant="body1"
