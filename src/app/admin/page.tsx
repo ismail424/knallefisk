@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
     Box,
     Container,
@@ -48,9 +48,6 @@ const AdminPage = () => {
     const [statusMessage, setStatusMessage] = useState<{ text: string; severity: 'success' | 'error' } | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState<ConfirmState | null>(null);
-
-    // Debounce save to avoid one API call per keystroke
-    const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     const showStatus = (text: string, severity: 'success' | 'error' = 'success') => {
         setStatusMessage({ text, severity });
@@ -166,35 +163,28 @@ const AdminPage = () => {
         }
     };
 
-    // Update fields with optimistic UI and a debounced API call
-    const updatePriceFields = (id: string, updates: Partial<AdminPrice>) => {
-        if (saveTimeoutRef.current) {
-            clearTimeout(saveTimeoutRef.current);
-        }
-
+    // Optimistic update; fields commit their value only after typing pauses,
+    // and the server response is never written back over local state
+    const updatePriceFields = async (id: string, updates: Partial<AdminPrice>) => {
         setPrices(prev => prev.map(p => p.id === id ? { ...p, ...updates } : p));
 
-        saveTimeoutRef.current = setTimeout(async () => {
-            try {
-                const response = await fetch('/api/admin/prices', {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, ...updates }),
-                });
+        try {
+            const response = await fetch('/api/admin/prices', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, ...updates }),
+            });
 
-                if (!response.ok) {
-                    throw new Error('Failed to update price');
-                }
-
-                const updatedPrice = await response.json();
-                setPrices(prev => prev.map(p => p.id === id ? updatedPrice : p));
-                showStatus('✓ Sparat');
-            } catch (error) {
-                console.error('Error updating price:', error);
-                showStatus('Fel vid uppdatering - försök igen', 'error');
-                loadAdminData();
+            if (!response.ok) {
+                throw new Error('Failed to update price');
             }
-        }, 500);
+
+            showStatus('✓ Sparat');
+        } catch (error) {
+            console.error('Error updating price:', error);
+            showStatus('Fel vid uppdatering - försök igen', 'error');
+            loadAdminData();
+        }
     };
 
     const updatePrice = async (price: AdminPrice) => {

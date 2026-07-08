@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect, useRef } from 'react';
 import {
     Box,
     Card,
@@ -31,6 +32,56 @@ interface PriceCardProps {
     onEdit: (price: AdminPrice) => void;
     onDelete: (id: string) => void;
 }
+
+interface DraftFieldProps {
+    label: string;
+    value: string;
+    error?: boolean;
+    onCommit: (value: string) => void;
+}
+
+// Locally controlled text field: keystrokes stay local, the value is
+// committed upwards only after the user pauses typing (or leaves the field).
+// This keeps typing instant and prevents in-flight saves from overwriting input.
+const DraftField = ({ label, value, error, onCommit }: DraftFieldProps) => {
+    const [draft, setDraft] = useState(value);
+    const focusedRef = useRef(false);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+    useEffect(() => {
+        if (!focusedRef.current) {
+            setDraft(value);
+        }
+    }, [value]);
+
+    const commit = (next: string) => {
+        if (timerRef.current) clearTimeout(timerRef.current);
+        if (next !== value) onCommit(next);
+    };
+
+    const handleChange = (next: string) => {
+        setDraft(next);
+        if (timerRef.current) clearTimeout(timerRef.current);
+        timerRef.current = setTimeout(() => commit(next), 800);
+    };
+
+    return (
+        <TextField
+            label={label}
+            value={draft}
+            onChange={(e) => handleChange(e.target.value)}
+            onFocus={() => { focusedRef.current = true; }}
+            onBlur={() => {
+                focusedRef.current = false;
+                commit(draft);
+            }}
+            fullWidth
+            inputProps={{ inputMode: 'decimal' }}
+            color={error ? 'error' : undefined}
+            sx={priceInputSx}
+        />
+    );
+};
 
 const PriceCard = ({ price, expanded, onToggleExpand, onFieldChange, onEdit, onDelete }: PriceCardProps) => (
     <Card sx={{
@@ -123,24 +174,18 @@ const PriceCard = ({ price, expanded, onToggleExpand, onFieldChange, onEdit, onD
         <Collapse in={expanded} timeout={200} unmountOnExit>
             <Divider sx={{ borderColor: '#f0f4f5' }} />
             <CardContent sx={{ p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <TextField
+                <DraftField
                     label={`Pris (kr/${price.unit || 'kg'})`}
                     value={price.price}
-                    onChange={(e) => onFieldChange(price.id, 'price', e.target.value)}
-                    fullWidth
-                    inputProps={{ inputMode: 'decimal' }}
-                    sx={priceInputSx}
+                    onCommit={(value) => onFieldChange(price.id, 'price', value)}
                 />
 
                 {price.on_sale && (
-                    <TextField
+                    <DraftField
                         label={`REA-pris (kr/${price.unit || 'kg'})`}
                         value={price.sale_price || ''}
-                        onChange={(e) => onFieldChange(price.id, 'sale_price', e.target.value)}
-                        fullWidth
-                        inputProps={{ inputMode: 'decimal' }}
-                        color="error"
-                        sx={priceInputSx}
+                        error
+                        onCommit={(value) => onFieldChange(price.id, 'sale_price', value)}
                     />
                 )}
 
