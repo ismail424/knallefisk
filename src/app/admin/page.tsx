@@ -18,6 +18,7 @@ import {
 } from '@mui/icons-material';
 import { AdminPrice, UploadedImage } from '../../lib/types';
 import { compressImage } from '../../lib/compress-image';
+import { pillButtonSx, BRAND, BRAND_DARK } from './components/styles';
 import LoginForm from './components/LoginForm';
 import PriceCard from './components/PriceCard';
 import PriceDialog from './components/PriceDialog';
@@ -393,18 +394,21 @@ const AdminPage = () => {
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    mb: 3,
-                    p: { xs: 2, md: 3 },
+                    mb: 2,
+                    p: { xs: 2, md: 2.5 },
                     backgroundColor: 'white',
-                    borderRadius: 1,
-                    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    borderRadius: 4,
+                    border: '1px solid #e8eef0',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+                    maxWidth: 700,
+                    mx: 'auto'
                 }}>
                     <Typography
                         variant="h4"
                         sx={{
-                            color: 'rgb(68, 143, 155)',
+                            color: BRAND,
                             fontWeight: 600,
-                            fontSize: { xs: '1.5rem', md: '2rem' }
+                            fontSize: { xs: '1.4rem', md: '1.7rem' }
                         }}
                     >
                         Admin
@@ -414,12 +418,11 @@ const AdminPage = () => {
                         onClick={handleLogout}
                         size="small"
                         sx={{
-                            borderColor: 'rgb(68, 143, 155)',
-                            color: 'rgb(68, 143, 155)',
-                            '&:hover': {
-                                borderColor: 'rgb(68, 143, 155)',
-                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
-                            }
+                            ...pillButtonSx,
+                            px: 2,
+                            color: '#607d8b',
+                            borderColor: '#cfd8dc',
+                            '&:hover': { borderColor: '#90a4ae', backgroundColor: '#fafafa' }
                         }}
                     >
                         Logga ut
@@ -430,39 +433,38 @@ const AdminPage = () => {
                 <Box sx={{
                     display: 'flex',
                     gap: 1,
-                    mb: 3,
-                    flexDirection: { xs: 'column', sm: 'row' }
+                    mb: 2,
+                    maxWidth: 700,
+                    mx: 'auto',
+                    flexWrap: 'wrap'
                 }}>
                     <Button
                         variant="contained"
-                        startIcon={<AddIcon />}
+                        startIcon={<AddIcon sx={{ fontSize: 18 }} />}
                         onClick={handleCreatePrice}
                         sx={{
-                            backgroundColor: 'rgb(68, 143, 155)',
-                            py: 1,
-                            '&:hover': { backgroundColor: 'rgb(58, 123, 135)' }
+                            ...pillButtonSx,
+                            px: 2.5,
+                            py: 0.9,
+                            backgroundColor: BRAND,
+                            '&:hover': { backgroundColor: BRAND_DARK, boxShadow: 'none' }
                         }}
-                        size="small"
-                        fullWidth={isMobile}
                     >
                         Lägg till
                     </Button>
                     <Button
                         variant="outlined"
-                        startIcon={<UploadIcon />}
+                        startIcon={<UploadIcon sx={{ fontSize: 18 }} />}
                         component="label"
-                        size="small"
                         disabled={isUploading}
                         sx={{
-                            py: 1,
-                            borderColor: 'rgb(68, 143, 155)',
-                            color: 'rgb(68, 143, 155)',
-                            '&:hover': {
-                                borderColor: 'rgb(68, 143, 155)',
-                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
-                            }
+                            ...pillButtonSx,
+                            px: 2.5,
+                            py: 0.9,
+                            color: BRAND,
+                            borderColor: '#cfe0e3',
+                            '&:hover': { borderColor: BRAND, backgroundColor: 'rgba(68,143,155,0.04)' }
                         }}
-                        fullWidth={isMobile}
                     >
                         {isUploading ? 'Laddar upp...' : 'Ladda upp bild'}
                         <input
@@ -474,19 +476,16 @@ const AdminPage = () => {
                     </Button>
                     <Button
                         variant="outlined"
-                        startIcon={<LibraryBooksIcon />}
+                        startIcon={<LibraryBooksIcon sx={{ fontSize: 18 }} />}
                         onClick={() => setIsImageLibraryOpen(true)}
-                        size="small"
                         sx={{
-                            py: 1,
-                            borderColor: 'rgb(68, 143, 155)',
-                            color: 'rgb(68, 143, 155)',
-                            '&:hover': {
-                                borderColor: 'rgb(68, 143, 155)',
-                                backgroundColor: 'rgba(68, 143, 155, 0.04)'
-                            }
+                            ...pillButtonSx,
+                            px: 2.5,
+                            py: 0.9,
+                            color: BRAND,
+                            borderColor: '#cfe0e3',
+                            '&:hover': { borderColor: BRAND, backgroundColor: 'rgba(68,143,155,0.04)' }
                         }}
-                        fullWidth={isMobile}
                     >
                         Bildbibliotek
                     </Button>
@@ -554,7 +553,7 @@ const AdminPage = () => {
                         severity={statusMessage?.severity || 'success'}
                         variant="filled"
                         icon={false}
-                        sx={{ fontSize: '1.15rem', px: 3, py: 1 }}
+                        sx={{ fontSize: '1.05rem', px: 3, py: 0.75, borderRadius: 999 }}
                     >
                         {statusMessage?.text}
                     </Alert>

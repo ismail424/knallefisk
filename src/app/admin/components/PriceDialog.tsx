@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { Check as CheckIcon } from '@mui/icons-material';
 import { AdminPrice, UploadedImage } from '../../../lib/types';
-import { priceInputSx, toggleGroupSx } from './styles';
+import { priceInputSx, toggleGroupSx, pillButtonSx, BRAND, BRAND_DARK, DANGER } from './styles';
 
 interface PriceDialogProps {
     open: boolean;
@@ -36,7 +36,7 @@ interface PriceDialogProps {
 const COMMON_UNITS = ['kg', 'hg', 'st', 'förp'];
 
 const SectionLabel = ({ children }: { children: React.ReactNode }) => (
-    <Typography sx={{ fontSize: '1.05rem', fontWeight: 600, color: '#444', mb: 1 }}>
+    <Typography sx={{ fontSize: '0.95rem', fontWeight: 600, color: '#546e7a', mb: 1 }}>
         {children}
     </Typography>
 );
@@ -66,18 +66,19 @@ const PriceDialog = ({
             maxWidth="sm"
             fullWidth
             fullScreen={isMobile}
+            sx={{ '& .MuiDialog-paper': { borderRadius: isMobile ? 0 : 5 } }}
         >
             <DialogTitle sx={{
-                fontSize: '1.35rem',
+                fontSize: '1.2rem',
                 fontWeight: 600,
-                color: '#448f9b',
+                color: BRAND,
                 px: { xs: 2.5, md: 3 },
-                py: 2
+                py: 1.75
             }}>
                 {isEditing ? `Redigera: ${price.title || ''}` : 'Ny produkt'}
             </DialogTitle>
-            <DialogContent dividers sx={{ px: { xs: 2.5, md: 3 }, py: 3 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3.5 }}>
+            <DialogContent dividers sx={{ px: { xs: 2.5, md: 3 }, py: 2.5, borderColor: '#f0f4f5' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
                     <Box>
                         <SectionLabel>Namn</SectionLabel>
                         <TextField
@@ -85,7 +86,10 @@ const PriceDialog = ({
                             placeholder="t.ex. Torskfilé"
                             value={price.title || ''}
                             onChange={(e) => onChange({ ...price, title: e.target.value })}
-                            sx={{ '& .MuiInputBase-input': { fontSize: '1.2rem', py: 1.5 } }}
+                            sx={{
+                                '& .MuiOutlinedInput-root': { borderRadius: 3 },
+                                '& .MuiInputBase-input': { fontSize: '1.1rem', py: 1.3 }
+                            }}
                         />
                     </Box>
 
@@ -99,16 +103,16 @@ const PriceDialog = ({
                                 inputProps={{ inputMode: 'decimal' }}
                                 sx={{ ...priceInputSx, flex: 2 }}
                             />
-                            <FormControl sx={{ flex: 1, minWidth: 100 }}>
-                                <InputLabel sx={{ fontSize: '1.05rem' }}>Per</InputLabel>
+                            <FormControl sx={{ flex: 1, minWidth: 96 }}>
+                                <InputLabel>Per</InputLabel>
                                 <Select
                                     label="Per"
                                     value={price.unit || 'kg'}
                                     onChange={(e) => onChange({ ...price, unit: e.target.value })}
-                                    sx={{ fontSize: '1.2rem', '& .MuiSelect-select': { py: 2 } }}
+                                    sx={{ borderRadius: 3, fontSize: '1.1rem', '& .MuiSelect-select': { py: 1.7 } }}
                                 >
                                     {units.map(unit => (
-                                        <MenuItem key={unit} value={unit} sx={{ fontSize: '1.1rem', minHeight: 48 }}>
+                                        <MenuItem key={unit} value={unit} sx={{ fontSize: '1rem', minHeight: 44 }}>
                                             {unit}
                                         </MenuItem>
                                     ))}
@@ -123,14 +127,14 @@ const PriceDialog = ({
                             value={price.on_sale ? 'yes' : 'no'}
                             exclusive
                             onChange={(_, value) => value && onChange({ ...price, on_sale: value === 'yes' })}
-                            sx={toggleGroupSx('#d32f2f')}
+                            sx={toggleGroupSx(DANGER)}
                         >
                             <ToggleButton value="yes">
-                                {price.on_sale && <CheckIcon sx={{ mr: 0.5 }} />}
+                                {price.on_sale && <CheckIcon sx={{ mr: 0.5, fontSize: 18 }} />}
                                 Ja, REA
                             </ToggleButton>
-                            <ToggleButton value="no" sx={{ '&.Mui-selected': { backgroundColor: '#616161 !important' } }}>
-                                {!price.on_sale && <CheckIcon sx={{ mr: 0.5 }} />}
+                            <ToggleButton value="no">
+                                {!price.on_sale && <CheckIcon sx={{ mr: 0.5, fontSize: 18 }} />}
                                 Nej
                             </ToggleButton>
                         </ToggleButtonGroup>
@@ -153,14 +157,14 @@ const PriceDialog = ({
                             value={price.is_visible !== false ? 'yes' : 'no'}
                             exclusive
                             onChange={(_, value) => value && onChange({ ...price, is_visible: value === 'yes' })}
-                            sx={toggleGroupSx('#2e7d32')}
+                            sx={toggleGroupSx(BRAND)}
                         >
                             <ToggleButton value="yes">
-                                {price.is_visible !== false && <CheckIcon sx={{ mr: 0.5 }} />}
+                                {price.is_visible !== false && <CheckIcon sx={{ mr: 0.5, fontSize: 18 }} />}
                                 Ja, synlig
                             </ToggleButton>
-                            <ToggleButton value="no" sx={{ '&.Mui-selected': { backgroundColor: '#616161 !important' } }}>
-                                {price.is_visible === false && <CheckIcon sx={{ mr: 0.5 }} />}
+                            <ToggleButton value="no">
+                                {price.is_visible === false && <CheckIcon sx={{ mr: 0.5, fontSize: 18 }} />}
                                 Nej, dold
                             </ToggleButton>
                         </ToggleButtonGroup>
@@ -177,34 +181,33 @@ const PriceDialog = ({
                                     alt="Vald bild"
                                     sx={{
                                         width: '100%',
-                                        maxWidth: 280,
-                                        height: 160,
+                                        maxWidth: 260,
+                                        height: 140,
                                         objectFit: 'cover',
-                                        borderRadius: 2,
-                                        border: '1px solid #ddd'
+                                        borderRadius: 3,
+                                        border: '1px solid #e8eef0'
                                     }}
                                 />
                                 <Button
                                     onClick={() => onChange({ ...price, image: '' })}
-                                    sx={{ mt: 0.5, fontSize: '0.95rem', textTransform: 'none', color: '#d32f2f' }}
+                                    sx={{ ...pillButtonSx, mt: 0.5, fontSize: '0.9rem', color: DANGER }}
                                 >
                                     Ta bort bilden
                                 </Button>
                             </Box>
                         )}
 
-                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1.5, mb: 2 }}>
+                        <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 1, mb: 2 }}>
                             <Button
                                 variant="contained"
                                 component="label"
                                 fullWidth
                                 disabled={isUploading}
                                 sx={{
-                                    minHeight: 52,
-                                    fontSize: '1rem',
-                                    textTransform: 'none',
-                                    backgroundColor: '#448f9b',
-                                    '&:hover': { backgroundColor: '#357a84' }
+                                    ...pillButtonSx,
+                                    minHeight: 44,
+                                    backgroundColor: BRAND,
+                                    '&:hover': { backgroundColor: BRAND_DARK, boxShadow: 'none' }
                                 }}
                             >
                                 {isUploading ? 'Laddar upp...' : '📷 Ta en bild'}
@@ -221,7 +224,13 @@ const PriceDialog = ({
                                 component="label"
                                 fullWidth
                                 disabled={isUploading}
-                                sx={{ minHeight: 52, fontSize: '1rem', textTransform: 'none' }}
+                                sx={{
+                                    ...pillButtonSx,
+                                    minHeight: 44,
+                                    color: BRAND,
+                                    borderColor: '#cfe0e3',
+                                    '&:hover': { borderColor: BRAND, backgroundColor: 'rgba(68,143,155,0.04)' }
+                                }}
                             >
                                 {isUploading ? 'Laddar upp...' : 'Välj bild från mobilen'}
                                 <input
@@ -235,19 +244,19 @@ const PriceDialog = ({
 
                         {images.length > 0 && (
                             <>
-                                <Typography sx={{ fontSize: '0.95rem', color: '#666', mb: 1 }}>
+                                <Typography sx={{ fontSize: '0.9rem', color: '#78909c', mb: 1 }}>
                                     ...eller välj en tidigare bild:
                                 </Typography>
                                 <Box sx={{
                                     display: 'grid',
-                                    gridTemplateColumns: 'repeat(auto-fill, minmax(96px, 1fr))',
+                                    gridTemplateColumns: 'repeat(auto-fill, minmax(88px, 1fr))',
                                     gap: 1,
-                                    maxHeight: 240,
+                                    maxHeight: 220,
                                     overflowY: 'auto',
-                                    border: '1px solid #ddd',
-                                    borderRadius: 2,
+                                    border: '1px solid #e8eef0',
+                                    borderRadius: 3,
                                     p: 1,
-                                    bgcolor: '#f9f9f9'
+                                    bgcolor: '#fafcfc'
                                 }}>
                                     {images.map((image) => (
                                         <Box
@@ -258,11 +267,11 @@ const PriceDialog = ({
                                             onClick={() => onChange({ ...price, image: image.url })}
                                             sx={{
                                                 width: '100%',
-                                                height: 80,
+                                                height: 72,
                                                 objectFit: 'cover',
-                                                borderRadius: 1,
+                                                borderRadius: 2,
                                                 cursor: 'pointer',
-                                                border: price.image === image.url ? '3px solid #448f9b' : '1px solid #ddd'
+                                                border: price.image === image.url ? `3px solid ${BRAND}` : '1px solid #e8eef0'
                                             }}
                                         />
                                     ))}
@@ -272,11 +281,19 @@ const PriceDialog = ({
                     </Box>
                 </Box>
             </DialogContent>
-            <DialogActions sx={{ px: { xs: 2.5, md: 3 }, py: 2, gap: 1.5 }}>
+            <DialogActions sx={{ px: { xs: 2.5, md: 3 }, py: 1.75, gap: 1 }}>
                 <Button
                     onClick={onClose}
                     variant="outlined"
-                    sx={{ flex: 1, minHeight: 56, fontSize: '1.1rem', textTransform: 'none' }}
+                    sx={{
+                        ...pillButtonSx,
+                        flex: 1,
+                        minHeight: 46,
+                        fontSize: '1rem',
+                        color: '#607d8b',
+                        borderColor: '#cfd8dc',
+                        '&:hover': { borderColor: '#90a4ae', backgroundColor: '#fafafa' }
+                    }}
                 >
                     Avbryt
                 </Button>
@@ -284,13 +301,13 @@ const PriceDialog = ({
                     onClick={onSave}
                     variant="contained"
                     sx={{
+                        ...pillButtonSx,
                         flex: 2,
-                        minHeight: 56,
-                        fontSize: '1.1rem',
+                        minHeight: 46,
+                        fontSize: '1rem',
                         fontWeight: 600,
-                        textTransform: 'none',
-                        backgroundColor: '#448f9b',
-                        '&:hover': { backgroundColor: '#357a84' },
+                        backgroundColor: BRAND,
+                        '&:hover': { backgroundColor: BRAND_DARK, boxShadow: 'none' },
                         ml: '0 !important'
                     }}
                 >

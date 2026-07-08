@@ -1,6 +1,7 @@
 'use client';
 
 import { Dialog, DialogContent, DialogActions, Typography, Button } from '@mui/material';
+import { pillButtonSx, DANGER } from './styles';
 
 interface ConfirmDialogProps {
     open: boolean;
@@ -11,19 +12,30 @@ interface ConfirmDialogProps {
 }
 
 const ConfirmDialog = ({ open, message, confirmLabel = 'Ja, ta bort', onConfirm, onCancel }: ConfirmDialogProps) => (
-    <Dialog open={open} onClose={onCancel} maxWidth="xs" fullWidth>
+    <Dialog
+        open={open}
+        onClose={onCancel}
+        maxWidth="xs"
+        fullWidth
+        sx={{ '& .MuiDialog-paper': { borderRadius: 5 } }}
+    >
         <DialogContent sx={{ pt: 4 }}>
-            <Typography sx={{ fontSize: '1.15rem', textAlign: 'center' }}>
+            <Typography sx={{ fontSize: '1.1rem', textAlign: 'center', color: '#37474f' }}>
                 {message}
             </Typography>
         </DialogContent>
-        <DialogActions sx={{ flexDirection: 'column', gap: 1.5, p: 3 }}>
+        <DialogActions sx={{ flexDirection: 'column', gap: 1.25, p: 2.5 }}>
             <Button
                 fullWidth
                 variant="contained"
-                color="error"
                 onClick={onConfirm}
-                sx={{ minHeight: 52, fontSize: '1.1rem' }}
+                sx={{
+                    ...pillButtonSx,
+                    minHeight: 46,
+                    fontSize: '1rem',
+                    backgroundColor: DANGER,
+                    '&:hover': { backgroundColor: '#a94a43', boxShadow: 'none' }
+                }}
             >
                 {confirmLabel}
             </Button>
@@ -31,7 +43,15 @@ const ConfirmDialog = ({ open, message, confirmLabel = 'Ja, ta bort', onConfirm,
                 fullWidth
                 variant="outlined"
                 onClick={onCancel}
-                sx={{ minHeight: 52, fontSize: '1.1rem', ml: '0 !important' }}
+                sx={{
+                    ...pillButtonSx,
+                    minHeight: 46,
+                    fontSize: '1rem',
+                    color: '#607d8b',
+                    borderColor: '#cfd8dc',
+                    ml: '0 !important',
+                    '&:hover': { borderColor: '#90a4ae', backgroundColor: '#fafafa' }
+                }}
             >
                 Avbryt
             </Button>

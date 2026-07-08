@@ -26,7 +26,7 @@ const LoginForm = ({ password, loginError, isLoggingIn, onPasswordChange, onSubm
             justifyContent: 'center'
         }}>
             <Container maxWidth="sm">
-                <Card sx={{ p: { xs: 3, md: 4 } }}>
+                <Card sx={{ p: { xs: 3, md: 4 }, borderRadius: 5, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
                     <Typography variant="h4" sx={{
                         mb: 3,
                         textAlign: 'center',
@@ -46,7 +46,8 @@ const LoginForm = ({ password, loginError, isLoggingIn, onPasswordChange, onSubm
                         helperText={loginError}
                         sx={{
                             mb: 3,
-                            '& .MuiInputBase-input': { fontSize: '1.2rem', py: 1.8 }
+                            '& .MuiOutlinedInput-root': { borderRadius: 3 },
+                            '& .MuiInputBase-input': { fontSize: '1.15rem', py: 1.6 }
                         }}
                         InputProps={{
                             endAdornment: (
@@ -69,11 +70,15 @@ const LoginForm = ({ password, loginError, isLoggingIn, onPasswordChange, onSubm
                         onClick={onSubmit}
                         disabled={isLoggingIn}
                         sx={{
-                            py: 1.8,
-                            fontSize: '1.15rem',
+                            py: 1.4,
+                            fontSize: '1.05rem',
+                            borderRadius: 999,
+                            textTransform: 'none',
+                            boxShadow: 'none',
                             backgroundColor: '#448f9b',
                             '&:hover': {
-                                backgroundColor: '#357a84'
+                                backgroundColor: '#357a84',
+                                boxShadow: 'none'
                             }
                         }}
                     >
