@@ -2,101 +2,33 @@
 
 import { useState, useEffect } from 'react';
 import { Box, Container, Typography, Card, CardContent, CardMedia, CircularProgress, Alert } from '@mui/material';
-
-interface AdminPrice {
-    id: string;
-    title: string;
-    price: string;
-    sale_price?: string;
-    category?: string;
-    unit: string;
-    weight?: string;
-    on_sale: boolean;
-    is_visible: boolean;
-    image?: string;
-}
-
-interface Price {
-    id: string;
-    name: string;
-    title?: string; // For compatibility with admin
-    price: string;
-    sale_price?: string;
-    category?: string;
-    unit: string;
-    weight?: string;
-    on_sale: boolean;
-    is_visible: boolean;
-    image?: string;
-}
+import { AdminPrice } from '../lib/types';
 
 const Prices = () => {
-    const [prices, setPrices] = useState<Price[]>([]);
+    const [prices, setPrices] = useState<AdminPrice[]>([]);
     const [loading, setLoading] = useState(true);
-    const [error] = useState("");
+    const [error, setError] = useState('');
 
     useEffect(() => {
-        // Ladda priser från Vercel Blob via API - visa bara riktiga adminpriser
         const loadPrices = async () => {
             try {
                 const response = await fetch('/api/admin/prices');
-                if (response.ok) {
-                    const adminPrices = await response.json();
-                    console.log('Prices - Loaded admin prices from API:', adminPrices);
-                    // Konvertera admin format (title) till display format (name) och visa bara synliga priser
-                    const visiblePrices = adminPrices
-                        .filter((price: AdminPrice) => price.is_visible !== false)
-                        .map((price: AdminPrice): Price => ({
-                            id: price.id,
-                            name: price.title, // Använd title från admin som name
-                            price: price.price,
-                            sale_price: price.sale_price,
-                            category: price.category,
-                            unit: price.unit,
-                            weight: price.weight,
-                            on_sale: price.on_sale,
-                            is_visible: price.is_visible,
-                            image: price.image
-                        }));
-                    console.log('Prices - Filtered visible prices:', visiblePrices);
-                    setPrices(visiblePrices);
+                if (!response.ok) {
+                    throw new Error('Failed to fetch prices');
                 }
-            } catch (error) {
-                console.error('Error loading prices from API:', error);
-                // Fallback to localStorage for existing users
-                const savedPrices = localStorage.getItem('admin_prices');
-                console.log('Prices - Fallback to localStorage:', savedPrices);
-                if (savedPrices) {
-                    try {
-                        const adminPrices = JSON.parse(savedPrices);
-                        const visiblePrices = adminPrices
-                            .filter((price: AdminPrice) => price.is_visible !== false)
-                            .map((price: AdminPrice): Price => ({
-                                id: price.id,
-                                name: price.title,
-                                price: price.price,
-                                sale_price: price.sale_price,
-                                category: price.category,
-                                unit: price.unit,
-                                weight: price.weight,
-                                on_sale: price.on_sale,
-                                is_visible: price.is_visible,
-                                image: price.image
-                            }));
-                        setPrices(visiblePrices);
-                    } catch (e) {
-                        console.error('Error parsing localStorage prices:', e);
-                    }
-                }
+                const adminPrices: AdminPrice[] = await response.json();
+                setPrices(adminPrices.filter(price => price.is_visible !== false));
+            } catch (err) {
+                console.error('Error loading prices from API:', err);
+                setError('Kunde inte ladda priserna just nu. Försök igen senare.');
             } finally {
                 setLoading(false);
             }
         };
-        
+
         loadPrices();
     }, []);
 
-    const filteredPrices = prices.filter(price => price.is_visible !== false);
 
     if (loading) {
         return (
@@ -139,12 +71,12 @@ const Prices = () => {
                             mb: 1
                         }}
                     >
-                        Våra Priser
+                        Våra priser
                     </Typography>
                 </Box>
 
                 {/* Empty State */}
-                {filteredPrices.length === 0 ? (
+                {prices.length === 0 ? (
                     <Box sx={{ 
                         textAlign: 'center', 
                         py: 8,
@@ -168,7 +100,7 @@ const Prices = () => {
                         },
                         gap: 2
                     }}>
-                        {filteredPrices.map((price) => (
+                        {prices.map((price) => (
                         <Card 
                             key={price.id}
                             sx={{ 
@@ -192,7 +124,7 @@ const Prices = () => {
                                         component="img"
                                         height="160"
                                         image={price.image}
-                                        alt={price.name}
+                                        alt={price.title}
                                         sx={{ 
                                             objectFit: 'cover'
                                         }}
@@ -238,7 +170,7 @@ const Prices = () => {
                                         fontFamily: 'system-ui, -apple-system, sans-serif'
                                     }}
                                 >
-                                    {price.name}
+                                    {price.title}
                                 </Typography>
                                 
                                 {/* Price Section */}

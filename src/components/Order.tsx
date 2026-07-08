@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 import {
@@ -29,9 +29,11 @@ const Order = () => {
     });
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [submitError, setSubmitError] = useState('');
 
-    // Initialize EmailJS
-    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+    useEffect(() => {
+        emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
@@ -43,7 +45,8 @@ const Order = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        
+        setSubmitError('');
+
         try {
             // Prepare template params for EmailJS
             const templateParams = {
@@ -62,7 +65,6 @@ const Order = () => {
                 templateParams
             );
 
-            console.log('Order submitted successfully:', formData);
             setSubmitted(true);
 
             setTimeout(() => {
@@ -80,7 +82,7 @@ const Order = () => {
         } catch (error) {
             console.error('Error sending email:', error);
             setLoading(false);
-            // You might want to show an error message to the user here
+            setSubmitError('Något gick fel när beställningen skickades. Försök igen eller ring oss direkt.');
         }
     };
 
@@ -244,6 +246,12 @@ const Order = () => {
                             <ShoppingCart />
                             Din beställning
                         </Typography>
+
+                    {submitError && (
+                        <Alert severity="error" sx={{ mb: 3 }}>
+                            {submitError}
+                        </Alert>
+                    )}
 
                     <Box component="form" onSubmit={handleSubmit}>
                         <Box sx={{ display: 'grid', gap: 3 }}>

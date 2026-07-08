@@ -1,41 +1,43 @@
-import { RateLimiterMemory } from 'rate-limiter-flexible';
+interface RateLimitEntry {
+  attempts: number;
+  windowStart: number;
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  remainingAttempts: number;
+  resetTime?: Date;
+}
+
+const attemptsByIP = new Map<string, RateLimitEntry>();
 
 export class RateLimiter {
   private static readonly maxAttempts = parseInt(process.env.RATE_LIMIT_MAX_ATTEMPTS || '5');
   private static readonly windowMs = parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000'); // 15 minutes
 
-  private static limiter = new RateLimiterMemory({
-    points: this.maxAttempts, // Number of attempts
-    duration: Math.floor(this.windowMs / 1000), // Per X seconds
-    blockDuration: Math.floor(this.windowMs / 1000), // Block for X seconds
-  });
+  static async checkRateLimit(ip: string): Promise<RateLimitResult> {
+    const now = Date.now();
+    const entry = attemptsByIP.get(ip);
 
-  static async checkRateLimit(ip: string): Promise<{ allowed: boolean; remainingAttempts: number; resetTime?: Date }> {
-    try {
-      const result = await this.limiter.consume(ip);
-      return {
-        allowed: true,
-        remainingAttempts: result.remainingPoints || 0
-      };
-    } catch (rateLimiterRes: unknown) {
-      const resetTime = new Date(Date.now() + this.windowMs);
-      if (rateLimiterRes && typeof rateLimiterRes === 'object' && 'msBeforeNext' in rateLimiterRes) {
-        const msBeforeNext = (rateLimiterRes as { msBeforeNext: number }).msBeforeNext;
-        resetTime.setTime(Date.now() + msBeforeNext);
-      }
+    if (!entry || now - entry.windowStart > this.windowMs) {
+      attemptsByIP.set(ip, { attempts: 1, windowStart: now });
+      return { allowed: true, remainingAttempts: this.maxAttempts - 1 };
+    }
+
+    entry.attempts += 1;
+
+    if (entry.attempts > this.maxAttempts) {
       return {
         allowed: false,
         remainingAttempts: 0,
-        resetTime
+        resetTime: new Date(entry.windowStart + this.windowMs)
       };
     }
+
+    return { allowed: true, remainingAttempts: this.maxAttempts - entry.attempts };
   }
 
   static async resetRateLimit(ip: string): Promise<void> {
-    try {
-      await this.limiter.delete(ip);
-    } catch {
-      // Ignore errors when resetting
-    }
+    attemptsByIP.delete(ip);
   }
 }

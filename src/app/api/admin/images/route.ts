@@ -1,68 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { put, del } from '@vercel/blob';
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
-import { sql, initializeDatabase } from '../../../../lib/database';
+import { AuthUtils } from '../../../../lib/auth';
+import { sql } from '../../../../lib/database';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
-
-// Initialize database on first load
-let dbInitialized = false;
-
-async function ensureDatabase() {
-  if (!dbInitialized) {
-    await initializeDatabase();
-    dbInitialized = true;
-  }
+function isAdmin(request: NextRequest): boolean {
+    const token = AuthUtils.getTokenFromRequest(request);
+    if (!token) return false;
+    const payload = AuthUtils.verifyToken(token);
+    return payload?.role === 'admin';
 }
 
-// Verify authentication
-async function verifyAuth() {
-    const cookieStore = await cookies();
-    const token = cookieStore.get('admin-token')?.value;
-    
-    if (!token) {
-        return false;
-    }
-    
+export async function GET(request: NextRequest) {
     try {
-        jwt.verify(token, JWT_SECRET);
-        return true;
-    } catch {
-        return false;
-    }
-}
-
-export async function GET() {
-    try {
-        await ensureDatabase();
-        
-        // Verify authentication
-        if (!(await verifyAuth())) {
+        if (!isAdmin(request)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        // Get all images from database
         const images = await sql`
-            SELECT 
+            SELECT
                 id::text,
                 name,
                 url,
-                blob_url,
                 size_bytes as size,
-                file_type,
-                created_at as uploadDate
-            FROM images 
+                created_at as upload_date
+            FROM images
             ORDER BY created_at DESC
         `;
 
-        // Transform to expected format
         const imageList = images.map(img => ({
             id: img.id,
             name: img.name,
             url: img.url,
             size: img.size,
-            uploadDate: img.uploaddate
+            uploadDate: img.upload_date
         }));
 
         return NextResponse.json(imageList);
@@ -74,62 +44,51 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
     try {
-        await ensureDatabase();
-        
-        // Verify authentication
-        if (!(await verifyAuth())) {
+        if (!isAdmin(request)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const formData = await request.formData();
         const file = formData.get('file') as File;
-        
+
         if (!file) {
             return NextResponse.json({ error: 'No file provided' }, { status: 400 });
         }
 
-        // Validate file type
         const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
         if (!allowedTypes.includes(file.type)) {
-            return NextResponse.json({ 
-                error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.' 
+            return NextResponse.json({
+                error: 'Invalid file type. Only JPEG, PNG, WebP, and GIF are allowed.'
             }, { status: 400 });
         }
 
-        // Validate file size (max 10MB)
         const maxSize = 10 * 1024 * 1024; // 10MB
         if (file.size > maxSize) {
-            return NextResponse.json({ 
-                error: 'File too large. Maximum size is 10MB.' 
+            return NextResponse.json({
+                error: 'File too large. Maximum size is 10MB.'
             }, { status: 400 });
         }
 
-        // Generate unique filename
-        const timestamp = Date.now();
-        const filename = `images/${timestamp}-${file.name}`;
+        const filename = `images/${Date.now()}-${file.name}`;
 
-        // Upload to Vercel Blob
         const blob = await put(filename, file, {
             access: 'public',
             token: process.env.BLOB_READ_WRITE_TOKEN,
         });
 
-        // Save metadata to database
         const imageRecord = await sql`
             INSERT INTO images (name, url, blob_url, size_bytes, file_type)
             VALUES (${file.name}, ${blob.url}, ${blob.url}, ${file.size}, ${file.type})
-            RETURNING id::text, name, url, size_bytes as size, created_at as uploadDate
+            RETURNING id::text, name, url, size_bytes as size, created_at as upload_date
         `;
 
-        const imageData = {
+        return NextResponse.json({
             id: imageRecord[0].id,
             name: imageRecord[0].name,
             url: imageRecord[0].url,
             size: imageRecord[0].size,
-            uploadDate: imageRecord[0].uploaddate
-        };
-
-        return NextResponse.json(imageData);
+            uploadDate: imageRecord[0].upload_date
+        });
     } catch (error) {
         console.error('Error uploading image:', error);
         return NextResponse.json({ error: 'Failed to upload image' }, { status: 500 });
@@ -138,21 +97,17 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     try {
-        await ensureDatabase();
-        
-        // Verify authentication
-        if (!(await verifyAuth())) {
+        if (!isAdmin(request)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const { searchParams } = new URL(request.url);
         const imageUrl = searchParams.get('url');
-        
+
         if (!imageUrl) {
             return NextResponse.json({ error: 'No image URL provided' }, { status: 400 });
         }
 
-        // Get image record from database
         const imageRecord = await sql`
             SELECT id, blob_url FROM images WHERE url = ${imageUrl}
         `;
@@ -161,14 +116,19 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ error: 'Image not found' }, { status: 404 });
         }
 
-        // Delete from Vercel Blob
         await del(imageRecord[0].blob_url, {
             token: process.env.BLOB_READ_WRITE_TOKEN,
         });
 
-        // Delete from database
         await sql`
             DELETE FROM images WHERE url = ${imageUrl}
+        `;
+
+        // Clear the image from any prices that reference it, so they don't
+        // keep pointing at a dead URL
+        await sql`
+            UPDATE prices SET image_url = NULL, updated_at = NOW()
+            WHERE image_url = ${imageUrl}
         `;
 
         return NextResponse.json({ success: true });

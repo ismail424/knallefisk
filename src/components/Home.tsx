@@ -18,57 +18,25 @@ import {
     CheckCircleOutline
 } from '@mui/icons-material';
 import VacationNotice from './VacationNotice';
-
-interface AdminPrice {
-    id: string;
-    title: string;
-    price: string;
-    sale_price?: string;
-    category?: string;
-    unit: string;
-    weight?: string;
-    on_sale: boolean;
-    is_visible: boolean;
-    image?: string;
-}
+import { AdminPrice } from '../lib/types';
 
 const Home = () => {
     const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>([]);
 
     useEffect(() => {
-        // Load prices from Vercel Blob via API
         const loadPrices = async () => {
             try {
                 const response = await fetch('/api/admin/prices');
                 if (response.ok) {
-                    const adminPrices = await response.json();
-                    console.log('Home - Loaded admin prices from API:', adminPrices);
+                    const adminPrices: AdminPrice[] = await response.json();
                     // Get first 6 visible prices for featured section
-                    const visiblePrices = adminPrices
-                        .filter((price: AdminPrice) => price.is_visible !== false)
-                        .slice(0, 6);
-                    console.log('Home - Filtered visible prices:', visiblePrices);
-                    setFeaturedPrices(visiblePrices);
+                    setFeaturedPrices(adminPrices.filter(price => price.is_visible !== false).slice(0, 6));
                 }
             } catch (error) {
                 console.error('Error loading prices from API:', error);
-                // Fallback to localStorage for existing users
-                const savedPrices = localStorage.getItem('admin_prices');
-                console.log('Home - Fallback to localStorage:', savedPrices);
-                if (savedPrices) {
-                    try {
-                        const adminPrices = JSON.parse(savedPrices);
-                        const visiblePrices = adminPrices
-                            .filter((price: AdminPrice) => price.is_visible !== false)
-                            .slice(0, 6);
-                        setFeaturedPrices(visiblePrices);
-                    } catch (e) {
-                        console.error('Error parsing localStorage prices:', e);
-                    }
-                }
             }
         };
-        
+
         loadPrices();
     }, []);
 
