@@ -2,6 +2,7 @@
 
 import { Box, Container, Typography, Card, CardContent } from '@mui/material';
 import { Email, Phone, LocationOn, AccessTime } from '@mui/icons-material';
+import VacationNotice from '../../components/VacationNotice';
 
 export default function KontaktaOssPage() {
   const contactInfo = [
@@ -33,6 +34,8 @@ export default function KontaktaOssPage() {
   return (
     <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
       <Container maxWidth="lg">
+        <VacationNotice sx={{ mb: 4, borderRadius: 2 }} />
+
         {/* Simple Header */}
         <Box sx={{ textAlign: 'center', mb: 8 }}>
           <Typography

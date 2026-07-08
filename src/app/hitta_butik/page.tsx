@@ -2,6 +2,7 @@
 
 import { Box, Container, Typography, Card, CardContent } from '@mui/material';
 import { StorefrontOutlined } from '@mui/icons-material';
+import VacationNotice from '../../components/VacationNotice';
 
 const HittaButik = () => {
   const stores = [
@@ -36,6 +37,8 @@ const HittaButik = () => {
   return (
     <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 6, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
       <Container maxWidth="lg">
+        <VacationNotice sx={{ mb: 4, borderRadius: 2 }} />
+
         {/* Simple Page Header */}
         <Box sx={{ textAlign: 'center', mb: 6 }}>
           <Typography
