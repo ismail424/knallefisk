@@ -43,6 +43,7 @@ const AdminPage = () => {
     const [isImageLibraryOpen, setIsImageLibraryOpen] = useState(false);
     const [currentPrice, setCurrentPrice] = useState<Partial<AdminPrice>>({});
     const [isEditing, setIsEditing] = useState(false);
+    const [expandedId, setExpandedId] = useState<string | null>(null);
     const [statusMessage, setStatusMessage] = useState<{ text: string; severity: 'success' | 'error' } | null>(null);
     const [isUploading, setIsUploading] = useState(false);
     const [confirmDialog, setConfirmDialog] = useState<ConfirmState | null>(null);
@@ -491,20 +492,20 @@ const AdminPage = () => {
                     </Button>
                 </Box>
 
-                {/* Prices Grid */}
+                {/* Compact price list - tap a row to edit */}
                 <Box sx={{
-                    display: 'grid',
-                    gridTemplateColumns: {
-                        xs: '1fr',
-                        md: 'repeat(2, 1fr)',
-                        lg: 'repeat(3, 1fr)'
-                    },
-                    gap: 2
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 1,
+                    maxWidth: 700,
+                    mx: 'auto'
                 }}>
                     {prices.map((price) => (
                         <PriceCard
                             key={price.id}
                             price={price}
+                            expanded={expandedId === price.id}
+                            onToggleExpand={() => setExpandedId(expandedId === price.id ? null : price.id)}
                             onFieldChange={updatePriceInline}
                             onEdit={handleEditPrice}
                             onDelete={handleDeletePrice}
