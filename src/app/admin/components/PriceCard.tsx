@@ -21,6 +21,7 @@ import {
     ImageOutlined as ImageOutlinedIcon
 } from '@mui/icons-material';
 import { AdminPrice } from '../../../lib/types';
+import { priceInputSx, toggleGroupSx } from './styles';
 
 interface PriceCardProps {
     price: AdminPrice;
@@ -30,36 +31,6 @@ interface PriceCardProps {
     onEdit: (price: AdminPrice) => void;
     onDelete: (id: string) => void;
 }
-
-const priceInputSx = {
-    '& .MuiInputBase-input': {
-        fontSize: '1.4rem',
-        fontWeight: 600,
-        py: 1.5
-    },
-    '& .MuiInputLabel-root': {
-        fontSize: '1.05rem'
-    }
-};
-
-const toggleGroupSx = (activeColor: string) => ({
-    width: '100%',
-    '& .MuiToggleButton-root': {
-        flex: 1,
-        minHeight: 52,
-        fontSize: '1rem',
-        textTransform: 'none',
-        color: '#666',
-        '&.Mui-selected': {
-            backgroundColor: activeColor,
-            color: 'white',
-            fontWeight: 600,
-            '&:hover': {
-                backgroundColor: activeColor
-            }
-        }
-    }
-});
 
 const PriceCard = ({ price, expanded, onToggleExpand, onFieldChange, onEdit, onDelete }: PriceCardProps) => (
     <Card sx={{
