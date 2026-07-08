@@ -31,8 +31,16 @@ interface AdminPrice {
     image?: string;
 }
 
+// Semesterstängt-banner visas t.o.m. 28 juli 2026, döljs automatiskt därefter
+const VACATION_NOTICE_END = new Date('2026-07-29T00:00:00');
+
 const Home = () => {
     const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>([]);
+    const [showVacationNotice, setShowVacationNotice] = useState(false);
+
+    useEffect(() => {
+        setShowVacationNotice(new Date() < VACATION_NOTICE_END);
+    }, []);
 
     useEffect(() => {
         // Load prices from Vercel Blob via API
@@ -84,6 +92,25 @@ const Home = () => {
 
     return (
         <Box sx={{ pt: { xs: '70px', md: '80px' } }}>
+            {/* Semesterstängt Notice */}
+            {showVacationNotice && (
+                <Box sx={{
+                    backgroundColor: '#d32f2f',
+                    color: 'white',
+                    textAlign: 'center',
+                    py: 1.5,
+                    px: 2
+                }}>
+                    <Typography sx={{
+                        fontFamily: 'Poppins, sans-serif',
+                        fontWeight: 600,
+                        fontSize: { xs: '0.95rem', md: '1.1rem' }
+                    }}>
+                        Semesterstängt – vi har stängt fram till 28 juli. Välkomna åter!
+                    </Typography>
+                </Box>
+            )}
+
             {/* Hero Section with Video Background */}
             <Box sx={{ 
                 position: 'relative',
