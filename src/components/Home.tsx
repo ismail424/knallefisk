@@ -17,7 +17,6 @@ import {
     StorefrontOutlined,
     CheckCircleOutline
 } from '@mui/icons-material';
-import VacationNotice from './VacationNotice';
 import { AdminPrice } from '../lib/types';
 
 const Home = () => {
@@ -53,7 +52,6 @@ const Home = () => {
 
     return (
         <Box sx={{ pt: { xs: '70px', md: '80px' } }}>
-            <VacationNotice />
 
             {/* Hero Section with Video Background */}
             <Box sx={{ 
