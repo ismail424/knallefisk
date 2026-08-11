@@ -77,7 +77,10 @@ export async function POST(request: NextRequest) {
       resend.emails.send({
         from,
         to: [order.email],
-        replyTo: recipients[0],
+        // A freemail Reply-To on a knallefisk.se From costs ~2.5 SpamAssassin
+        // points (FREEMAIL_FORGED_REPLYTO). Point this at an address on the
+        // domain once Cloudflare Email Routing forwards it to the owners.
+        replyTo: process.env.ORDER_REPLY_TO?.trim() || recipients[0],
         ...confirmationEmail
       })
     ]);
