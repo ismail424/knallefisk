@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
-import emailjs from '@emailjs/browser';
 import {
     Box,
     Container,
@@ -31,10 +30,6 @@ const Order = () => {
     const [loading, setLoading] = useState(false);
     const [submitError, setSubmitError] = useState('');
 
-    useEffect(() => {
-        emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
-    }, []);
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
             ...formData,
@@ -48,22 +43,16 @@ const Order = () => {
         setSubmitError('');
 
         try {
-            // Prepare template params for EmailJS
-            const templateParams = {
-                from_name: formData.name,
-                from_number: formData.phone,
-                reply_to: formData.email,
-                message: formData.message,
-                from_date: formData.date,
-                location: formData.location
-            };
+            const response = await fetch('/api/order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
 
-            // Send email using EmailJS
-            await emailjs.send(
-                process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-                process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-                templateParams
-            );
+            if (!response.ok) {
+                const { error } = await response.json().catch(() => ({ error: '' }));
+                throw new Error(error || 'Request failed');
+            }
 
             setSubmitted(true);
 
@@ -80,9 +69,13 @@ const Order = () => {
                 setLoading(false);
             }, 3000);
         } catch (error) {
-            console.error('Error sending email:', error);
+            console.error('Error sending order:', error);
             setLoading(false);
-            setSubmitError('Något gick fel när beställningen skickades. Försök igen eller ring oss direkt.');
+            setSubmitError(
+                error instanceof Error && error.message.startsWith('För många')
+                    ? error.message
+                    : 'Något gick fel när beställningen skickades. Försök igen eller ring oss direkt.'
+            );
         }
     };
 
