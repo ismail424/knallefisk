@@ -11,6 +11,15 @@ export interface AdminPrice {
   image?: string;
 }
 
+export interface OrderInput {
+  name: string;
+  phone: string;
+  email: string;
+  date: string;
+  message: string;
+  location: string;
+}
+
 export interface UploadedImage {
   id: string;
   name: string;
