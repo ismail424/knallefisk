@@ -116,12 +116,14 @@ ${footer}
 
 /** Solid teal panel — the one thing the reader must not miss. */
 function pickupBanner(dateLabel: string, location: string): string {
-  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:26px;">
+  const line = 'margin:0;font-size:23px;line-height:1.35;font-weight:700;color:#ffffff;';
+
+  return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:22px;">
   <tr>
     <td style="padding:22px 26px;background-color:${TEAL};border-radius:12px;">
-      <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${TEAL_PALE};">Hämtas</p>
-      <p style="margin:0;font-size:25px;line-height:1.2;font-weight:700;color:#ffffff;">${escapeHtml(dateLabel)}</p>
-      <p style="margin:8px 0 0;font-size:17px;font-weight:600;color:#ffffff;">${escapeHtml(location)}</p>
+      <p style="margin:0 0 10px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${TEAL_PALE};">Hämtas</p>
+      <p style="${line}"><span style="display:inline-block;width:30px;">📅</span>${escapeHtml(dateLabel)}</p>
+      <p style="${line}margin-top:6px;"><span style="display:inline-block;width:30px;">📍</span>${escapeHtml(location)}</p>
     </td>
   </tr>
 </table>`;
@@ -197,8 +199,9 @@ export function renderConfirmationEmail(order: OrderInput): RenderedEmail {
   const firstName = order.name.split(' ')[0];
 
   const body = `
-<p style="margin:0 0 8px;font-size:22px;line-height:1.3;font-weight:700;color:${INK};text-align:center;">Tack för din beställning, ${escapeHtml(firstName)}!</p>
-<p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:${MUTED};text-align:center;">Vi har tagit emot den och hör av oss om något behöver bekräftas.</p>
+<p style="margin:0 0 12px;font-size:44px;line-height:1;text-align:center;">✅</p>
+<p style="margin:0 0 8px;font-size:22px;line-height:1.3;font-weight:700;color:${INK};text-align:center;">Vi har tagit emot din beställning</p>
+<p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:${MUTED};text-align:center;">Hej ${escapeHtml(firstName)}, tack! Vi hör av oss om något behöver bekräftas.</p>
 
 ${pickupBanner(formatDate(order.date), order.location)}
 ${orderPanel('Din beställning', order.message)}
