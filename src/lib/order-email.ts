@@ -1,7 +1,6 @@
 import { OrderInput } from './types';
 
 interface Store {
-  address: string;
   phone: string;
 }
 
@@ -15,8 +14,8 @@ const SITE_URL = 'https://www.knallefisk.se';
 const LOGO_URL = `${SITE_URL}/img/logo-email.png`;
 
 const STORES: Record<string, Store> = {
-  Skene: { address: 'Örbyvägen 27, 511 61 Skene', phone: '073 535 09 17' },
-  Borås: { address: 'Ålgårdsvägen 3, 506 30 Borås', phone: '070 836 59 71' }
+  Skene: { phone: '073 535 09 17' },
+  Borås: { phone: '070 836 59 71' }
 };
 
 const MONTHS = [
@@ -116,14 +115,13 @@ ${footer}
 }
 
 /** Solid teal panel — the one thing the reader must not miss. */
-function pickupBanner(dateLabel: string, location: string, address?: string): string {
+function pickupBanner(dateLabel: string, location: string): string {
   return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:26px;">
   <tr>
     <td style="padding:22px 26px;background-color:${TEAL};border-radius:12px;">
       <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:${TEAL_PALE};">Hämtas</p>
       <p style="margin:0;font-size:25px;line-height:1.2;font-weight:700;color:#ffffff;">${escapeHtml(dateLabel)}</p>
       <p style="margin:8px 0 0;font-size:17px;font-weight:600;color:#ffffff;">${escapeHtml(location)}</p>
-      ${address ? `<p style="margin:2px 0 0;font-size:15px;color:${TEAL_PALE};">${escapeHtml(address)}</p>` : ''}
     </td>
   </tr>
 </table>`;
@@ -202,7 +200,7 @@ export function renderConfirmationEmail(order: OrderInput): RenderedEmail {
 <p style="margin:0 0 8px;font-size:22px;line-height:1.3;font-weight:700;color:${INK};text-align:center;">Tack för din beställning, ${escapeHtml(firstName)}!</p>
 <p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:${MUTED};text-align:center;">Vi har tagit emot den och hör av oss om något behöver bekräftas.</p>
 
-${pickupBanner(formatDate(order.date), order.location, store?.address)}
+${pickupBanner(formatDate(order.date), order.location)}
 ${orderPanel('Din beställning', order.message)}
 
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid ${BORDER};border-radius:12px;">
@@ -219,7 +217,7 @@ ${orderPanel('Din beställning', order.message)}
       `Hej ${firstName}, tack för din beställning!`,
       '',
       `HÄMTAS: ${formatDate(order.date)}`,
-      `Plats: ${order.location}${store ? `, ${store.address}` : ''}`,
+      `Plats: ${order.location}`,
       '',
       'Din beställning:',
       order.message,
