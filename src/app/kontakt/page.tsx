@@ -94,7 +94,7 @@ export default function Kontakt() {
                   </Typography>
                   <Typography variant="body1" className="text-gray-600 leading-relaxed">
                     rsacic@yahoo.se<br />
-                    almir.hamza@hotmail.com
+                    almir_hamza@hotmail.com
                   </Typography>
                 </CardContent>
               </Card>

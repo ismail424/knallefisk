@@ -8,7 +8,7 @@ export default function KontaktaOssPage() {
     {
       icon: <Email sx={{ fontSize: '3rem', color: '#448f9b' }} />,
       title: 'Email',
-      details: ['rsacic@yahoo.se', 'almir.hamza@hotmail.com']
+      details: ['rsacic@yahoo.se', 'almir_hamza@hotmail.com']
     },
     {
       icon: <Phone sx={{ fontSize: '3rem', color: '#448f9b' }} />,
