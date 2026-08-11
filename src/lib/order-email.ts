@@ -11,7 +11,6 @@ export interface RenderedEmail {
 }
 
 const SITE_URL = 'https://www.knallefisk.se';
-const LOGO_URL = `${SITE_URL}/img/logo-email.png`;
 
 const STORES: Record<string, Store> = {
   Skene: { phone: '073 535 09 17' },
@@ -68,15 +67,7 @@ function formatShortDate(value: string): string {
 
 // `preheader` is the grey snippet inboxes show next to the subject. Without
 // one, clients scrape the first body text, which reads as broken.
-function layout(preheader: string, body: string, footer: string, showLogo: boolean): string {
-  const header = showLogo
-    ? `<tr>
-          <td align="center" style="padding:28px 28px 22px;">
-            <img src="${LOGO_URL}" width="132" alt="Knallefisk" style="display:block;width:132px;height:auto;border:0;">
-          </td>
-        </tr>`
-    : '';
-
+function layout(preheader: string, body: string, footer: string): string {
   return `<!doctype html>
 <html lang="sv">
 <head>
@@ -91,9 +82,8 @@ function layout(preheader: string, body: string, footer: string, showLogo: boole
     <td align="center" style="padding:28px 12px 40px;">
 
       <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:560px;background-color:#ffffff;border:1px solid ${BORDER};border-radius:16px;">
-        ${header}
         <tr>
-          <td style="padding:${showLogo ? '0 28px 32px' : '28px'};font-family:${FONT};">
+          <td style="padding:28px;font-family:${FONT};">
 ${body}
           </td>
         </tr>
@@ -187,8 +177,7 @@ ${orderPanel('Beställning', order.message)}
     html: layout(
       `${formatDate(order.date)} · ${order.location} · ${order.message.split('\n')[0]}`,
       body,
-      `Svara på detta mail för att mejla ${escapeHtml(order.name)} direkt.`,
-      false
+      `Svara på detta mail för att mejla ${escapeHtml(order.name)} direkt.`
     )
   };
 }
@@ -199,7 +188,7 @@ export function renderConfirmationEmail(order: OrderInput): RenderedEmail {
   const firstName = order.name.split(' ')[0];
 
   const body = `
-<p style="margin:0 0 12px;font-size:44px;line-height:1;text-align:center;">✅</p>
+<p style="margin:0 0 16px;font-size:54px;line-height:1;text-align:center;">✅</p>
 <p style="margin:0 0 8px;font-size:22px;line-height:1.3;font-weight:700;color:${INK};text-align:center;">Vi har tagit emot din beställning</p>
 <p style="margin:0 0 26px;font-size:15px;line-height:1.6;color:${MUTED};text-align:center;">Hej ${escapeHtml(firstName)}, tack! Vi hör av oss om något behöver bekräftas.</p>
 
@@ -234,8 +223,7 @@ ${orderPanel('Din beställning', order.message)}
       `Upphämtning ${formatDate(order.date)} i ${order.location}`,
       body,
       `<strong style="color:${INK};">Knallefisk</strong> — Färska fisken över hela disken<br>
-<a href="${SITE_URL}" style="color:${TEAL};text-decoration:none;">knallefisk.se</a>`,
-      true
+<a href="${SITE_URL}" style="color:${TEAL};text-decoration:none;">knallefisk.se</a>`
     )
   };
 }
