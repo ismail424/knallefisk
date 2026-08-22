@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Hitta butik - Knallefisk | Butiker i Skene och Borås',
-  description: 'Hitta Knallefisk butiker i Skene och Borås. Adresser, öppettider och vägbeskrivningar till våra fiskbutiker.',
-  keywords: 'Knallefisk butik, Skene fiskbutik, Borås fiskbutik, hitta butik, öppettider, adress',
+  title: 'Hitta butik',
+  description:
+    'Hitta Knallefisks butiker i Borås och Skene. Adresser, öppettider, kartor och vägbeskrivningar till våra fiskbutiker.',
+  alternates: { canonical: '/hitta_butik' },
   openGraph: {
-    title: 'Hitta butik - Knallefisk',
-    description: 'Hitta Knallefisk butiker i Skene och Borås.',
+    title: 'Hitta butik – Knallefisk',
+    description: 'Adresser, öppettider och vägbeskrivningar till våra butiker i Borås och Skene.',
   },
 };
 

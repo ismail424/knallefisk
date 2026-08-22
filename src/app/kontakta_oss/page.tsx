@@ -1,159 +1,240 @@
 'use client';
 
-import { Box, Container, Typography, Card, CardContent } from '@mui/material';
-import { Email, Phone, LocationOn, AccessTime } from '@mui/icons-material';
+import Link from 'next/link';
+import { Box, Container, Typography, Card, CardContent, Button } from '@mui/material';
+import {
+    EmailOutlined,
+    PhoneOutlined,
+    StorefrontOutlined,
+    AccessTime,
+    ArrowForward,
+    ShoppingBasketOutlined,
+} from '@mui/icons-material';
+import { STORES, CONTACT_EMAILS } from '@/lib/site';
+import { BRAND } from '@/theme';
+import PageHero from '@/components/PageHero';
+
+function ContactCard({
+    icon,
+    title,
+    children,
+}: {
+    icon: React.ReactNode;
+    title: string;
+    children: React.ReactNode;
+}) {
+    return (
+        <Card
+            sx={{
+                height: '100%',
+                textAlign: 'center',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                '&:hover': {
+                    transform: 'translateY(-4px)',
+                    boxShadow: '0 4px 8px rgba(23, 49, 58, 0.06), 0 16px 36px rgba(23, 49, 58, 0.1)',
+                },
+            }}
+        >
+            <CardContent sx={{ p: 4 }}>
+                <Box
+                    sx={{
+                        width: 64,
+                        height: 64,
+                        borderRadius: '50%',
+                        backgroundColor: BRAND.tealTint,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mx: 'auto',
+                        mb: 2,
+                    }}
+                >
+                    {icon}
+                </Box>
+                <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+                    {title}
+                </Typography>
+                {children}
+            </CardContent>
+        </Card>
+    );
+}
+
+const linkSx = {
+    display: 'block',
+    color: BRAND.tealDark,
+    fontWeight: 600,
+    textDecoration: 'none',
+    py: 0.5,
+    '&:hover': { textDecoration: 'underline' },
+};
 
 export default function KontaktaOssPage() {
-  const contactInfo = [
-    {
-      icon: <Email sx={{ fontSize: '3rem', color: '#448f9b' }} />,
-      title: 'Email',
-      details: ['rsacic@yahoo.se', 'almir_hamza@hotmail.com']
-    },
-    {
-      icon: <Phone sx={{ fontSize: '3rem', color: '#448f9b' }} />,
-      title: 'Telefon',
-      details: ['073 535 09 17', '070 836 59 71']
-    },
-    {
-      icon: <LocationOn sx={{ fontSize: '3rem', color: '#448f9b' }} />,
-      title: 'Våra butiker',
-      details: ['Ålgårdsvägen 3, 506 30 Borås', 'Örbyvägen 27, 511 61 Skene']
-    },
-    {
-      icon: <AccessTime sx={{ fontSize: '3rem', color: '#448f9b' }} />,
-      title: 'Öppettider',
-      details: [
-        'Borås: Tis-Tor 10-18, Fre 10-19, Lör 10-15',
-        'Skene: Tor 10-18, Fre 10-19, Lör 10-15'
-      ]
-    }
-  ];
+    return (
+        <Box sx={{ backgroundColor: BRAND.sand }}>
+            <PageHero
+                overline="Vi finns här"
+                title="Kontakta oss"
+                subtitle="Undrar du vad som finns i disken idag, eller vill du göra en större beställning? Hör av dig – vi hjälper gärna till."
+            />
 
-  return (
-    <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-      <Container maxWidth="lg">
-
-        {/* Simple Header */}
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography
-            variant="h3"
-            sx={{
-              color: '#448f9b',
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 600,
-              mb: 3
-            }}
-          >
-            Kontakta oss
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: '#666',
-              fontFamily: 'Poppins, sans-serif',
-              maxWidth: 600,
-              mx: 'auto',
-              lineHeight: 1.6
-            }}
-          >
-            Vi finns här för att hjälpa dig med alla dina frågor om våra färska produkter från havet
-          </Typography>
-        </Box>
-
-        {/* Contact Cards Grid */}
-        <Box sx={{ 
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
-          gap: 4,
-          mb: 8
-        }}>
-          {contactInfo.map((contact, index) => (
-            <Card
-              key={index}
-              sx={{
-                height: '100%',
-                borderRadius: 3,
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                border: '1px solid rgba(68, 143, 155, 0.1)',
-                transition: 'transform 0.2s ease',
-                '&:hover': {
-                  transform: 'translateY(-4px)',
-                  boxShadow: '0 8px 30px rgba(0,0,0,0.12)'
-                }
-              }}
-            >
-              <CardContent sx={{ p: 4, textAlign: 'center', height: '100%' }}>
-                <Box sx={{ mb: 3 }}>
-                  {contact.icon}
-                </Box>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: '#333',
-                    fontFamily: 'Poppins, sans-serif',
-                    fontWeight: 600,
-                    mb: 2,
-                    fontSize: '1.3rem'
-                  }}
-                >
-                  {contact.title}
-                </Typography>
-                {contact.details.map((detail, idx) => (
-                  <Typography
-                    key={idx}
-                    variant="body1"
+            <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+                <Box
                     sx={{
-                      color: '#666',
-                      fontFamily: 'Poppins, sans-serif',
-                      mb: 1,
-                      fontSize: '1rem',
-                      lineHeight: 1.5
+                        display: 'grid',
+                        gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                        gap: 3,
+                        mb: { xs: 5, md: 7 },
                     }}
-                  >
-                    {detail}
-                  </Typography>
-                ))}
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
+                >
+                    <ContactCard
+                        icon={<PhoneOutlined sx={{ fontSize: 30, color: BRAND.teal }} />}
+                        title="Ring oss"
+                    >
+                        {STORES.map((store) => (
+                            <Box key={store.id} sx={{ mb: 1 }}>
+                                <Typography sx={{ color: BRAND.muted, fontSize: '0.85rem' }}>
+                                    {store.name}
+                                </Typography>
+                                <Typography
+                                    component="a"
+                                    href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                    sx={linkSx}
+                                >
+                                    {store.phone}
+                                </Typography>
+                            </Box>
+                        ))}
+                    </ContactCard>
 
-        {/* Simple Call to Action */}
-        <Box 
-          sx={{ 
-            textAlign: 'center',
-            p: 6,
-            backgroundColor: 'white',
-            borderRadius: 3,
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-          }}
-        >
-          <Typography
-            variant="h4"
-            sx={{
-              color: '#448f9b',
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 600,
-              mb: 2
-            }}
-          >
-            Välkommen!
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: '#666',
-              fontFamily: 'Poppins, sans-serif',
-              maxWidth: 800,
-              mx: 'auto',
-              lineHeight: 1.6
-            }}
-          >
-            Kom och besök oss i butiken eller kontakta oss direkt. Vi ser fram emot att hjälpa dig hitta de bästa produkterna från havet!
-          </Typography>
+                    <ContactCard
+                        icon={<EmailOutlined sx={{ fontSize: 30, color: BRAND.teal }} />}
+                        title="Mejla oss"
+                    >
+                        <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem', mb: 1 }}>
+                            Vi svarar så snart vi kan – oftast samma dag.
+                        </Typography>
+                        {CONTACT_EMAILS.map((email) => (
+                            <Typography key={email} component="a" href={`mailto:${email}`} sx={linkSx}>
+                                {email}
+                            </Typography>
+                        ))}
+                    </ContactCard>
+
+                    <ContactCard
+                        icon={<StorefrontOutlined sx={{ fontSize: 30, color: BRAND.teal }} />}
+                        title="Besök oss"
+                    >
+                        {STORES.map((store) => (
+                            <Box key={store.id} sx={{ mb: 1 }}>
+                                <Typography sx={{ fontWeight: 600, color: BRAND.ink, fontSize: '0.95rem' }}>
+                                    {store.name}
+                                </Typography>
+                                <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
+                                    {store.streetAddress}, {store.postalCode} {store.city}
+                                </Typography>
+                            </Box>
+                        ))}
+                        <Button
+                            component={Link}
+                            href="/hitta_butik"
+                            variant="text"
+                            size="small"
+                            endIcon={<ArrowForward />}
+                            sx={{ mt: 1, color: BRAND.tealDark }}
+                        >
+                            Kartor & vägbeskrivning
+                        </Button>
+                    </ContactCard>
+                </Box>
+
+                {/* Opening hours */}
+                <Card sx={{ mb: { xs: 5, md: 7 } }}>
+                    <CardContent sx={{ p: { xs: 3, md: 4 } }}>
+                        <Typography
+                            variant="h4"
+                            component="h2"
+                            sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}
+                        >
+                            <AccessTime sx={{ color: BRAND.teal }} />
+                            Öppettider
+                        </Typography>
+                        <Box
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                                gap: { xs: 3, md: 5 },
+                            }}
+                        >
+                            {STORES.map((store) => (
+                                <Box key={store.id}>
+                                    <Typography variant="h6" component="h3" sx={{ mb: 1.5 }}>
+                                        Knallefisk {store.name}
+                                    </Typography>
+                                    {store.hours.map((day) => (
+                                        <Box
+                                            key={day.day}
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'space-between',
+                                                py: 0.6,
+                                                borderBottom: `1px solid ${BRAND.border}`,
+                                                '&:last-of-type': { borderBottom: 'none' },
+                                            }}
+                                        >
+                                            <Typography sx={{ fontSize: '0.92rem', color: BRAND.ink }}>
+                                                {day.day}
+                                            </Typography>
+                                            <Typography
+                                                sx={{
+                                                    fontSize: '0.92rem',
+                                                    color: day.hours ? BRAND.ink : BRAND.muted,
+                                                    fontWeight: day.hours ? 500 : 400,
+                                                }}
+                                            >
+                                                {day.hours ?? 'Stängt'}
+                                            </Typography>
+                                        </Box>
+                                    ))}
+                                </Box>
+                            ))}
+                        </Box>
+                    </CardContent>
+                </Card>
+
+                {/* CTA */}
+                <Card
+                    sx={{
+                        p: { xs: 3, md: 4 },
+                        display: 'flex',
+                        flexDirection: { xs: 'column', md: 'row' },
+                        alignItems: { xs: 'flex-start', md: 'center' },
+                        justifyContent: 'space-between',
+                        gap: 2.5,
+                        backgroundColor: BRAND.tealTint,
+                        border: `1px solid ${BRAND.tealPale}`,
+                    }}
+                >
+                    <Box>
+                        <Typography variant="h4" component="h2" sx={{ mb: 0.75 }}>
+                            Vet du redan vad du vill ha?
+                        </Typography>
+                        <Typography sx={{ color: BRAND.muted }}>
+                            Skicka din beställning online så står den klar när du kommer.
+                        </Typography>
+                    </Box>
+                    <Button
+                        component={Link}
+                        href="/bestall_online"
+                        variant="contained"
+                        size="large"
+                        startIcon={<ShoppingBasketOutlined />}
+                        sx={{ flexShrink: 0 }}
+                    >
+                        Beställ online
+                    </Button>
+                </Card>
+            </Container>
         </Box>
-      </Container>
-    </Box>
-  );
+    );
 }

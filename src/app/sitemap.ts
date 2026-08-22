@@ -1,38 +1,43 @@
-import { MetadataRoute } from 'next'
- 
+import { MetadataRoute } from 'next';
+import { SITE_URL } from '../lib/site';
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://yourwebsite.com' // Replace with your actual domain
-  
   return [
     {
-      url: baseUrl,
+      url: SITE_URL,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: `${baseUrl}/priser`,
+      url: `${SITE_URL}/priser`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/bestall_online`,
+      url: `${SITE_URL}/bestall_online`,
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.8,
     },
     {
-      url: `${baseUrl}/hitta_butik`,
+      url: `${SITE_URL}/hitta_butik`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
     },
     {
-      url: `${baseUrl}/kontakt`,
+      url: `${SITE_URL}/om_oss`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
     },
-  ]
+    {
+      url: `${SITE_URL}/kontakta_oss`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.6,
+    },
+  ];
 }

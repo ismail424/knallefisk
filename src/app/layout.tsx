@@ -1,36 +1,78 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Inter, Poppins } from "next/font/google";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import MUIThemeProvider from "../components/ThemeProvider";
+import { SITE_URL, SITE_NAME, TAGLINE, STORES, CONTACT_EMAILS } from "../lib/site";
+import "./globals.css";
+
+const poppins = Poppins({
+  weight: ["400", "500", "600", "700", "800"],
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-poppins",
+  display: "swap",
+});
+
+const inter = Inter({
+  subsets: ["latin", "latin-ext"],
+  variable: "--font-inter",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
-  title: "Knallefisk - Färska delikatesser från hav och sjö",
-  description: "Kvalitetsfisk och skaldjur från Göteborg sedan 2006. Beställ online eller besök vår butik i Skene och Borås.",
-  keywords: "fisk, skaldjur, färsk fisk, Göteborg, Skene, Borås, delikatesser, hav, sjö, kvalitetsfisk, lax, räkor, krabba",
-  authors: [{ name: "Knallefisk" }],
-  creator: "Knallefisk",
-  publisher: "Knallefisk",
+  title: {
+    default: `${SITE_NAME} – ${TAGLINE}`,
+    template: `%s – ${SITE_NAME}`,
+  },
+  description:
+    "Familjeägd fiskhandel sedan 2006. Färsk fisk och skaldjur från Göteborgs fiskauktion till våra butiker i Borås och Skene. Beställ online och hämta i butik.",
+  keywords: [
+    "fisk",
+    "skaldjur",
+    "färsk fisk",
+    "fiskbutik",
+    "Borås",
+    "Skene",
+    "lax",
+    "räkor",
+    "krabba",
+    "Knallefisk",
+  ],
+  authors: [{ name: SITE_NAME }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://yourwebsite.com'), // Replace with your actual domain
+  metadataBase: new URL(SITE_URL),
   alternates: {
-    canonical: '/',
+    canonical: "/",
   },
   openGraph: {
-    title: "Knallefisk - Färska delikatesser från hav och sjö",
-    description: "Kvalitetsfisk och skaldjur från Göteborg sedan 2006. Beställ online eller besök vår butik.",
-    url: 'https://yourwebsite.com', // Replace with your actual domain
-    siteName: 'Knallefisk',
-    locale: 'sv_SE',
-    type: 'website',
+    title: `${SITE_NAME} – ${TAGLINE}`,
+    description:
+      "Familjeägd fiskhandel sedan 2006. Färsk fisk och skaldjur från Göteborgs fiskauktion till våra butiker i Borås och Skene.",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    locale: "sv_SE",
+    type: "website",
+    images: [
+      {
+        url: "/img/store_front.webp",
+        width: 1200,
+        height: 630,
+        alt: "Knallefisk – fiskbutik i Borås och Skene",
+      },
+    ],
   },
   twitter: {
-    card: 'summary_large_image',
-    title: "Knallefisk - Färska delikatesser från hav och sjö",
-    description: "Kvalitetsfisk och skaldjur från Göteborg sedan 2006.",
+    card: "summary_large_image",
+    title: `${SITE_NAME} – ${TAGLINE}`,
+    description:
+      "Familjeägd fiskhandel sedan 2006. Butiker i Borås och Skene.",
   },
   robots: {
     index: true,
@@ -38,11 +80,38 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#448f9b",
+};
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": STORES.map((store) => ({
+    "@type": "GroceryStore",
+    "@id": `${SITE_URL}/#${store.id}`,
+    name: store.fullName,
+    description: `Färsk fisk och skaldjur i ${store.city}. Familjeägd fiskhandel sedan 2006.`,
+    url: SITE_URL,
+    telephone: `+46${store.phone.replace(/\s/g, "").slice(1)}`,
+    email: CONTACT_EMAILS[0],
+    image: `${SITE_URL}/img/store_front.webp`,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: store.streetAddress,
+      postalCode: store.postalCode,
+      addressLocality: store.city,
+      addressCountry: "SE",
+    },
+    openingHoursSpecification: store.openingHoursSpec,
+    priceRange: "$$",
+  })),
 };
 
 export default function RootLayout({
@@ -51,57 +120,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="sv">
+    <html lang="sv" className={`${poppins.variable} ${inter.variable}`}>
       <head>
-        <script async src="https://kit.fontawesome.com/d929f5c8b7.js" crossOrigin="anonymous"></script>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "LocalBusiness",
-              "name": "Knallefisk",
-              "description": "Kvalitetsfisk och skaldjur från Göteborg sedan 2006",
-              "url": "https://yourwebsite.com", // Replace with your actual domain
-              "telephone": "+46-XX-XXX-XX-XX", // Replace with actual phone
-              "address": [
-                {
-                  "@type": "PostalAddress",
-                  "streetAddress": "Your Street Address", // Replace with actual address
-                  "addressLocality": "Skene",
-                  "addressCountry": "SE"
-                },
-                {
-                  "@type": "PostalAddress", 
-                  "streetAddress": "Your Street Address", // Replace with actual address
-                  "addressLocality": "Borås",
-                  "addressCountry": "SE"
-                }
-              ],
-              "servesCuisine": "Seafood",
-              "priceRange": "$$",
-              "openingHours": [
-                "Mo-Fr 09:00-18:00",
-                "Sa 09:00-15:00"
-              ],
-              "sameAs": [
-                "https://facebook.com/yourpage", // Add if you have social media
-                "https://instagram.com/yourpage"
-              ]
-            })
-          }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
       <body>
-        <MUIThemeProvider>
-          <main style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Header />
-            <div style={{ flex: 1 }}>
-              {children}
+        <AppRouterCacheProvider>
+          <MUIThemeProvider>
+            <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+              <Header />
+              <main style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                {children}
+              </main>
+              <Footer />
             </div>
-            <Footer />
-          </main>
-        </MUIThemeProvider>
+          </MUIThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );

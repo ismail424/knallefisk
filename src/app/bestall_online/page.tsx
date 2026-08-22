@@ -2,12 +2,13 @@ import type { Metadata } from 'next';
 import Order from '../../components/Order';
 
 export const metadata: Metadata = {
-  title: 'Beställ online - Knallefisk | Enkel beställning av färsk fisk',
-  description: 'Beställ färsk fisk och skaldjur online från Knallefisk. Enkel beställning, hämta i butik i Skene eller Borås.',
-  keywords: 'beställa fisk online, fiskbeställning, online beställning, Knallefisk beställning, hämta butik',
+  title: 'Beställ online',
+  description:
+    'Beställ färsk fisk och skaldjur online från Knallefisk. Vi packar din beställning färsk och klar – hämta och betala i butiken i Borås eller Skene.',
+  alternates: { canonical: '/bestall_online' },
   openGraph: {
-    title: 'Beställ online - Knallefisk',
-    description: 'Beställ färsk fisk och skaldjur online från Knallefisk.',
+    title: 'Beställ online – Knallefisk',
+    description: 'Beställ färsk fisk och skaldjur online – hämta i butik i Borås eller Skene.',
   },
 };
 

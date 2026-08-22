@@ -1,13 +1,31 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Box, Container, Typography, Card, CardContent, CardMedia, CircularProgress, Alert } from '@mui/material';
+import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
+import {
+    Box,
+    Container,
+    Typography,
+    Card,
+    Chip,
+    Skeleton,
+    Alert,
+    Button,
+} from '@mui/material';
+import { SetMealOutlined, ShoppingBasketOutlined, PhoneOutlined } from '@mui/icons-material';
 import { AdminPrice } from '../lib/types';
+import { STORES } from '../lib/site';
+import { BRAND } from '@/theme';
+import PageHero from './PageHero';
+import PriceCard from './PriceCard';
+
+const ALL = 'Alla';
 
 const Prices = () => {
     const [prices, setPrices] = useState<AdminPrice[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [category, setCategory] = useState(ALL);
 
     useEffect(() => {
         const loadPrices = async () => {
@@ -17,7 +35,7 @@ const Prices = () => {
                     throw new Error('Failed to fetch prices');
                 }
                 const adminPrices: AdminPrice[] = await response.json();
-                setPrices(adminPrices.filter(price => price.is_visible !== false));
+                setPrices(adminPrices.filter((price) => price.is_visible !== false));
             } catch (err) {
                 console.error('Error loading prices from API:', err);
                 setError('Kunde inte ladda priserna just nu. Försök igen senare.');
@@ -29,201 +47,178 @@ const Prices = () => {
         loadPrices();
     }, []);
 
-
-    if (loading) {
-        return (
-            <Box sx={{ 
-                pt: { xs: '140px', md: '120px' }, 
-                pb: 8, 
-                display: 'flex', 
-                justifyContent: 'center', 
-                alignItems: 'center',
-                minHeight: '50vh'
-            }}>
-                <CircularProgress size={60} sx={{ color: '#448f9b' }} />
-            </Box>
+    const categories = useMemo(() => {
+        const unique = Array.from(
+            new Set(prices.map((p) => p.category?.trim()).filter((c): c is string => !!c))
         );
-    }
+        return unique.length >= 2 ? [ALL, ...unique] : [];
+    }, [prices]);
 
-    if (error) {
-        return (
-            <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8 }}>
-                <Container maxWidth="lg">
-                    <Alert severity="error" sx={{ mb: 3 }}>
-                        {error}
-                    </Alert>
-                </Container>
-            </Box>
-        );
-    }
+    const visiblePrices = useMemo(
+        () =>
+            category === ALL
+                ? prices
+                : prices.filter((p) => p.category?.trim() === category),
+        [prices, category]
+    );
 
     return (
-        <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8 }}>
-            <Container maxWidth="lg">
-                {/* Header */}
-                <Box sx={{ textAlign: 'center', mb: 4 }}>
-                    <Typography 
-                        variant="h3" 
-                        component="h1"
-                        sx={{ 
-                            fontWeight: 600,
-                            color: 'rgb(68, 143, 155)',
-                            mb: 1
+        <Box sx={{ backgroundColor: BRAND.sand }}>
+            <PageHero
+                overline="Aktuella priser"
+                title="Våra priser"
+                subtitle="Priserna uppdateras löpande av oss i butiken och kan variera med dagens tillgång på Göteborgs fiskauktion."
+            />
+
+            <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+                {error ? (
+                    <Alert
+                        severity="error"
+                        sx={{ maxWidth: 560, mx: 'auto', mb: 4 }}
+                        action={
+                            <Button
+                                color="inherit"
+                                size="small"
+                                component="a"
+                                href={`tel:${STORES[0].phone.replace(/\s/g, '')}`}
+                                startIcon={<PhoneOutlined />}
+                            >
+                                Ring oss
+                            </Button>
+                        }
+                    >
+                        {error}
+                    </Alert>
+                ) : loading ? (
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                            gap: 3,
                         }}
                     >
-                        Våra priser
-                    </Typography>
-                </Box>
-
-                {/* Empty State */}
-                {prices.length === 0 ? (
-                    <Box sx={{ 
-                        textAlign: 'center', 
-                        py: 8,
-                        color: '#666'
-                    }}>
-                        <Typography variant="h6" sx={{ mb: 2 }}>
-                            Inga priser tillgängliga just nu
-                        </Typography>
-                        <Typography variant="body2">
-                            Kontakta oss för aktuella priser
-                        </Typography>
+                        {Array.from({ length: 6 }).map((_, i) => (
+                            <Card key={i} sx={{ p: 2.5 }}>
+                                <Skeleton variant="rounded" height={150} sx={{ mb: 2 }} />
+                                <Skeleton width="70%" height={28} />
+                                <Skeleton width="40%" height={34} />
+                            </Card>
+                        ))}
                     </Box>
-                ) : (
-                    /* Prices Grid */
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: {
-                            xs: '1fr',
-                            md: 'repeat(2, 1fr)',
-                            lg: 'repeat(3, 1fr)'
-                        },
-                        gap: 2
-                    }}>
-                        {prices.map((price) => (
-                        <Card 
-                            key={price.id}
-                            sx={{ 
-                                height: '100%',
+                ) : prices.length === 0 ? (
+                    <Box sx={{ textAlign: 'center', py: { xs: 6, md: 8 } }}>
+                        <Box
+                            sx={{
+                                width: 88,
+                                height: 88,
+                                borderRadius: '50%',
+                                backgroundColor: BRAND.tealTint,
                                 display: 'flex',
-                                flexDirection: 'column',
-                                borderRadius: 1,
-                                overflow: 'hidden',
-                                border: '1px solid #ddd',
-                                backgroundColor: '#fff',
-                                boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                                '&:hover': {
-                                    boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                                }
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                mx: 'auto',
+                                mb: 3,
                             }}
                         >
-                            {/* Image */}
-                            {price.image && (
-                                <Box sx={{ position: 'relative' }}>
-                                    <CardMedia
-                                        component="img"
-                                        height="160"
-                                        image={price.image}
-                                        alt={price.title}
-                                        sx={{ 
-                                            objectFit: 'cover'
-                                        }}
-                                    />
-                                    {/* Sale Badge */}
-                                    {price.on_sale && (
-                                        <Box
-                                            sx={{
-                                                position: 'absolute',
-                                                top: 8,
-                                                right: 8,
-                                                backgroundColor: '#d32f2f',
-                                                color: 'white',
-                                                px: 1,
-                                                py: 0.5,
-                                                borderRadius: 0.5,
-                                                fontSize: '0.75rem',
-                                                fontWeight: 600,
-                                                textTransform: 'uppercase'
-                                            }}
-                                        >
-                                            REA
-                                        </Box>
-                                    )}
-                                </Box>
-                            )}
-
-                            <CardContent sx={{ 
-                                flexGrow: 1, 
-                                p: 2,
-                                display: 'flex',
-                                flexDirection: 'column'
-                            }}>
-                                {/* Product Title */}
-                                <Typography 
-                                    variant="h6" 
-                                    component="h3"
-                                    sx={{ 
-                                        fontWeight: 500,
-                                        color: '#333',
-                                        mb: 1,
-                                        fontSize: '1.1rem',
-                                        fontFamily: 'system-ui, -apple-system, sans-serif'
-                                    }}
-                                >
-                                    {price.title}
-                                </Typography>
-                                
-                                {/* Price Section */}
-                                <Box sx={{ mt: 'auto' }}>
-                                    {price.on_sale && price.sale_price ? (
-                                        <Box>
-                                            <Typography 
-                                                variant="h4" 
-                                                component="div"
-                                                sx={{ 
-                                                    fontWeight: 700,
-                                                    color: '#d32f2f',
-                                                    fontSize: { xs: '1.8rem', md: '2.2rem' },
-                                                    fontFamily: 'system-ui, -apple-system, sans-serif',
-                                                    mb: 0.5,
-                                                    letterSpacing: '0.5px'
-                                                }}
-                                            >
-                                                {price.sale_price} kr<Typography component="span" sx={{ fontSize: '0.7em', fontWeight: 500, ml: 0.5 }}>/{price.unit || 'st'}</Typography>
-                                            </Typography>
-                                            <Typography 
-                                                variant="body1" 
-                                                component="div"
-                                                sx={{ 
-                                                    textDecoration: 'line-through',
-                                                    color: '#666',
-                                                    fontSize: { xs: '1rem', md: '1.1rem' },
-                                                    fontFamily: 'system-ui, -apple-system, sans-serif'
-                                                }}
-                                            >
-                                                Ordinarie: {price.price} kr<Typography component="span" sx={{ fontSize: '0.9em', ml: 0.5 }}>/{price.unit || 'st'}</Typography>
-                                            </Typography>
-                                        </Box>
-                                    ) : (
-                                        <Typography 
-                                            variant="h4" 
-                                            component="div"
-                                            sx={{ 
-                                                fontWeight: 700,
-                                                color: '#2e7d32',
-                                                fontSize: { xs: '1.8rem', md: '2.2rem' },
-                                                fontFamily: 'system-ui, -apple-system, sans-serif',
-                                                letterSpacing: '0.5px'
-                                            }}
-                                        >
-                                            {price.price} kr<Typography component="span" sx={{ fontSize: '0.7em', fontWeight: 500, ml: 0.5 }}>/{price.unit || 'st'}</Typography>
-                                        </Typography>
-                                    )}
-                                </Box>
-                            </CardContent>
-                        </Card>
-                    ))}
+                            <SetMealOutlined sx={{ fontSize: 40, color: BRAND.teal }} />
+                        </Box>
+                        <Typography variant="h4" component="h2" sx={{ mb: 1.5 }}>
+                            Inga priser publicerade just nu
+                        </Typography>
+                        <Typography sx={{ color: BRAND.muted, mb: 3, maxWidth: 440, mx: 'auto' }}>
+                            Ring oss eller kom förbi butiken så berättar vi vad som finns i disken idag.
+                        </Typography>
+                        <Button component={Link} href="/kontakta_oss" variant="contained">
+                            Kontakta oss
+                        </Button>
                     </Box>
+                ) : (
+                    <>
+                        {categories.length > 0 && (
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    gap: 1,
+                                    flexWrap: 'wrap',
+                                    justifyContent: 'center',
+                                    mb: 4,
+                                }}
+                            >
+                                {categories.map((cat) => {
+                                    const selected = category === cat;
+                                    return (
+                                        <Chip
+                                            key={cat}
+                                            label={cat}
+                                            clickable
+                                            onClick={() => setCategory(cat)}
+                                            sx={{
+                                                px: 0.5,
+                                                backgroundColor: selected ? BRAND.teal : '#fff',
+                                                color: selected ? '#fff' : BRAND.tealDark,
+                                                border: `1px solid ${selected ? BRAND.teal : BRAND.border}`,
+                                                '&:hover': {
+                                                    backgroundColor: selected ? BRAND.tealDark : BRAND.tealTint,
+                                                },
+                                            }}
+                                        />
+                                    );
+                                })}
+                            </Box>
+                        )}
+
+                        <Box
+                            sx={{
+                                display: 'grid',
+                                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(3, 1fr)' },
+                                gap: 3,
+                            }}
+                        >
+                            {visiblePrices.map((price) => (
+                                <PriceCard key={price.id} price={price} />
+                            ))}
+                        </Box>
+
+                        {visiblePrices.length === 0 && (
+                            <Typography sx={{ textAlign: 'center', color: BRAND.muted, py: 6 }}>
+                                Inga varor i den här kategorin just nu.
+                            </Typography>
+                        )}
+
+                        {/* Order CTA */}
+                        <Card
+                            sx={{
+                                mt: { xs: 5, md: 7 },
+                                p: { xs: 3, md: 4 },
+                                display: 'flex',
+                                flexDirection: { xs: 'column', md: 'row' },
+                                alignItems: { xs: 'flex-start', md: 'center' },
+                                justifyContent: 'space-between',
+                                gap: 2.5,
+                                backgroundColor: BRAND.tealTint,
+                                border: `1px solid ${BRAND.tealPale}`,
+                            }}
+                        >
+                            <Box>
+                                <Typography variant="h4" component="h2" sx={{ mb: 0.75 }}>
+                                    Vill du säkra din fisk till helgen?
+                                </Typography>
+                                <Typography sx={{ color: BRAND.muted }}>
+                                    Beställ online så packar vi åt dig – hämta och betala i butiken.
+                                </Typography>
+                            </Box>
+                            <Button
+                                component={Link}
+                                href="/bestall_online"
+                                variant="contained"
+                                size="large"
+                                startIcon={<ShoppingBasketOutlined />}
+                                sx={{ flexShrink: 0 }}
+                            >
+                                Beställ online
+                            </Button>
+                        </Card>
+                    </>
                 )}
             </Container>
         </Box>
