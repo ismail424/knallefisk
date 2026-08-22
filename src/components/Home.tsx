@@ -143,6 +143,7 @@ const Home = () => {
                     muted
                     playsInline
                     aria-hidden
+                    poster="/img/havet_poster.jpg"
                     style={{
                         position: 'absolute',
                         top: 0,
@@ -602,30 +603,41 @@ const Home = () => {
                                 xs: 'repeat(2, 1fr)',
                                 md: 'repeat(4, 1fr)',
                             },
+                            gridAutoFlow: 'dense',
                             gap: { xs: 1.5, md: 2 },
                         }}
                     >
-                        {GALLERY.map((image) => (
-                            <Box
-                                key={image.src}
-                                sx={{
-                                    position: 'relative',
-                                    aspectRatio: '1',
-                                    borderRadius: 3,
-                                    overflow: 'hidden',
-                                    boxShadow: '0 4px 16px rgba(23, 49, 58, 0.08)',
-                                    '&:hover img': { transform: 'scale(1.06)' },
-                                }}
-                            >
-                                <Image
-                                    src={image.src}
-                                    alt={image.alt}
-                                    fill
-                                    sizes="(max-width: 900px) 50vw, 25vw"
-                                    style={{ objectFit: 'cover', transition: 'transform 0.4s ease' }}
-                                />
-                            </Box>
-                        ))}
+                        {GALLERY.map((image, index) => {
+                            const featured = index === 0;
+                            const wide = index === GALLERY.length - 1;
+                            return (
+                                <Box
+                                    key={image.src}
+                                    sx={{
+                                        position: 'relative',
+                                        aspectRatio: featured || wide ? { xs: '2 / 1', md: featured ? '1' : 'auto' } : '1',
+                                        gridColumn: featured || wide ? 'span 2' : 'span 1',
+                                        gridRow: { xs: 'span 1', md: featured ? 'span 2' : 'span 1' },
+                                        borderRadius: 3,
+                                        overflow: 'hidden',
+                                        boxShadow: '0 4px 16px rgba(23, 49, 58, 0.08)',
+                                        '&:hover img': { transform: 'scale(1.06)' },
+                                    }}
+                                >
+                                    <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        fill
+                                        sizes={
+                                            featured || wide
+                                                ? '(max-width: 900px) 100vw, 50vw'
+                                                : '(max-width: 900px) 50vw, 25vw'
+                                        }
+                                        style={{ objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                                    />
+                                </Box>
+                            );
+                        })}
                     </Box>
                 </Container>
             </Box>
@@ -640,6 +652,26 @@ const Home = () => {
                     py: { xs: 7, md: 9 },
                 }}
             >
+                {/* The sea again, faint under a teal tint */}
+                <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    aria-hidden
+                    poster="/img/havet_poster.jpg"
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        opacity: 0.22,
+                    }}
+                >
+                    <source src="/video/havet.mp4" type="video/mp4" />
+                </video>
                 <ScalesPattern color="rgba(255, 255, 255, 0.06)" />
                 <Bubbles style={{ top: -30, right: '5%' }} color="rgba(255, 255, 255, 0.1)" size={200} />
                 <Container maxWidth="md" sx={{ position: 'relative', textAlign: 'center', color: WHITE }}>

@@ -61,10 +61,10 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/img/store_front.webp",
+        url: "/og.jpg",
         width: 1200,
         height: 630,
-        alt: "Knallefisk – fiskbutik i Borås och Skene",
+        alt: "Knallefisk – Färska fisken över hela disken",
       },
     ],
   },

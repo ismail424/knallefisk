@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Box, Container, Typography, Button } from '@mui/material';
 import { HomeOutlined, ShoppingBasketOutlined } from '@mui/icons-material';
 import { BRAND } from '@/theme';
-import { FishAccent, Bubbles } from '@/components/decor';
+import { Bubbles } from '@/components/decor';
 
 export default function NotFound() {
     return (
@@ -19,13 +20,36 @@ export default function NotFound() {
             }}
         >
             <Bubbles style={{ top: 40, right: '8%' }} size={220} />
-            <FishAccent style={{ bottom: '18%', left: '6%' }} size={110} color="rgba(68, 143, 155, 0.18)" flip />
-            <Container maxWidth="sm" sx={{ position: 'relative', textAlign: 'center', py: { xs: 10, md: 14 } }}>
+            <Container maxWidth="sm" sx={{ position: 'relative', textAlign: 'center', py: { xs: 8, md: 12 } }}>
+                <Box
+                    sx={{
+                        width: { xs: 150, md: 190 },
+                        height: { xs: 150, md: 190 },
+                        borderRadius: '50%',
+                        backgroundColor: '#fff',
+                        border: `1px solid ${BRAND.border}`,
+                        boxShadow: '0 12px 36px rgba(23, 49, 58, 0.12)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        overflow: 'hidden',
+                        mx: 'auto',
+                        mb: 3,
+                    }}
+                >
+                    <Image
+                        src="/img/karp.webp"
+                        alt=""
+                        width={170}
+                        height={170}
+                        style={{ width: '82%', height: '82%', objectFit: 'contain', transform: 'scaleX(-1)' }}
+                    />
+                </Box>
                 <Typography
                     sx={{
                         fontFamily: 'var(--font-poppins), Poppins, sans-serif',
                         fontWeight: 800,
-                        fontSize: { xs: '5rem', md: '7rem' },
+                        fontSize: { xs: '3.25rem', md: '4.25rem' },
                         lineHeight: 1,
                         color: BRAND.tealPale,
                         mb: 1,

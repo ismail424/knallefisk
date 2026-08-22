@@ -152,7 +152,13 @@ export function FishAccent({
 }
 
 /** Short brand-coloured rule used under section headings. */
-export function HeadingRule({ centered = true }: { centered?: boolean }) {
+export function HeadingRule({
+  centered = true,
+  color = '#448f9b',
+}: {
+  centered?: boolean;
+  color?: string;
+}) {
   return (
     <svg
       aria-hidden
@@ -164,7 +170,7 @@ export function HeadingRule({ centered = true }: { centered?: boolean }) {
       <path
         d="M2 6c8-5 16-5 24 0s16 5 24 0 16-5 24 0 12 4 20 1"
         fill="none"
-        stroke="#448f9b"
+        stroke={color}
         strokeWidth="3"
         strokeLinecap="round"
         opacity="0.85"

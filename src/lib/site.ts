@@ -134,6 +134,30 @@ export const STORES: Store[] = [
   },
 ];
 
+/**
+ * Next.js replaces (not merges) a page-level `openGraph` object, so every
+ * page that sets its own og-title must restate the shared fields or lose
+ * the share image. Build page og-objects through this helper.
+ */
+export function pageOpenGraph(path: string, title: string, description: string) {
+  return {
+    title: `${title} – ${SITE_NAME}`,
+    description,
+    url: `${SITE_URL}${path}`,
+    siteName: SITE_NAME,
+    locale: 'sv_SE',
+    type: 'website' as const,
+    images: [
+      {
+        url: '/og.jpg',
+        width: 1200,
+        height: 630,
+        alt: `${SITE_NAME} – ${TAGLINE}`,
+      },
+    ],
+  };
+}
+
 export const NAV_LINKS = [
   { name: 'Hem', url: '/' },
   { name: 'Priser', url: '/priser' },

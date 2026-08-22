@@ -11,40 +11,21 @@ import {
     Card,
     CardContent,
     Alert,
+    Divider,
     FormControl,
     InputLabel,
     Select,
     MenuItem,
 } from '@mui/material';
-import {
-    ShoppingBasketOutlined,
-    Schedule,
-    Phone,
-    PersonOutline,
-    MessageOutlined,
-    CheckCircle,
-    Email,
-    LocationOnOutlined,
-    AccessTime,
-    ArrowForward,
-} from '@mui/icons-material';
+import { CheckCircle, Schedule, LocationOnOutlined, ArrowForward } from '@mui/icons-material';
 import { STORES } from '../lib/site';
 import { BRAND } from '@/theme';
 import PageHero from './PageHero';
 
 const STEPS = [
-    {
-        title: 'Skicka din beställning',
-        text: 'Beskriv vad du vill ha och när du vill hämta det.',
-    },
-    {
-        title: 'Vi packar den färsk',
-        text: 'Vi plockar ihop din beställning ur dagens leverans.',
-    },
-    {
-        title: 'Hämta och betala i butik',
-        text: 'Din beställning står klar på hämtningsdagen – betala på plats.',
-    },
+    { title: 'Skicka din beställning', text: 'Skriv vad du vill ha och välj butik och dag.' },
+    { title: 'Vi packar den färsk', text: 'Vi plockar ihop allt ur dagens leverans.' },
+    { title: 'Hämta och betala i butik', text: 'Beställningen står klar – betala på plats.' },
 ];
 
 const EMPTY_FORM = {
@@ -54,10 +35,6 @@ const EMPTY_FORM = {
     date: '',
     message: '',
     location: '',
-};
-
-const fieldSx = {
-    '& .MuiOutlinedInput-root': { borderRadius: 3 },
 };
 
 const Order = () => {
@@ -121,8 +98,7 @@ const Order = () => {
                             Tack för din beställning!
                         </Typography>
                         <Typography sx={{ color: BRAND.muted, mb: 3.5 }}>
-                            En bekräftelse har skickats till {formData.email}. Vi hör av oss om
-                            något behöver stämmas av.
+                            En bekräftelse har skickats till {formData.email}.
                         </Typography>
 
                         <Box
@@ -150,7 +126,7 @@ const Order = () => {
                         </Box>
 
                         <Typography sx={{ color: BRAND.muted, fontSize: '0.92rem', mb: 3.5 }}>
-                            Betalning sker i butiken vid upphämtning.
+                            Du betalar i butiken när du hämtar.
                         </Typography>
 
                         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -172,7 +148,7 @@ const Order = () => {
             <PageHero
                 overline="Beställ & hämta"
                 title="Beställ online"
-                subtitle="Skicka din beställning så packar vi den färsk och klar. Du hämtar och betalar i butiken – enkelt och smidigt."
+                subtitle="Skriv vad du vill ha, så packar vi det färskt till din hämtningsdag. Du betalar i butiken."
             />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
@@ -186,15 +162,6 @@ const Order = () => {
                 >
                     {/* Order form */}
                     <Card sx={{ p: { xs: 3, md: 4 } }}>
-                        <Typography
-                            variant="h4"
-                            component="h2"
-                            sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}
-                        >
-                            <ShoppingBasketOutlined sx={{ color: BRAND.teal }} />
-                            Din beställning
-                        </Typography>
-
                         {submitError && (
                             <Alert severity="error" sx={{ mb: 3 }}>
                                 {submitError}
@@ -212,21 +179,17 @@ const Order = () => {
                                 >
                                     <TextField
                                         fullWidth
-                                        label="För- och efternamn"
+                                        label="Namn"
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
                                         required
                                         autoComplete="name"
                                         placeholder="Förnamn Efternamn"
-                                        InputProps={{
-                                            startAdornment: <PersonOutline sx={{ color: BRAND.teal, mr: 1 }} />,
-                                        }}
-                                        sx={fieldSx}
                                     />
                                     <TextField
                                         fullWidth
-                                        label="Telefonnummer"
+                                        label="Telefon"
                                         name="phone"
                                         type="tel"
                                         value={formData.phone}
@@ -234,16 +197,12 @@ const Order = () => {
                                         required
                                         autoComplete="tel"
                                         placeholder="070 123 45 67"
-                                        InputProps={{
-                                            startAdornment: <Phone sx={{ color: BRAND.teal, mr: 1 }} />,
-                                        }}
-                                        sx={fieldSx}
                                     />
                                 </Box>
 
                                 <TextField
                                     fullWidth
-                                    label="E-postadress"
+                                    label="E-post"
                                     name="email"
                                     type="email"
                                     value={formData.email}
@@ -251,11 +210,6 @@ const Order = () => {
                                     required
                                     autoComplete="email"
                                     placeholder="din@email.se"
-                                    helperText="Hit skickar vi din orderbekräftelse"
-                                    InputProps={{
-                                        startAdornment: <Email sx={{ color: BRAND.teal, mr: 1 }} />,
-                                    }}
-                                    sx={fieldSx}
                                 />
 
                                 <Box
@@ -267,7 +221,7 @@ const Order = () => {
                                 >
                                     <TextField
                                         fullWidth
-                                        label="Hämtningsdatum"
+                                        label="Hämtningsdag"
                                         name="date"
                                         type="date"
                                         value={formData.date}
@@ -275,15 +229,10 @@ const Order = () => {
                                         required
                                         InputLabelProps={{ shrink: true }}
                                         inputProps={{ min: today }}
-                                        InputProps={{
-                                            startAdornment: <Schedule sx={{ color: BRAND.teal, mr: 1 }} />,
-                                        }}
-                                        helperText="När vill du hämta din beställning?"
-                                        sx={fieldSx}
                                     />
 
-                                    <FormControl fullWidth required sx={fieldSx}>
-                                        <InputLabel id="order-location-label">Hämtningsplats</InputLabel>
+                                    <FormControl fullWidth required>
+                                        <InputLabel id="order-location-label">Butik</InputLabel>
                                         <Select
                                             labelId="order-location-label"
                                             name="location"
@@ -291,10 +240,7 @@ const Order = () => {
                                             onChange={(e) =>
                                                 setFormData({ ...formData, location: e.target.value })
                                             }
-                                            label="Hämtningsplats"
-                                            startAdornment={
-                                                <LocationOnOutlined sx={{ color: BRAND.teal, mr: 1 }} />
-                                            }
+                                            label="Butik"
                                         >
                                             {STORES.map((store) => (
                                                 <MenuItem key={store.id} value={store.name}>
@@ -307,22 +253,14 @@ const Order = () => {
 
                                 <TextField
                                     fullWidth
-                                    label="Vad vill du beställa?"
+                                    label="Din beställning"
                                     name="message"
                                     multiline
                                     rows={5}
                                     value={formData.message}
                                     onChange={handleChange}
                                     required
-                                    placeholder="T.ex. 1 kg färsk laxfilé, 500 g handskalade räkor, 2 krabbor…"
-                                    InputProps={{
-                                        startAdornment: (
-                                            <MessageOutlined
-                                                sx={{ color: BRAND.teal, mr: 1, alignSelf: 'flex-start', mt: 1 }}
-                                            />
-                                        ),
-                                    }}
-                                    sx={fieldSx}
+                                    placeholder="T.ex. 1 kg laxfilé, 500 g handskalade räkor, 2 krabbor…"
                                 />
                             </Box>
 
@@ -332,7 +270,6 @@ const Order = () => {
                                 size="large"
                                 fullWidth
                                 disabled={loading}
-                                startIcon={<ShoppingBasketOutlined />}
                                 sx={{ mt: 4, py: 1.5, fontSize: '1.05rem' }}
                             >
                                 {loading ? 'Skickar…' : 'Skicka beställning'}
@@ -341,100 +278,78 @@ const Order = () => {
                             <Typography
                                 sx={{ color: BRAND.muted, fontSize: '0.85rem', textAlign: 'center', mt: 2 }}
                             >
-                                Ingen betalning online – du betalar när du hämtar i butiken.
+                                Ingen betalning online – du betalar när du hämtar.
                             </Typography>
                         </Box>
                     </Card>
 
                     {/* Sidebar */}
-                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-                        <Card>
-                            <CardContent sx={{ p: 3 }}>
-                                <Typography variant="h5" component="h2" sx={{ mb: 2.5 }}>
-                                    Så fungerar det
-                                </Typography>
-                                {STEPS.map((step, index) => (
-                                    <Box key={step.title} sx={{ display: 'flex', gap: 2, mb: index < STEPS.length - 1 ? 2.5 : 0 }}>
-                                        <Box
-                                            sx={{
-                                                width: 34,
-                                                height: 34,
-                                                borderRadius: '50%',
-                                                backgroundColor: BRAND.tealTint,
-                                                color: BRAND.tealDark,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                fontFamily: 'var(--font-poppins), Poppins, sans-serif',
-                                                fontWeight: 700,
-                                                flexShrink: 0,
-                                            }}
-                                        >
-                                            {index + 1}
-                                        </Box>
-                                        <Box>
-                                            <Typography sx={{ fontWeight: 600, color: BRAND.ink, mb: 0.25 }}>
-                                                {step.title}
-                                            </Typography>
-                                            <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
-                                                {step.text}
-                                            </Typography>
-                                        </Box>
+                    <Card>
+                        <CardContent sx={{ p: 3 }}>
+                            <Typography variant="h5" component="h2" sx={{ mb: 2.5 }}>
+                                Så fungerar det
+                            </Typography>
+                            {STEPS.map((step, index) => (
+                                <Box key={step.title} sx={{ display: 'flex', gap: 2, mb: index < STEPS.length - 1 ? 2.25 : 0 }}>
+                                    <Box
+                                        sx={{
+                                            width: 32,
+                                            height: 32,
+                                            borderRadius: '50%',
+                                            backgroundColor: BRAND.tealTint,
+                                            color: BRAND.tealDark,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                            fontWeight: 700,
+                                            fontSize: '0.95rem',
+                                            flexShrink: 0,
+                                        }}
+                                    >
+                                        {index + 1}
                                     </Box>
-                                ))}
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardContent sx={{ p: 3 }}>
-                                <Typography variant="h5" component="h2" sx={{ mb: 2.5 }}>
-                                    Hämta hos oss
-                                </Typography>
-                                {STORES.map((store, index) => (
-                                    <Box key={store.id} sx={{ mb: index < STORES.length - 1 ? 2.5 : 0 }}>
-                                        <Typography sx={{ fontWeight: 600, color: BRAND.ink, mb: 0.5 }}>
-                                            Knallefisk {store.name}
+                                    <Box>
+                                        <Typography sx={{ fontWeight: 600, color: BRAND.ink, mb: 0.25 }}>
+                                            {step.title}
                                         </Typography>
-                                        <Typography
-                                            sx={{ color: BRAND.muted, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1 }}
-                                        >
-                                            <LocationOnOutlined sx={{ fontSize: '1rem', color: BRAND.teal }} />
-                                            {store.streetAddress}, {store.city}
-                                        </Typography>
-                                        <Typography
-                                            sx={{ color: BRAND.muted, fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}
-                                        >
-                                            <AccessTime sx={{ fontSize: '1rem', color: BRAND.teal }} />
-                                            {store.hoursSummary}
-                                        </Typography>
-                                        <Typography
-                                            component="a"
-                                            href={`tel:${store.phone.replace(/\s/g, '')}`}
-                                            sx={{
-                                                color: BRAND.tealDark,
-                                                fontWeight: 600,
-                                                fontSize: '0.9rem',
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                gap: 1,
-                                                mt: 0.5,
-                                                textDecoration: 'none',
-                                                '&:hover': { textDecoration: 'underline' },
-                                            }}
-                                        >
-                                            <Phone sx={{ fontSize: '1rem', color: BRAND.teal }} />
-                                            {store.phone}
+                                        <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
+                                            {step.text}
                                         </Typography>
                                     </Box>
-                                ))}
-                            </CardContent>
-                        </Card>
+                                </Box>
+                            ))}
 
-                        <Alert severity="info" icon={false} sx={{ backgroundColor: BRAND.tealTint, color: BRAND.ink }}>
-                            <strong>Tips!</strong> Beställ gärna dagen innan om du vill vara säker på
-                            att få precis det du önskar ur dagens leverans.
-                        </Alert>
-                    </Box>
+                            <Divider sx={{ my: 3 }} />
+
+                            <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+                                Hämta hos oss
+                            </Typography>
+                            {STORES.map((store, index) => (
+                                <Box key={store.id} sx={{ mb: index < STORES.length - 1 ? 2.25 : 0 }}>
+                                    <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>
+                                        {store.name} – {store.streetAddress}
+                                    </Typography>
+                                    <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
+                                        {store.hoursSummary}
+                                    </Typography>
+                                    <Typography
+                                        component="a"
+                                        href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                        sx={{
+                                            color: BRAND.tealDark,
+                                            fontWeight: 600,
+                                            fontSize: '0.9rem',
+                                            textDecoration: 'none',
+                                            '&:hover': { textDecoration: 'underline' },
+                                        }}
+                                    >
+                                        {store.phone}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </CardContent>
+                    </Card>
                 </Box>
             </Container>
         </Box>

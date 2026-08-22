@@ -76,6 +76,7 @@ export default function KontaktaOssPage() {
                 overline="Vi finns här"
                 title="Kontakta oss"
                 subtitle="Undrar du vad som finns i disken idag, eller vill du göra en större beställning? Hör av dig – vi hjälper gärna till."
+                image="/img/bild7.webp"
             />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>

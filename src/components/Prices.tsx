@@ -68,6 +68,7 @@ const Prices = () => {
                 overline="Aktuella priser"
                 title="Våra priser"
                 subtitle="Priserna uppdateras löpande av oss i butiken och kan variera med dagens tillgång på Göteborgs fiskauktion."
+                image="/img/bild1.webp"
             />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>

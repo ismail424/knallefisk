@@ -26,6 +26,7 @@ const HittaButik = () => {
                 overline="Här finns vi"
                 title="Hitta till våra butiker"
                 subtitle="Två butiker i Sjuhärad – samma färska fisk och samma familj bakom disken. Välkommen in!"
+                image="/img/store_front.webp"
             />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>

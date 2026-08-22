@@ -40,6 +40,7 @@ export default function OmOssPage() {
                 overline="Vår historia"
                 title="Om Knallefisk"
                 subtitle={`Familjeägd fiskhandel sedan ${FOUNDED_YEAR} – med färska fisken över hela disken och hjärtat i Sjuhärad.`}
+                image="/img/bild6.webp"
             />
 
             {/* Story */}
@@ -104,8 +105,8 @@ export default function OmOssPage() {
                                     }}
                                 >
                                     <Image
-                                        src="/img/bild6.webp"
-                                        alt="Hel färsk fisk på is i disken"
+                                        src="/img/bild5.webp"
+                                        alt="Fisktallrik med dagens fångst"
                                         fill
                                         sizes="(max-width: 900px) 40vw, 20vw"
                                         style={{ objectFit: 'cover' }}
