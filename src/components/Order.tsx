@@ -1,39 +1,59 @@
 'use client';
 
-import { useState } from 'react';
-import Image from 'next/image';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import {
     Box,
     Container,
     Typography,
     TextField,
     Button,
-    Paper,
+    Card,
+    CardContent,
     Alert,
+    Divider,
     FormControl,
     InputLabel,
     Select,
-    MenuItem
+    MenuItem,
 } from '@mui/material';
-import { ShoppingCart, Schedule, Phone, PersonOutline, MessageOutlined, CheckCircle, Email, LocationOn } from '@mui/icons-material';
+import { CheckCircle, Schedule, LocationOnOutlined, ArrowForward } from '@mui/icons-material';
+import { STORES } from '../lib/site';
+import { BRAND } from '@/theme';
+import PageHero from './PageHero';
+
+const STEPS = [
+    { title: 'Skicka din beställning', text: 'Skriv vad du vill ha och välj butik och dag.' },
+    { title: 'Vi packar den färsk', text: 'Vi plockar ihop allt ur dagens leverans.' },
+    { title: 'Hämta och betala i butik', text: 'Beställningen står klar – betala på plats.' },
+];
+
+const EMPTY_FORM = {
+    name: '',
+    phone: '',
+    email: '',
+    date: '',
+    message: '',
+    location: '',
+};
 
 const Order = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        phone: '',
-        email: '',
-        date: '',
-        message: '',
-        location: ''
-    });
+    const [formData, setFormData] = useState(EMPTY_FORM);
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [submitError, setSubmitError] = useState('');
+    // Set after mount: computing it during prerender would bake the build
+    // date into the static HTML and allow past pickup dates.
+    const [today, setToday] = useState<string>();
+
+    useEffect(() => {
+        setToday(new Date().toISOString().split('T')[0]);
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -46,7 +66,7 @@ const Order = () => {
             const response = await fetch('/api/order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
             });
 
             if (!response.ok) {
@@ -55,382 +75,287 @@ const Order = () => {
             }
 
             setSubmitted(true);
-
-            setTimeout(() => {
-                setFormData({ 
-                    name: '', 
-                    phone: '', 
-                    email: '', 
-                    date: '', 
-                    message: '', 
-                    location: '' 
-                });
-                setSubmitted(false);
-                setLoading(false);
-            }, 3000);
         } catch (error) {
             console.error('Error sending order:', error);
-            setLoading(false);
             setSubmitError(
                 error instanceof Error && error.message.startsWith('För många')
                     ? error.message
                     : 'Något gick fel när beställningen skickades. Försök igen eller ring oss direkt.'
             );
+        } finally {
+            setLoading(false);
         }
+    };
+
+    const startNewOrder = () => {
+        setFormData(EMPTY_FORM);
+        setSubmitted(false);
+        setSubmitError('');
     };
 
     if (submitted) {
         return (
-            <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 8, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-                <Container maxWidth="md">
-                    <Paper
-                        sx={{
-                            p: 6,
-                            borderRadius: 3,
-                            textAlign: 'center',
-                            boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
-                        }}
-                    >
-                        <CheckCircle sx={{ fontSize: '4rem', color: '#4caf50', mb: 3 }} />
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                color: '#448f9b',
-                                fontFamily: 'Poppins, sans-serif',
-                                fontWeight: 600,
-                                mb: 3
-                            }}
-                        >
+            <Box sx={{ backgroundColor: BRAND.sand, flexGrow: 1 }}>
+                <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
+                    <Card sx={{ p: { xs: 3.5, md: 5 }, textAlign: 'center' }}>
+                        <CheckCircle sx={{ fontSize: '3.5rem', color: 'success.main', mb: 2 }} />
+                        <Typography variant="h3" component="h1" sx={{ mb: 1.5 }}>
                             Tack för din beställning!
                         </Typography>
-                        <Typography
-                            variant="h6"
+                        <Typography sx={{ color: BRAND.muted, mb: 3.5 }}>
+                            En bekräftelse har skickats till {formData.email}.
+                        </Typography>
+
+                        <Box
                             sx={{
-                                color: '#666',
-                                fontFamily: 'Poppins, sans-serif',
-                                mb: 2
+                                backgroundColor: BRAND.tealDark,
+                                color: '#fff',
+                                borderRadius: 3,
+                                p: 3,
+                                mb: 3.5,
+                                textAlign: 'left',
                             }}
                         >
-                            Vi kontaktar dig på {formData.phone} eller {formData.email}
+                            <Typography
+                                variant="overline"
+                                sx={{ color: 'rgba(255, 255, 255, 0.92)', display: 'block', mb: 1 }}
+                            >
+                                Hämtas
+                            </Typography>
+                            <Typography sx={{ fontWeight: 700, fontSize: '1.15rem', display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Schedule sx={{ fontSize: '1.2rem' }} /> {formData.date}
+                            </Typography>
+                            <Typography sx={{ fontWeight: 700, fontSize: '1.15rem', display: 'flex', alignItems: 'center', gap: 1, mt: 0.75 }}>
+                                <LocationOnOutlined sx={{ fontSize: '1.2rem' }} /> Knallefisk {formData.location}
+                            </Typography>
+                        </Box>
+
+                        <Typography sx={{ color: BRAND.muted, fontSize: '0.92rem', mb: 3.5 }}>
+                            Du betalar i butiken när du hämtar.
                         </Typography>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                color: '#666',
-                                fontFamily: 'Poppins, sans-serif',
-                                mb: 1
-                            }}
-                        >
-                            Hämtning: {formData.date}
-                        </Typography>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                color: '#666',
-                                fontFamily: 'Poppins, sans-serif'
-                            }}
-                        >
-                            Plats: {formData.location}
-                        </Typography>
-                    </Paper>
+
+                        <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <Button variant="outlined" onClick={startNewOrder}>
+                                Gör en ny beställning
+                            </Button>
+                            <Button component={Link} href="/" variant="text" endIcon={<ArrowForward />}>
+                                Till startsidan
+                            </Button>
+                        </Box>
+                    </Card>
                 </Container>
             </Box>
         );
     }
 
     return (
-        <Box sx={{ 
-            pt: { xs: '140px', md: '120px' }, 
-            pb: 8, 
-            backgroundColor: '#f9fafb', 
-            minHeight: '100vh',
-            position: 'relative'
-        }}>
-            <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1 }}>
-{/* Simple Header */}
-                <Box sx={{ textAlign: 'center', mb: 6 }}>
-                    <Typography
-                        variant="h3"
-                        sx={{
-                            color: '#448f9b',
-                            fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 600,
-                            mb: 3
-                        }}
-                    >
-                        Beställ online
-                    </Typography>
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: '#666',
-                            fontFamily: 'Poppins, sans-serif',
-                            maxWidth: 600,
-                            mx: 'auto',
-                            lineHeight: 1.6
-                        }}
-                    >
-                        Beställ enkelt online och hämta i butik. Vi kontaktar dig för att bekräfta din beställning.
-                    </Typography>
-                </Box>
+        <Box sx={{ backgroundColor: BRAND.sand }}>
+            <PageHero
+                overline="Beställ & hämta"
+                title="Beställ online"
+                subtitle="Skriv vad du vill ha, så packar vi det färskt till din hämtningsdag. Du betalar i butiken."
+            />
 
-                {/* Clean Order Form */}
-                <Paper
+            <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+                <Box
                     sx={{
-                        p: 6,
-                        borderRadius: 3,
-                        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                        mb: 4,
-                        position: 'relative',
-                        overflow: 'hidden'
+                        display: 'grid',
+                        gridTemplateColumns: { xs: '1fr', md: '7fr 5fr' },
+                        gap: { xs: 4, md: 5 },
+                        alignItems: 'start',
                     }}
                 >
-                    {/* Multiple fish animations in random spots within form */}
-                    <Box
-                        sx={{
-                            backgroundImage: 'url("http://www.geertjanhendriks.nl/codepen/form/fish.png")',
-                            width: '235px',
-                            height: '104px',
-                            marginLeft: '-235px',
-                            position: 'absolute',
-                            top: '10px',
-                            animation: 'fishSwim1 24s infinite linear',
-                            zIndex: 0,
-                            opacity: 0.15,
-                            '@keyframes fishSwim1': {
-                                '0%': { marginLeft: '-235px' },
-                                '100%': { marginLeft: 'calc(100% + 235px)' }
-                            }
-                        }}
-                    />
-                    <Box
-                        sx={{
-                            backgroundImage: 'url("http://www.geertjanhendriks.nl/codepen/form/fish.png")',
-                            width: '235px',
-                            height: '104px',
-                            marginLeft: '-285px',
-                            position: 'absolute',
-                            top: '300px',
-                            animation: 'fishSwim2 20s infinite linear',
-                            animationDelay: '12s',
-                            zIndex: 0,
-                            opacity: 0.1,
-                            '@keyframes fishSwim2': {
-                                '0%': { marginLeft: '-235px' },
-                                '100%': { marginLeft: 'calc(100% + 235px)' }
-                            }
-                        }}
-                    />
-                    
-                    {/* Form content with higher z-index */}
-                    <Box sx={{ position: 'relative', zIndex: 2 }}>
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                color: '#448f9b',
-                                fontFamily: 'Poppins, sans-serif',
-                                fontWeight: 600,
-                                mb: 4,
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: 2
-                            }}
-                        >
-                            <ShoppingCart />
-                            Din beställning
-                        </Typography>
+                    {/* Order form */}
+                    <Card sx={{ p: { xs: 3, md: 4 } }}>
+                        {submitError && (
+                            <Alert severity="error" sx={{ mb: 3 }}>
+                                {submitError}
+                            </Alert>
+                        )}
 
-                    {submitError && (
-                        <Alert severity="error" sx={{ mb: 3 }}>
-                            {submitError}
-                        </Alert>
-                    )}
-
-                    <Box component="form" onSubmit={handleSubmit}>
-                        <Box sx={{ display: 'grid', gap: 3 }}>
-                            <Box sx={{ 
-                                display: 'grid', 
-                                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-                                gap: 3 
-                            }}>
-                                <TextField
-                                    fullWidth
-                                    label="Namn och efternamn"
-                                    name="name"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="Förnamn Efternamn"
-                                    InputProps={{
-                                        startAdornment: <PersonOutline sx={{ color: '#448f9b', mr: 1 }} />
-                                    }}
+                        <Box component="form" onSubmit={handleSubmit}>
+                            <Box sx={{ display: 'grid', gap: 3 }}>
+                                <Box
                                     sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: 2
-                                        }
-                                    }}
-                                />
-                                <TextField
-                                    fullWidth
-                                    label="Telefonnummer"
-                                    name="phone"
-                                    type="tel"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    required
-                                    placeholder="070 123 45 67"
-                                    InputProps={{
-                                        startAdornment: <Phone sx={{ color: '#448f9b', mr: 1 }} />
-                                    }}
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: 2
-                                        }
-                                    }}
-                                />
-                            </Box>
-                            
-                            <TextField
-                                fullWidth
-                                label="E-postadress"
-                                name="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                placeholder="din@email.se"
-                                InputProps={{
-                                    startAdornment: <Email sx={{ color: '#448f9b', mr: 1 }} />
-                                }}
-                                helperText="Vi använder din e-post för att skicka bekräftelse"
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: 2
-                                    }
-                                }}
-                            />
-
-                            <Box sx={{ 
-                                display: 'grid', 
-                                gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
-                                gap: 3 
-                            }}>
-                                <TextField
-                                    fullWidth
-                                    label="Hämtningsdatum"
-                                    name="date"
-                                    type="date"
-                                    value={formData.date}
-                                    onChange={handleChange}
-                                    required
-                                    InputLabelProps={{ shrink: true }}
-                                    InputProps={{
-                                        startAdornment: <Schedule sx={{ color: '#448f9b', mr: 1 }} />
-                                    }}
-                                    helperText="Välj när du vill hämta din beställning"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: 2
-                                        }
-                                    }}
-                                />
-                                
-                                <FormControl 
-                                    fullWidth 
-                                    required
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            borderRadius: 2
-                                        }
+                                        display: 'grid',
+                                        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                                        gap: 3,
                                     }}
                                 >
-                                    <InputLabel>Hämtningsplats</InputLabel>
-                                    <Select
-                                        name="location"
-                                        value={formData.location}
-                                        onChange={(e) => setFormData({...formData, location: e.target.value})}
-                                        label="Hämtningsplats"
-                                        startAdornment={<LocationOn sx={{ color: '#448f9b', mr: 1 }} />}
-                                    >
-                                        <MenuItem value="Skene">Skene</MenuItem>
-                                        <MenuItem value="Borås">Borås</MenuItem>
-                                    </Select>
-                                </FormControl>
+                                    <TextField
+                                        fullWidth
+                                        label="Namn"
+                                        name="name"
+                                        value={formData.name}
+                                        onChange={handleChange}
+                                        required
+                                        autoComplete="name"
+                                        placeholder="Förnamn Efternamn"
+                                    />
+                                    <TextField
+                                        fullWidth
+                                        label="Telefon"
+                                        name="phone"
+                                        type="tel"
+                                        value={formData.phone}
+                                        onChange={handleChange}
+                                        required
+                                        autoComplete="tel"
+                                        placeholder="070 123 45 67"
+                                    />
+                                </Box>
+
+                                <TextField
+                                    fullWidth
+                                    label="E-post"
+                                    name="email"
+                                    type="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    required
+                                    autoComplete="email"
+                                    placeholder="namn@exempel.se"
+                                />
+
+                                <Box
+                                    sx={{
+                                        display: 'grid',
+                                        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                                        gap: 3,
+                                    }}
+                                >
+                                    <TextField
+                                        fullWidth
+                                        label="Hämtningsdag"
+                                        name="date"
+                                        type="date"
+                                        value={formData.date}
+                                        onChange={handleChange}
+                                        required
+                                        InputLabelProps={{ shrink: true }}
+                                        inputProps={{ min: today }}
+                                    />
+
+                                    <FormControl fullWidth required>
+                                        <InputLabel id="order-location-label">Butik</InputLabel>
+                                        <Select
+                                            labelId="order-location-label"
+                                            name="location"
+                                            value={formData.location}
+                                            onChange={(e) =>
+                                                setFormData({ ...formData, location: e.target.value })
+                                            }
+                                            label="Butik"
+                                        >
+                                            {STORES.map((store) => (
+                                                <MenuItem key={store.id} value={store.name}>
+                                                    {store.name} – {store.streetAddress}
+                                                </MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Box>
+
+                                <TextField
+                                    fullWidth
+                                    label="Din beställning"
+                                    name="message"
+                                    multiline
+                                    rows={5}
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                    required
+                                    placeholder="T.ex. 1 kg laxfilé, 500 g handskalade räkor, 2 krabbor…"
+                                />
                             </Box>
-                            
-                            <TextField
+
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                size="large"
                                 fullWidth
-                                label="Beställning och beskrivning"
-                                name="message"
-                                multiline
-                                rows={6}
-                                value={formData.message}
-                                onChange={handleChange}
-                                required
-                                placeholder="Beskriv din beställning här... t.ex. 1kg färsk lax, 500g räkor, 2 hummer..."
-                                InputProps={{
-                                    startAdornment: <MessageOutlined sx={{ color: '#448f9b', mr: 1, alignSelf: 'flex-start', mt: 1 }} />
-                                }}
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        borderRadius: 2
-                                    }
-                                }}
-                            />
+                                disabled={loading}
+                                sx={{ mt: 4, py: 1.5, fontSize: '1.05rem' }}
+                            >
+                                {loading ? 'Skickar…' : 'Skicka beställning'}
+                            </Button>
+
+                            <Typography
+                                sx={{ color: BRAND.muted, fontSize: '0.85rem', textAlign: 'center', mt: 2 }}
+                            >
+                                Ingen betalning online – du betalar när du hämtar.
+                            </Typography>
                         </Box>
+                    </Card>
 
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            size="large"
-                            fullWidth
-                            disabled={loading}
-                            startIcon={<ShoppingCart />}
-                            sx={{
-                                mt: 4,
-                                backgroundColor: '#448f9b',
-                                py: 2,
-                                fontSize: '1.2rem',
-                                fontWeight: 600,
-                                textTransform: 'none',
-                                borderRadius: 3,
-                                '&:hover': {
-                                    backgroundColor: '#3c7d88',
-                                    transform: 'translateY(-2px)'
-                                },
-                                '&:disabled': {
-                                    backgroundColor: '#cccccc'
-                                },
-                                transition: 'all 0.3s ease'
-                            }}
-                        >
-                            {loading ? 'Skickar...' : 'Skicka beställning'}
-                        </Button>
-                    </Box>
-                    </Box>
-                </Paper>
+                    {/* Sidebar */}
+                    <Card>
+                        <CardContent sx={{ p: 3 }}>
+                            <Typography variant="h5" component="h2" sx={{ mb: 2.5 }}>
+                                Så fungerar det
+                            </Typography>
+                            {STEPS.map((step, index) => (
+                                <Box key={step.title} sx={{ display: 'flex', gap: 2, mb: index < STEPS.length - 1 ? 2.25 : 0 }}>
+                                    <Box
+                                        sx={{
+                                            width: 32,
+                                            height: 32,
+                                            borderRadius: '50%',
+                                            backgroundColor: BRAND.tealTint,
+                                            color: BRAND.tealDark,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                            fontWeight: 700,
+                                            fontSize: '0.95rem',
+                                            flexShrink: 0,
+                                        }}
+                                    >
+                                        {index + 1}
+                                    </Box>
+                                    <Box>
+                                        <Typography sx={{ fontWeight: 600, color: BRAND.ink, mb: 0.25 }}>
+                                            {step.title}
+                                        </Typography>
+                                        <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
+                                            {step.text}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                            ))}
 
-                {/* Simple Instructions */}
-                <Alert
-                    severity="info"
-                    sx={{
-                        borderRadius: 3,
-                        p: 3,
-                        '& .MuiAlert-icon': {
-                            color: '#448f9b'
-                        }
-                    }}
-                >
-                    <Typography 
-                        variant="body1" 
-                        sx={{ 
-                            fontFamily: 'Poppins, sans-serif',
-                            fontSize: '1rem'
-                        }}
-                    >
-                        <strong>Så fungerar det:</strong> Vi tar emot din beställning och du plockar upp den på upphämtningsdatum.
-                    </Typography>
-                </Alert>
+                            <Divider sx={{ my: 3 }} />
+
+                            <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+                                Hämta hos oss
+                            </Typography>
+                            {STORES.map((store, index) => (
+                                <Box key={store.id} sx={{ mb: index < STORES.length - 1 ? 2.25 : 0 }}>
+                                    <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>
+                                        {store.name} – {store.streetAddress}
+                                    </Typography>
+                                    <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
+                                        {store.hoursSummary}
+                                    </Typography>
+                                    <Typography
+                                        component="a"
+                                        href={`tel:${store.phoneE164}`}
+                                        sx={{
+                                            color: BRAND.tealDark,
+                                            fontWeight: 600,
+                                            fontSize: '0.9rem',
+                                            textDecoration: 'none',
+                                            '&:hover': { textDecoration: 'underline' },
+                                        }}
+                                    >
+                                        {store.phone}
+                                    </Typography>
+                                </Box>
+                            ))}
+                        </CardContent>
+                    </Card>
+                </Box>
             </Container>
         </Box>
     );

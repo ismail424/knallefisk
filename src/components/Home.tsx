@@ -3,24 +3,69 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-    Box, 
-    Container, 
-    Typography, 
-    Button, 
-    Card, 
-    CardMedia, 
-    CardContent 
+import {
+    Box,
+    Container,
+    Typography,
+    Button,
+    Card,
+    CardContent,
+    Skeleton,
 } from '@mui/material';
 import {
-    ShoppingCart,
-    StorefrontOutlined,
-    CheckCircleOutline
+    ShoppingBasketOutlined,
+    CheckCircleOutline,
+    SailingOutlined,
+    FavoriteBorder,
+    AccessTime,
+    LocationOnOutlined,
+    PhoneOutlined,
+    ArrowForward,
 } from '@mui/icons-material';
+import { visuallyHidden } from '@mui/utils';
 import { AdminPrice } from '../lib/types';
+import { STORES, FOUNDED_YEAR } from '../lib/site';
+import { BRAND, CARD_HOVER } from '@/theme';
+import { WaveDivider, Bubbles, ScalesPattern, FishAccent } from './decor';
+import PriceCard from './PriceCard';
+import SectionHeading from './SectionHeading';
+import StoreHeader from './StoreHeader';
+import BackgroundVideo from './BackgroundVideo';
+
+const WHITE = '#ffffff';
+
+const USPS = [
+    {
+        icon: SailingOutlined,
+        title: 'Direkt från auktionen',
+        text: 'Vi köper in fisk och skaldjur på Göteborgs fiskauktion – dagsfärskt över hela disken.',
+    },
+    {
+        icon: FavoriteBorder,
+        title: `Familjeägt sedan ${FOUNDED_YEAR}`,
+        text: 'Ett familjeföretag med passion för havet, kvalitet och personlig service i varje möte.',
+    },
+    {
+        icon: ShoppingBasketOutlined,
+        title: 'Beställ online – hämta i butik',
+        text: 'Lägg din beställning på webben så står den packad och klar när du kommer till butiken.',
+    },
+];
+
+const GALLERY = [
+    { src: '/img/bild1.webp', alt: 'Färska laxsidor i fiskdisken' },
+    { src: '/img/bild7.webp', alt: 'Räkmacka med handskalade räkor' },
+    { src: '/img/bild8.webp', alt: 'Laxmacka med färsk lax' },
+    { src: '/img/bild4.jpg', alt: 'Färsk fisk och laxfiléer i disken' },
+    { src: '/img/bild5.webp', alt: 'Fisktallrik med dagens fångst' },
+    { src: '/img/bild6.webp', alt: 'Hel färsk fisk på is' },
+    { src: '/img/bild2.webp', alt: 'Räktallrik med färska räkor' },
+    { src: '/img/bild3.webp', alt: 'Nykokt svensk krabba' },
+];
 
 const Home = () => {
     const [featuredPrices, setFeaturedPrices] = useState<AdminPrice[]>([]);
+    const [pricesLoading, setPricesLoading] = useState(true);
 
     useEffect(() => {
         const loadPrices = async () => {
@@ -28,601 +73,568 @@ const Home = () => {
                 const response = await fetch('/api/admin/prices');
                 if (response.ok) {
                     const adminPrices: AdminPrice[] = await response.json();
-                    // Get first 6 visible prices for featured section
-                    setFeaturedPrices(adminPrices.filter(price => price.is_visible !== false).slice(0, 6));
+                    setFeaturedPrices(
+                        adminPrices.filter((price) => price.is_visible !== false).slice(0, 6)
+                    );
                 }
             } catch (error) {
                 console.error('Error loading prices from API:', error);
+            } finally {
+                setPricesLoading(false);
             }
         };
 
         loadPrices();
     }, []);
 
-    const images = [
-        { src: "/img/bild1.webp", alt: "En bild på en färsk laxsida!" },
-        { src: "/img/bild7.webp", alt: "Räkmacka" },
-        { src: "/img/bild8.webp", alt: "Laxmacka" },
-        { src: "/img/bild4.jpg", alt: "Bild på framsidan av vår butik" },
-        { src: "/img/bild5.webp", alt: "En fin fisktallrik!" },
-        { src: "/img/bild6.webp", alt: "Ett gäng fina fiskar" },
-        { src: "/img/bild2.webp", alt: "En fin räktallrik" },
-        { src: "/img/bild3.webp", alt: "En stor fin krabba" }
-    ];
+    const showPricesSection = pricesLoading || featuredPrices.length > 0;
 
     return (
-        <Box sx={{ pt: { xs: '70px', md: '80px' } }}>
+        <Box>
+            {/* ============ Hero ============ */}
+            <Box
+                sx={{
+                    position: 'relative',
+                    // Fill the viewport below the header (capped), but let the
+                    // section grow with its content on small screens.
+                    minHeight: {
+                        xs: 'min(calc(100svh - 72px), 860px)',
+                        md: 'min(calc(100svh - 78px), 860px)',
+                    },
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    overflow: 'hidden',
+                    backgroundColor: BRAND.inkDeep,
+                }}
+            >
+                <BackgroundVideo src="/video/havet.mp4" poster="/img/havet_poster.jpg" />
 
-            {/* Hero Section with Video Background */}
-            <Box sx={{ 
-                position: 'relative',
-                height: { xs: 'calc(100vh - 70px)', md: 'calc(100vh - 80px)' },
-                minHeight: { xs: '600px', md: '700px' },
-                maxHeight: { xs: '800px', md: 'none' },
-                overflow: 'hidden',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-            }}>
-                {/* Background Video */}
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        zIndex: 1,
-                        backgroundColor: 'transparent'
-                    }}
-                >
-                    <source src="/video/havet.mp4" type="video/mp4" />
-                    Your browser does not support the video tag.
-                </video>
-
-                {/* Overlay for Better Text Contrast */}
+                {/* Gradient overlay for contrast */}
                 <Box
                     sx={{
                         position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        background: 'rgba(0,0,0,0.6)',
-                        zIndex: 2
+                        inset: 0,
+                        background:
+                            'linear-gradient(180deg, rgba(13, 40, 48, 0.55) 0%, rgba(13, 40, 48, 0.45) 45%, rgba(13, 40, 48, 0.72) 100%)',
                     }}
                 />
 
-                {/* Hero Content */}
-                <Container maxWidth="md" sx={{ 
-                    textAlign: 'center', 
-                    zIndex: 4, 
-                    py: { xs: 4, md: 12 }, 
-                    pt: { xs: 4, md: 6 },
-                    pb: { xs: 4, md: 12 },
-                    position: 'relative',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    height: '100%'
-                }}>
-                    <Box sx={{ mb: { xs: 3, md: 6 } }}>
+                <Container
+                    maxWidth="md"
+                    sx={{
+                        position: 'relative',
+                        textAlign: 'center',
+                        color: WHITE,
+                        pt: { xs: 5, md: 8 },
+                        pb: { xs: 10, md: 8 },
+                        animation: 'fade-up 0.8s ease both',
+                    }}
+                >
+                    <Box sx={{ mb: { xs: 3, md: 4 } }}>
                         <Image
                             src="/img/logo.svg"
-                            alt="Knallefisk Logo"
-                            width={350}
-                            height={175}
+                            alt="Knallefisk – Färska fisken över hela disken"
+                            width={300}
+                            height={190}
+                            priority
                             style={{
-                                maxWidth: '280px',
-                                width: '100%',
-                                height: 'auto'
+                                width: 'min(52vw, 250px)',
+                                height: 'auto',
+                                filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35))',
                             }}
                         />
                     </Box>
 
                     <Typography
-                        variant="h2"
+                        component="h1"
                         sx={{
-                            color: 'white',
-                            mb: { xs: 1, md: 1.5 },
-                            fontFamily: 'Poppins, sans-serif',
+                            fontFamily: 'var(--font-poppins), Poppins, sans-serif',
                             fontWeight: 700,
-                            fontSize: { xs: '1.8rem', md: '3.2rem' },
-                            lineHeight: 1.1,
-                            letterSpacing: '-0.01em'
+                            fontSize: { xs: '2rem', sm: '2.6rem', md: '3.4rem' },
+                            lineHeight: 1.12,
+                            letterSpacing: '-0.015em',
+                            mb: 2,
+                            textShadow: '0 2px 24px rgba(0, 0, 0, 0.35)',
                         }}
                     >
-                        Välkommen till Knallefisk!
+                        Färska fisken
+                        <br />
+                        över hela disken
                     </Typography>
 
                     <Typography
-                        variant="h4"
                         sx={{
-                            color: 'white',
-                            mb: { xs: 2.5, md: 4 },
-                            fontFamily: 'Poppins, sans-serif',
-                            fontWeight: 500,
-                            fontSize: { xs: '1.1rem', md: '1.6rem' },
-                            maxWidth: '700px',
+                            fontSize: { xs: '1rem', md: '1.2rem' },
+                            fontWeight: 400,
+                            lineHeight: 1.6,
+                            maxWidth: 620,
                             mx: 'auto',
-                            lineHeight: 1.3
+                            mb: { xs: 3.5, md: 4.5 },
+                            color: 'rgba(255, 255, 255, 0.9)',
                         }}
                     >
-                        Färska fisken över hela disken • Kvalitet sedan 2006
+                        Familjeägd fiskhandel sedan {FOUNDED_YEAR}. Fisk och skaldjur från
+                        Göteborgs fiskauktion – till våra butiker i Borås och Skene.
                     </Typography>
 
-                    {/* Call-to-Action Section */}
-                    <Box sx={{ mb: { xs: 4, md: 6 } }}>
-                        <Box sx={{
+                    <Box
+                        sx={{
                             display: 'flex',
-                            gap: { xs: 2, md: 3 },
+                            gap: 2,
                             justifyContent: 'center',
                             flexWrap: 'wrap',
-                            mb: { xs: 3, md: 5 }
-                        }}>
-                            <Button
-                                component={Link}
-                                href="/bestall_online"
-                                variant="contained"
-                                size="small"
-                                startIcon={<ShoppingCart />}
-                                sx={{
-                                    background: 'rgb(68, 143, 155)',
-                                    color: 'white',
-                                    px: { xs: 2, md: 2.5 },
-                                    py: { xs: 1, md: 1.2 },
-                                    fontSize: { xs: '0.9rem', md: '1rem' },
-                                    fontWeight: 600,
-                                    borderRadius: 6,
-                                    textTransform: 'none',
-                                    '&:hover': {
-                                        background: 'rgb(58, 123, 135)',
-                                        transform: 'translateY(-1px)'
-                                    },
-                                    transition: 'all 0.2s ease'
-                                }}
-                            >
-                                Beställ online
-                            </Button>
-                            <Button
-                                component={Link}
-                                href="/hitta_butik"
-                                variant="outlined"
-                                size="small"
-                                startIcon={<StorefrontOutlined />}
-                                sx={{
-                                    borderColor: 'rgba(255,255,255,0.9)',
-                                    color: 'white',
-                                    px: { xs: 2, md: 2.5 },
-                                    py: { xs: 1, md: 1.2 },
-                                    fontSize: { xs: '0.9rem', md: '1rem' },
-                                    fontWeight: 600,
-                                    borderRadius: 6,
-                                    textTransform: 'none',
-                                    borderWidth: '2px',
-                                    backgroundColor: 'rgba(255,255,255,0.1)',
-                                    '&:hover': {
-                                        backgroundColor: 'rgba(255,255,255,0.2)',
-                                        borderColor: 'white',
-                                        transform: 'translateY(-1px)'
-                                    },
-                                    transition: 'all 0.2s ease'
-                                }}
-                            >
-                                Besök vår butik
-                            </Button>
-                        </Box>
-                        
-                        {/* Trust Indicators */}
-                        <Box sx={{
+                            mb: { xs: 4, md: 5 },
+                        }}
+                    >
+                        <Button
+                            component={Link}
+                            href="/bestall_online"
+                            variant="contained"
+                            size="large"
+                            startIcon={<ShoppingBasketOutlined />}
+                        >
+                            Beställ online
+                        </Button>
+                        <Button
+                            component={Link}
+                            href="/priser"
+                            variant="outlined"
+                            size="large"
+                            sx={{
+                                color: WHITE,
+                                borderColor: 'rgba(255, 255, 255, 0.75)',
+                                borderWidth: 2,
+                                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                                '&:hover': {
+                                    borderColor: WHITE,
+                                    borderWidth: 2,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.16)',
+                                },
+                            }}
+                        >
+                            Se dagens priser
+                        </Button>
+                    </Box>
+
+                    <Box
+                        sx={{
                             display: 'flex',
                             justifyContent: 'center',
-                            gap: { xs: 1.5, md: 4 },
+                            gap: { xs: 1.5, md: 3.5 },
                             flexWrap: 'wrap',
-                            opacity: 0.9
-                        }}>
-                            <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
-                                Dagsfärsk fisk
-                            </Typography>
-                            <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
-                                Kvalitet du kan lita på
-                            </Typography>
-                            <Typography sx={{ color: 'white', fontSize: { xs: '0.8rem', md: '0.9rem' }, display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                                <CheckCircleOutline sx={{ fontSize: { xs: '0.9rem', md: '1rem' } }} />
-                                20 års erfarenhet
-                            </Typography>
-                        </Box>
+                        }}
+                    >
+                        {['Dagsfärskt från auktionen', `Familjeägt sedan ${FOUNDED_YEAR}`, 'Butiker i Borås & Skene'].map(
+                            (item) => (
+                                <Typography
+                                    key={item}
+                                    sx={{
+                                        color: 'rgba(255, 255, 255, 0.88)',
+                                        fontSize: { xs: '0.82rem', md: '0.92rem' },
+                                        fontWeight: 500,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: 0.75,
+                                    }}
+                                >
+                                    <CheckCircleOutline sx={{ fontSize: '1.05em' }} />
+                                    {item}
+                                </Typography>
+                            )
+                        )}
+                    </Box>
+                </Container>
+
+                {/* Wave into the page */}
+                <Box sx={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
+                    <WaveDivider fill={BRAND.sand} height={{ xs: 42, md: 72 }} />
+                </Box>
+            </Box>
+
+            {/* ============ USP band ============ */}
+            <Box sx={{ backgroundColor: BRAND.sand, py: { xs: 6, md: 9 }, position: 'relative', overflow: 'hidden' }}>
+                <FishAccent style={{ top: 24, right: '2%' }} size={90} color="rgba(68, 143, 155, 0.1)" />
+                <Container maxWidth="lg">
+                    <Typography component="h2" sx={visuallyHidden}>
+                        Därför Knallefisk
+                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                            gap: 3,
+                        }}
+                    >
+                        {USPS.map((usp) => (
+                            <Card
+                                key={usp.title}
+                                sx={{
+                                    p: 1,
+                                    textAlign: 'center',
+                                    ...CARD_HOVER,
+                                }}
+                            >
+                                <CardContent>
+                                    <Box
+                                        sx={{
+                                            width: 64,
+                                            height: 64,
+                                            borderRadius: '50%',
+                                            backgroundColor: BRAND.tealTint,
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            mx: 'auto',
+                                            mb: 2,
+                                        }}
+                                    >
+                                        <usp.icon sx={{ fontSize: 30, color: BRAND.teal }} />
+                                    </Box>
+                                    <Typography variant="h5" component="h3" sx={{ mb: 1 }}>
+                                        {usp.title}
+                                    </Typography>
+                                    <Typography sx={{ color: BRAND.muted, fontSize: '0.95rem' }}>
+                                        {usp.text}
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        ))}
                     </Box>
                 </Container>
             </Box>
 
-{/* Featured Prices Section - Only show if there are prices */}
-            {featuredPrices.length > 0 && (
-                <Box sx={{ py: { xs: 6, md: 8 }, backgroundColor: 'white' }}>
-                    <Container maxWidth="lg">
-                        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-                            <Typography 
-                                variant="h3" 
-                                component="h2"
-                                sx={{ 
-                                    fontWeight: 600,
-                                    color: 'rgb(68, 143, 155)',
-                                    mb: 2,
-                                    fontSize: { xs: '2rem', md: '2.5rem' }
+            {/* ============ Featured prices ============ */}
+            {showPricesSection && (
+                <>
+                    <WaveDivider fill={WHITE} height={{ xs: 36, md: 56 }} />
+                    <Box sx={{ backgroundColor: WHITE, pt: { xs: 4, md: 5 }, pb: { xs: 7, md: 10 } }}>
+                        <Container maxWidth="lg">
+                            <SectionHeading
+                                overline="Ur disken"
+                                title="Dagens priser"
+                                subtitle="Ett urval ur disken just nu – priserna uppdateras löpande av oss i butiken."
+                            />
+
+                            <Box
+                                sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: {
+                                        xs: '1fr',
+                                        sm: 'repeat(2, 1fr)',
+                                        lg: 'repeat(3, 1fr)',
+                                    },
+                                    gap: 3,
                                 }}
                             >
-                                Dagens priser
-                            </Typography>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    color: '#666',
-                                    fontWeight: 400,
-                                    fontSize: { xs: '1rem', md: '1.1rem' }
-                                }}
-                            >
-                                Färsk fisk till bästa pris
-                            </Typography>
-                        </Box>
-
-                        {featuredPrices.length > 0 ? (
-                        <>
-                            <Box sx={{
-                                display: 'grid',
-                                gridTemplateColumns: {
-                                    xs: '1fr',
-                                    sm: 'repeat(2, 1fr)',
-                                    md: 'repeat(2, 1fr)',
-                                    lg: 'repeat(3, 1fr)'
-                                },
-                                gap: 2
-                            }}>
-                                {featuredPrices.map((price) => (
-                                    <Card 
-                                        key={price.id}
-                                        sx={{ 
-                                            height: '100%',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            borderRadius: 1,
-                                            overflow: 'hidden',
-                                            border: '1px solid #ddd',
-                                            backgroundColor: '#fff',
-                                            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                                            '&:hover': {
-                                                boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                                            }
-                                        }}
-                                    >
-                                        {/* Image */}
-                                        {price.image && (
-                                            <Box sx={{ position: 'relative' }}>
-                                                <CardMedia
-                                                    component="img"
-                                                    height="160"
-                                                    image={price.image}
-                                                    alt={price.title}
-                                                    sx={{ 
-                                                        objectFit: 'cover'
-                                                    }}
-                                                />
-                                                {/* Sale Badge */}
-                                                {price.on_sale && (
-                                                    <Box
-                                                        sx={{
-                                                            position: 'absolute',
-                                                            top: 8,
-                                                            right: 8,
-                                                            backgroundColor: '#d32f2f',
-                                                            color: 'white',
-                                                            px: 1,
-                                                            py: 0.5,
-                                                            borderRadius: 0.5,
-                                                            fontSize: '0.75rem',
-                                                            fontWeight: 600,
-                                                            textTransform: 'uppercase'
-                                                        }}
-                                                    >
-                                                        REA
-                                                    </Box>
-                                                )}
-                                            </Box>
-                                        )}
-
-                                        <CardContent sx={{ 
-                                            flexGrow: 1, 
-                                            p: 2,
-                                            display: 'flex',
-                                            flexDirection: 'column'
-                                        }}>
-                                            {/* Product Title */}
-                                            <Typography 
-                                                variant="h6" 
-                                                component="h3"
-                                                sx={{ 
-                                                    fontWeight: 500,
-                                                    color: '#333',
-                                                    mb: 1,
-                                                    fontSize: '1.1rem',
-                                                    fontFamily: 'system-ui, -apple-system, sans-serif'
-                                                }}
-                                            >
-                                                {price.title}
-                                            </Typography>
-                                            
-                                            {/* Price Section */}
-                                            <Box sx={{ mt: 'auto' }}>
-                                                {price.on_sale && price.sale_price ? (
-                                                    <Box>
-                                                        <Typography 
-                                                            variant="h5" 
-                                                            component="div"
-                                                            sx={{ 
-                                                                fontWeight: 700,
-                                                                color: '#d32f2f',
-                                                                fontSize: { xs: '1.5rem', md: '1.8rem' },
-                                                                fontFamily: 'system-ui, -apple-system, sans-serif',
-                                                                mb: 0.5,
-                                                                letterSpacing: '0.5px'
-                                                            }}
-                                                        >
-                                                            {price.sale_price} kr<Typography component="span" sx={{ fontSize: '0.7em', fontWeight: 500, ml: 0.5 }}>/{price.unit || 'st'}</Typography>
-                                                        </Typography>
-                                                        <Typography 
-                                                            variant="body1" 
-                                                            component="div"
-                                                            sx={{ 
-                                                                textDecoration: 'line-through',
-                                                                color: '#666',
-                                                                fontSize: { xs: '0.95rem', md: '1rem' },
-                                                                fontFamily: 'system-ui, -apple-system, sans-serif'
-                                                            }}
-                                                        >
-                                                            Ordinarie: {price.price} kr<Typography component="span" sx={{ fontSize: '0.9em', ml: 0.5 }}>/{price.unit || 'st'}</Typography>
-                                                        </Typography>
-                                                    </Box>
-                                                ) : (
-                                                    <Typography 
-                                                        variant="h5" 
-                                                        component="div"
-                                                        sx={{ 
-                                                            fontWeight: 700,
-                                                            color: '#2e7d32',
-                                                            fontSize: { xs: '1.5rem', md: '1.8rem' },
-                                                            fontFamily: 'system-ui, -apple-system, sans-serif',
-                                                            letterSpacing: '0.5px'
-                                                        }}
-                                                    >
-                                                        {price.price} kr<Typography component="span" sx={{ fontSize: '0.7em', fontWeight: 500, ml: 0.5 }}>/{price.unit || 'st'}</Typography>
-                                                    </Typography>
-                                                )}
-                                            </Box>
-                                        </CardContent>
-                                    </Card>
-                                ))}
+                                {pricesLoading
+                                    ? Array.from({ length: 3 }).map((_, i) => (
+                                          <Card key={i} sx={{ p: 2.5 }}>
+                                              <Skeleton variant="rounded" height={140} sx={{ mb: 2 }} />
+                                              <Skeleton width="70%" height={28} />
+                                              <Skeleton width="40%" height={34} />
+                                          </Card>
+                                      ))
+                                    : featuredPrices.map((price) => (
+                                          <PriceCard key={price.id} price={price} />
+                                      ))}
                             </Box>
 
-                            <Box sx={{ textAlign: 'center', mt: 4 }}>
+                            <Box sx={{ textAlign: 'center', mt: { xs: 4, md: 5 } }}>
                                 <Button
                                     component={Link}
                                     href="/priser"
                                     variant="outlined"
-                                    sx={{
-                                        borderColor: 'rgb(68, 143, 155)',
-                                        color: 'rgb(68, 143, 155)',
-                                        px: 3,
-                                        py: 1.5,
-                                        fontSize: '1rem',
-                                        fontWeight: 600,
-                                        borderRadius: 8,
-                                        textTransform: 'none',
-                                        '&:hover': {
-                                            borderColor: 'rgb(68, 143, 155)',
-                                            backgroundColor: 'rgba(68, 143, 155, 0.04)'
-                                        }
-                                    }}
+                                    size="large"
+                                    endIcon={<ArrowForward />}
                                 >
                                     Se alla priser
                                 </Button>
                             </Box>
-                        </>
-                    ) : (
-                        <Box sx={{ 
-                            textAlign: 'center', 
-                            py: { xs: 4, md: 6 },
-                            color: '#666'
-                        }}>
-                            <Typography 
-                                variant="h6" 
-                                sx={{ 
-                                    mb: 2,
-                                    fontWeight: 400,
-                                    fontSize: { xs: '1.1rem', md: '1.2rem' }
-                                }}
-                            >
-                                Inga priser att visa just nu
-                            </Typography>
-                            <Typography 
-                                variant="body1" 
-                                sx={{ 
-                                    color: '#888',
-                                    fontSize: { xs: '0.9rem', md: '1rem' }
-                                }}
-                            >
-                                Kontakta oss för aktuella priser
-                            </Typography>
-                        </Box>
-                    )}
-                </Container>
-            </Box>
+                        </Container>
+                    </Box>
+                </>
             )}
 
-            {/* About Section with Trust Elements */}
-            <Box sx={{ py: { xs: 8, md: 12 }, backgroundColor: '#f8fafc' }}>
+            {/* ============ About ============ */}
+            <Box
+                sx={{
+                    backgroundColor: showPricesSection ? BRAND.sand : WHITE,
+                    py: { xs: 7, md: 11 },
+                    position: 'relative',
+                    overflow: 'hidden',
+                }}
+            >
+                <Bubbles style={{ bottom: -40, left: '-2%' }} size={220} color="rgba(68, 143, 155, 0.08)" />
                 <Container maxWidth="lg">
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        alignItems: 'center',
-                        gap: { xs: 6, md: 8 }
-                    }}>
-                        <Box sx={{ 
-                            flex: { xs: '1', md: '0 0 50%' },
-                            position: 'relative'
-                        }}>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                            gap: { xs: 5, md: 8 },
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Box sx={{ position: 'relative' }}>
+                            <Box
+                                aria-hidden
+                                sx={{
+                                    position: 'absolute',
+                                    inset: { xs: '16px -10px -16px 10px', md: '24px -16px -24px 16px' },
+                                    borderRadius: 4,
+                                    backgroundColor: BRAND.tealPale,
+                                    zIndex: 0,
+                                }}
+                            />
                             <Box
                                 component="img"
                                 src="/img/store_front.webp"
-                                alt="Bild på framsidan av fiskaffären"
+                                alt="Knallefisks butik med skylten Färska fisken över hela disken"
                                 sx={{
+                                    position: 'relative',
                                     width: '100%',
                                     height: 'auto',
-                                    borderRadius: 2,
-                                    boxShadow: '0 8px 32px rgba(0,0,0,0.12)'
+                                    borderRadius: 4,
+                                    display: 'block',
+                                    boxShadow: '0 16px 48px rgba(23, 49, 58, 0.18)',
                                 }}
                             />
                         </Box>
-                        <Box sx={{ flex: 1 }}>
-                            <Typography 
-                                variant="h3" 
-                                sx={{ 
-                                    color: 'rgb(68, 143, 155)',
-                                    fontFamily: 'Poppins, sans-serif',
-                                    fontWeight: 700,
-                                    fontSize: { xs: '2rem', md: '2.5rem' },
-                                    mb: 2,
-                                    position: 'relative',
-                                    '&::after': {
-                                        content: '""',
-                                        position: 'absolute',
-                                        bottom: -10,
-                                        left: '50%',
-                                        transform: 'translateX(-50%)',
-                                        width: 80,
-                                        height: 4,
-                                        backgroundColor: 'rgb(68, 143, 155)',
-                                        borderRadius: 2
-                                    }
-                                }}
-                            >
-                                Välkommen till oss!
+
+                        <Box>
+                            <Typography variant="overline" sx={{ color: BRAND.tealDark, display: 'block', mb: 1 }}>
+                                Vår historia
                             </Typography>
-                            <Typography 
-                                variant="body1" 
-                                sx={{ 
-                                    color: '#666',
-                                    fontSize: { xs: '1rem', md: '1.1rem' },
-                                    lineHeight: 1.7,
-                                    mb: 3
-                                }}
-                            >
-                                Vi är en familjeägd fiskhandel som har serverat Göteborg med den färskaste fisken sedan 2006. 
-                                Vår passion för kvalitet och service gör oss till ditt förstahandsval för alla dina fiskbehov.
+                            <Typography variant="h2" component="h2" sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' }, mb: 2.5 }}>
+                                Familjeägt sedan {FOUNDED_YEAR}
                             </Typography>
-                            <Typography 
-                                variant="body1" 
-                                sx={{ 
-                                    color: '#666',
-                                    fontSize: { xs: '1rem', md: '1.1rem' },
-                                    lineHeight: 1.7
-                                }}
-                            >
-                                Från dagsfärsk havsfisk till lokala delikatesser - vi erbjuder alltid det bästa för våra kunder.
+                            <Typography sx={{ color: BRAND.muted, fontSize: { xs: '1rem', md: '1.05rem' }, mb: 2 }}>
+                                Knallefisk är en familjeägd fiskhandel som i två decennier har
+                                försett Sjuhärad med färsk fisk och skaldjur. Vi handplockar varje
+                                leverans från Göteborgs fiskauktion och står själva bakom disken.
                             </Typography>
+                            <Typography sx={{ color: BRAND.muted, fontSize: { xs: '1rem', md: '1.05rem' }, mb: 3.5 }}>
+                                Från dagsfärsk havsfisk till handskalade räkor och nykokta skaldjur –
+                                hos oss får du alltid kvalitet, kunskap och ett vänligt bemötande.
+                            </Typography>
+
+                            <Box sx={{ display: 'flex', gap: { xs: 3, md: 5 }, mb: 4, flexWrap: 'wrap' }}>
+                                {[
+                                    { value: '20+', label: 'år i branschen' },
+                                    { value: '2', label: 'butiker i Sjuhärad' },
+                                    { value: '100%', label: 'färskt från auktionen' },
+                                ].map((stat) => (
+                                    <Box key={stat.label}>
+                                        <Typography
+                                            sx={{
+                                                fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                                fontWeight: 800,
+                                                fontSize: { xs: '1.75rem', md: '2.1rem' },
+                                                color: BRAND.teal,
+                                                lineHeight: 1,
+                                            }}
+                                        >
+                                            {stat.value}
+                                        </Typography>
+                                        <Typography sx={{ color: BRAND.muted, fontSize: '0.88rem', mt: 0.5 }}>
+                                            {stat.label}
+                                        </Typography>
+                                    </Box>
+                                ))}
+                            </Box>
+
+                            <Button component={Link} href="/om_oss" variant="outlined" endIcon={<ArrowForward />}>
+                                Läs mer om oss
+                            </Button>
                         </Box>
                     </Box>
                 </Container>
             </Box>
 
-            {/* Store Section */}
-            <Box sx={{ py: { xs: 8, md: 12 }, backgroundColor: 'white' }}>
+            {/* ============ Stores ============ */}
+            <Box sx={{ backgroundColor: showPricesSection ? WHITE : BRAND.sand, py: { xs: 7, md: 10 } }}>
                 <Container maxWidth="lg">
-                    {/* Section Header */}
-                    <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
-                        <Typography 
-                            variant="h3" 
-                            sx={{ 
-                                color: 'rgb(68, 143, 155)',
-                                fontFamily: 'Poppins, sans-serif',
-                                fontWeight: 700,
-                                fontSize: { xs: '2rem', md: '2.5rem' },
-                                mb: 2,
-                                position: 'relative',
-                                '&::after': {
-                                    content: '""',
-                                    position: 'absolute',
-                                    bottom: -10,
-                                    left: '50%',
-                                    transform: 'translateX(-50%)',
-                                    width: 80,
-                                    height: 4,
-                                    backgroundColor: 'rgb(68, 143, 155)',
-                                    borderRadius: 2
-                                }
-                            }}
-                        >
-                            Vår butik
-                        </Typography>
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: '#666',
-                                fontFamily: 'Poppins, sans-serif',
-                                fontWeight: 400,
-                                fontSize: { xs: '1.1rem', md: '1.2rem' },
-                                maxWidth: '600px',
-                                mx: 'auto'
-                            }}
-                        >
-                            Se vad vi erbjuder
-                        </Typography>
-                    </Box>
+                    <SectionHeading
+                        overline="Här finns vi"
+                        title="Våra butiker"
+                        subtitle="Två butiker i Sjuhärad – samma färska fisk och samma familj bakom disken."
+                    />
 
-                    {/* Image Gallery */}
-                    <Box sx={{
-                        display: 'grid',
-                        gridTemplateColumns: {
-                            xs: '1fr',
-                            sm: 'repeat(2, 1fr)',
-                            md: 'repeat(3, 1fr)',
-                            lg: 'repeat(4, 1fr)'
-                        },
-                        gap: 2,
-                        mb: 6
-                    }}>
-                        {images.map((image, index) => (
-                            <Box
-                                key={index}
-                                sx={{
-                                    position: 'relative',
-                                    aspectRatio: '1',
-                                    borderRadius: 2,
-                                    overflow: 'hidden',
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                                    '&:hover': {
-                                        transform: 'scale(1.02)',
-                                        boxShadow: '0 8px 24px rgba(0,0,0,0.15)'
-                                    },
-                                    transition: 'all 0.3s ease'
-                                }}
-                            >
-                                <Image
-                                    src={image.src}
-                                    alt={image.alt}
-                                    fill
-                                    style={{
-                                        objectFit: 'cover'
-                                    }}
-                                />
-                            </Box>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                            gap: 3,
+                        }}
+                    >
+                        {STORES.map((store) => (
+                            <Card key={store.id} sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <StoreHeader title={`Knallefisk ${store.name}`} />
+                                <CardContent sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
+                                    <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
+                                        <LocationOnOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem', mt: 0.3 }} />
+                                        <Typography sx={{ color: BRAND.ink }}>
+                                            {store.streetAddress}, {store.postalCode} {store.city}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
+                                        <AccessTime sx={{ color: BRAND.teal, fontSize: '1.2rem', mt: 0.3 }} />
+                                        <Typography sx={{ color: BRAND.ink }}>{store.hoursSummary}</Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
+                                        <PhoneOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem', mt: 0.3 }} />
+                                        <Typography
+                                            component="a"
+                                            href={`tel:${store.phoneE164}`}
+                                            sx={{
+                                                color: BRAND.ink,
+                                                textDecoration: 'none',
+                                                '&:hover': { color: BRAND.tealDark },
+                                            }}
+                                        >
+                                            {store.phone}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ mt: 'auto', pt: 1.5, display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
+                                        <Button
+                                            component="a"
+                                            href={store.directionsUrl}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            variant="contained"
+                                            size="small"
+                                            sx={{ px: 2.5 }}
+                                        >
+                                            Vägbeskrivning
+                                        </Button>
+                                        <Button
+                                            component={Link}
+                                            href="/hitta_butik"
+                                            variant="text"
+                                            size="small"
+                                            endIcon={<ArrowForward />}
+                                            sx={{ color: BRAND.tealDark }}
+                                        >
+                                            Öppettider & karta
+                                        </Button>
+                                    </Box>
+                                </CardContent>
+                            </Card>
                         ))}
+                    </Box>
+                </Container>
+            </Box>
+
+            {/* ============ Gallery ============ */}
+            <Box sx={{ backgroundColor: showPricesSection ? BRAND.sand : WHITE, py: { xs: 7, md: 10 } }}>
+                <Container maxWidth="lg">
+                    <SectionHeading
+                        overline="Ur vår disk"
+                        title="Färskt varje dag"
+                        subtitle="Ett smakprov på det vi dukar upp i disken – följ gärna med bakom kulisserna."
+                    />
+
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: {
+                                xs: 'repeat(2, 1fr)',
+                                md: 'repeat(4, 1fr)',
+                            },
+                            gridAutoFlow: 'dense',
+                            gap: { xs: 1.5, md: 2 },
+                        }}
+                    >
+                        {GALLERY.map((image, index) => {
+                            const featured = index === 0;
+                            const wide = index === GALLERY.length - 1;
+                            return (
+                                <Box
+                                    key={image.src}
+                                    sx={{
+                                        position: 'relative',
+                                        aspectRatio: featured || wide ? { xs: '2 / 1', md: featured ? '1' : 'auto' } : '1',
+                                        gridColumn: featured || wide ? 'span 2' : 'span 1',
+                                        gridRow: { xs: 'span 1', md: featured ? 'span 2' : 'span 1' },
+                                        borderRadius: 3,
+                                        overflow: 'hidden',
+                                        boxShadow: '0 4px 16px rgba(23, 49, 58, 0.08)',
+                                        '&:hover img': { transform: 'scale(1.06)' },
+                                    }}
+                                >
+                                    <Image
+                                        src={image.src}
+                                        alt={image.alt}
+                                        fill
+                                        sizes={
+                                            featured || wide
+                                                ? '(max-width: 900px) 100vw, 50vw'
+                                                : '(max-width: 900px) 50vw, 25vw'
+                                        }
+                                        style={{ objectFit: 'cover', transition: 'transform 0.4s ease' }}
+                                    />
+                                </Box>
+                            );
+                        })}
+                    </Box>
+                </Container>
+            </Box>
+
+            {/* ============ CTA band ============ */}
+            <WaveDivider fill={BRAND.tealDark} height={{ xs: 36, md: 56 }} />
+            <Box
+                sx={{
+                    background: `linear-gradient(135deg, ${BRAND.tealDark} 0%, ${BRAND.teal} 100%)`,
+                    position: 'relative',
+                    overflow: 'hidden',
+                    py: { xs: 7, md: 9 },
+                }}
+            >
+                {/* The sea again, faint under a teal tint */}
+                <BackgroundVideo src="/video/havet.mp4" poster="/img/havet_poster.jpg" opacity={0.22} />
+                <ScalesPattern color="rgba(255, 255, 255, 0.06)" />
+                <Bubbles style={{ top: -30, right: '5%' }} color="rgba(255, 255, 255, 0.1)" size={200} />
+                <Container maxWidth="md" sx={{ position: 'relative', textAlign: 'center', color: WHITE }}>
+                    <Typography variant="h2" component="h2" sx={{ color: WHITE, fontSize: { xs: '1.75rem', md: '2.25rem' }, mb: 2 }}>
+                        Beställ till helgen redan idag
+                    </Typography>
+                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.96)', fontSize: { xs: '1rem', md: '1.1rem' }, mb: 4, maxWidth: 560, mx: 'auto' }}>
+                        Skicka din beställning online så packar vi den färsk och klar –
+                        du hämtar och betalar i butiken.
+                    </Typography>
+                    <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
+                        <Button
+                            component={Link}
+                            href="/bestall_online"
+                            variant="contained"
+                            size="large"
+                            startIcon={<ShoppingBasketOutlined />}
+                            sx={{
+                                backgroundColor: WHITE,
+                                color: BRAND.tealDark,
+                                '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.9)' },
+                            }}
+                        >
+                            Beställ online
+                        </Button>
+                        <Button
+                            component={Link}
+                            href="/kontakta_oss"
+                            variant="outlined"
+                            size="large"
+                            sx={{
+                                color: WHITE,
+                                borderColor: 'rgba(255, 255, 255, 0.75)',
+                                borderWidth: 2,
+                                '&:hover': {
+                                    borderColor: WHITE,
+                                    borderWidth: 2,
+                                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                },
+                            }}
+                        >
+                            Kontakta oss
+                        </Button>
                     </Box>
                 </Container>
             </Box>

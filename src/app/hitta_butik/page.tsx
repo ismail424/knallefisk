@@ -1,154 +1,105 @@
 'use client';
 
-import { Box, Container, Typography, Card, CardContent } from '@mui/material';
-import { StorefrontOutlined } from '@mui/icons-material';
+import { Box, Container, Typography, Card, CardContent, Button } from '@mui/material';
+import { LocationOnOutlined, PhoneOutlined, DirectionsOutlined } from '@mui/icons-material';
+import { visuallyHidden } from '@mui/utils';
+import { STORES } from '@/lib/site';
+import { BRAND } from '@/theme';
+import PageHero from '@/components/PageHero';
+import StoreHeader from '@/components/StoreHeader';
+import OpeningHoursTable from '@/components/OpeningHoursTable';
 
 const HittaButik = () => {
-  const stores = [
-    {
-      name: 'Knalle Fisk - Skene',
-      hours: [
-        'Måndag: Stängt',
-        'Tisdag: Stängt',
-        'Onsdag: Stängt',
-        'Torsdag: 10:00 - 18:00',
-        'Fredag: 10:00 - 19:00',
-        'Lördag: 10:00 - 15:00',
-        'Söndag: Stängt'
-      ],
-      mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d536.1354135958156!2d12.647960488173517!3d57.48614171965853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x96f6138a27b74bc5!2zNTfCsDI5JzEwLjEiTiAxMsKwMzgnNTQuNiJF!5e0!3m2!1ssv!2sse!4v1667306940644!5m2!1ssv!2sse'
-    },
-    {
-      name: 'Knalle Fisk - Borås',
-      hours: [
-        'Måndag: Stängt',
-        'Tisdag: 10:00 - 18:00',
-        'Onsdag: 10:00 - 18:00',
-        'Torsdag: 10:00 - 18:00',
-        'Fredag: 10:00 - 19:00',
-        'Lördag: 10:00 - 15:00',
-        'Söndag: Stängt'
-      ],
-      mapEmbed: 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1065.0512317216635!2d12.933504154929423!3d57.73170229381581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465aa7204c244b79%3A0x1d516f3454bd77dd!2sKnalle%20Fisk!5e0!3m2!1ssv!2sse!4v1616927781991!5m2!1ssv!2sse'
-    }
-  ];
+    return (
+        <Box sx={{ backgroundColor: BRAND.sand }}>
+            <PageHero
+                overline="Här finns vi"
+                title="Hitta till våra butiker"
+                subtitle="Två butiker i Sjuhärad – samma färska fisk och samma familj bakom disken. Välkommen in!"
+                image="/img/store_front.webp"
+            />
 
-  return (
-    <Box sx={{ pt: { xs: '140px', md: '120px' }, pb: 6, backgroundColor: '#f9fafb', minHeight: '100vh' }}>
-      <Container maxWidth="lg">
-
-        {/* Simple Page Header */}
-        <Box sx={{ textAlign: 'center', mb: 6 }}>
-          <Typography
-            variant="h3"
-            sx={{
-              color: '#448f9b',
-              fontFamily: 'Poppins, sans-serif',
-              fontWeight: 600,
-              mb: 2
-            }}
-          >
-            Hitta vår butik
-          </Typography>
-          <Typography
-            variant="body1"
-            sx={{
-              color: '#666',
-              fontFamily: 'Poppins, sans-serif'
-            }}
-          >
-            Besök oss på någon av våra två platser
-          </Typography>
-        </Box>
-
-        {/* Simple Stores Grid */}
-        <Box sx={{ 
-          display: 'grid',
-          gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
-          gap: 4
-        }}>
-          {stores.map((store, index) => (
-            <Card
-              key={index}
-              sx={{
-                borderRadius: 2,
-                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                overflow: 'hidden'
-              }}
-            >
-              {/* Simple Store Header */}
-              <Box
-                sx={{
-                  p: 3,
-                  backgroundColor: '#448f9b',
-                  color: 'white'
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                  <StorefrontOutlined />
-                  <Typography
-                    variant="h6"
+            <Container maxWidth="lg" sx={{ pt: { xs: 4, md: 6 }, pb: { xs: 7, md: 10 } }}>
+                <Typography component="h2" sx={visuallyHidden}>
+                    Våra butiker
+                </Typography>
+                <Box
                     sx={{
-                      fontFamily: 'Poppins, sans-serif',
-                      fontWeight: 600
+                        display: 'grid',
+                        gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
+                        gap: 4,
                     }}
-                  >
-                    {store.name}
-                  </Typography>
-                </Box>
-              </Box>
+                >
+                    {STORES.map((store) => (
+                        <Card key={store.id} sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                            <StoreHeader title={`Knallefisk ${store.name}`} />
 
-              <CardContent sx={{ p: 0 }}>
-                {/* Google Map */}
-                <Box sx={{ height: 300, width: '100%' }}>
-                  <iframe
-                    src={store.mapEmbed}
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </Box>
+                            {/* Map */}
+                            <Box sx={{ height: 280 }}>
+                                <iframe
+                                    src={store.mapEmbed}
+                                    title={`Karta till Knallefisk ${store.name}`}
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0, display: 'block' }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                />
+                            </Box>
 
-                {/* Simple Opening Hours */}
-                <Box sx={{ p: 3 }}>
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontFamily: 'Poppins, sans-serif',
-                      fontWeight: 600,
-                      color: '#333',
-                      mb: 2
-                    }}
-                  >
-                    Öppettider
-                  </Typography>
-                  
-                  <Box>
-                    {store.hours.map((hour, idx) => (
-                      <Typography
-                        key={idx}
-                        variant="body2"
-                        sx={{
-                          fontFamily: 'Poppins, sans-serif',
-                          color: hour.includes('Stängt') ? '#999' : '#333',
-                          mb: 0.5
-                        }}
-                      >
-                        {hour}
-                      </Typography>
+                            <CardContent sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 2.5, flexGrow: 1 }}>
+                                {/* Address + phone */}
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'center' }}>
+                                        <LocationOnOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem' }} />
+                                        <Typography sx={{ color: BRAND.ink }}>
+                                            {store.streetAddress}, {store.postalCode} {store.city}
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'center' }}>
+                                        <PhoneOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem' }} />
+                                        <Typography
+                                            component="a"
+                                            href={`tel:${store.phoneE164}`}
+                                            sx={{
+                                                color: BRAND.ink,
+                                                textDecoration: 'none',
+                                                fontWeight: 500,
+                                                '&:hover': { color: BRAND.tealDark },
+                                            }}
+                                        >
+                                            {store.phone}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+
+                                {/* Opening hours */}
+                                <Box>
+                                    <Typography variant="h6" component="h4" sx={{ mb: 1.5 }}>
+                                        Öppettider
+                                    </Typography>
+                                    <OpeningHoursTable store={store} />
+                                </Box>
+
+                                <Button
+                                    component="a"
+                                    href={store.directionsUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    variant="contained"
+                                    startIcon={<DirectionsOutlined />}
+                                    sx={{ mt: 'auto', alignSelf: 'flex-start' }}
+                                >
+                                    Vägbeskrivning
+                                </Button>
+                            </CardContent>
+                        </Card>
                     ))}
-                  </Box>
                 </Box>
-              </CardContent>
-            </Card>
-          ))}
+            </Container>
         </Box>
-      </Container>
-    </Box>
-  );
+    );
 };
 
 export default HittaButik;

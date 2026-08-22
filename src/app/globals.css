@@ -1,0 +1,67 @@
+/* Global styles for knallefisk.se — the MUI theme in src/theme.ts holds
+   the component styling; this file only covers what a theme cannot:
+   document-level behaviour, selection, focus and shared keyframes. */
+
+:root {
+  --brand-teal: #448f9b;
+  --brand-teal-dark: #33727d;
+  --brand-ink: #17313a;
+  --brand-sand: #f6f9fa;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--brand-sand);
+  color: var(--brand-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: rgba(68, 143, 155, 0.25);
+}
+
+:focus-visible {
+  /* Solid, dark enough for the 3:1 non-text contrast WCAG 1.4.11 requires */
+  outline: 3px solid #33727d;
+  outline-offset: 2px;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
