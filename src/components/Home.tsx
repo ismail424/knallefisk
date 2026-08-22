@@ -14,7 +14,6 @@ import {
 } from '@mui/material';
 import {
     ShoppingBasketOutlined,
-    StorefrontOutlined,
     CheckCircleOutline,
     SailingOutlined,
     FavoriteBorder,
@@ -23,48 +22,17 @@ import {
     PhoneOutlined,
     ArrowForward,
 } from '@mui/icons-material';
+import { visuallyHidden } from '@mui/utils';
 import { AdminPrice } from '../lib/types';
 import { STORES, FOUNDED_YEAR } from '../lib/site';
-import { BRAND } from '@/theme';
-import { WaveDivider, Bubbles, ScalesPattern, FishAccent, HeadingRule } from './decor';
+import { BRAND, CARD_HOVER } from '@/theme';
+import { WaveDivider, Bubbles, ScalesPattern, FishAccent } from './decor';
 import PriceCard from './PriceCard';
+import SectionHeading from './SectionHeading';
+import StoreHeader from './StoreHeader';
+import BackgroundVideo from './BackgroundVideo';
 
 const WHITE = '#ffffff';
-
-function SectionHeading({
-    overline,
-    title,
-    subtitle,
-}: {
-    overline: string;
-    title: string;
-    subtitle?: string;
-}) {
-    return (
-        <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-            <Typography variant="overline" sx={{ color: BRAND.teal, display: 'block', mb: 1 }}>
-                {overline}
-            </Typography>
-            <Typography variant="h2" component="h2" sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }}>
-                {title}
-            </Typography>
-            {subtitle && (
-                <Typography
-                    sx={{
-                        color: BRAND.muted,
-                        mt: 1.5,
-                        fontSize: { xs: '1rem', md: '1.05rem' },
-                        maxWidth: 560,
-                        mx: 'auto',
-                    }}
-                >
-                    {subtitle}
-                </Typography>
-            )}
-            <HeadingRule />
-        </Box>
-    );
-}
 
 const USPS = [
     {
@@ -134,27 +102,10 @@ const Home = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     overflow: 'hidden',
-                    backgroundColor: '#0d2830',
+                    backgroundColor: BRAND.inkDeep,
                 }}
             >
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    aria-hidden
-                    poster="/img/havet_poster.jpg"
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                    }}
-                >
-                    <source src="/video/havet.mp4" type="video/mp4" />
-                </video>
+                <BackgroundVideo src="/video/havet.mp4" poster="/img/havet_poster.jpg" />
 
                 {/* Gradient overlay for contrast */}
                 <Box
@@ -301,6 +252,9 @@ const Home = () => {
             <Box sx={{ backgroundColor: BRAND.sand, py: { xs: 6, md: 9 }, position: 'relative', overflow: 'hidden' }}>
                 <FishAccent style={{ top: 24, right: '2%' }} size={90} color="rgba(68, 143, 155, 0.1)" />
                 <Container maxWidth="lg">
+                    <Typography component="h2" sx={visuallyHidden}>
+                        Därför Knallefisk
+                    </Typography>
                     <Box
                         sx={{
                             display: 'grid',
@@ -314,12 +268,7 @@ const Home = () => {
                                 sx={{
                                     p: 1,
                                     textAlign: 'center',
-                                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                                    '&:hover': {
-                                        transform: 'translateY(-4px)',
-                                        boxShadow:
-                                            '0 4px 8px rgba(23, 49, 58, 0.06), 0 16px 36px rgba(23, 49, 58, 0.1)',
-                                    },
+                                    ...CARD_HOVER,
                                 }}
                             >
                                 <CardContent>
@@ -449,14 +398,14 @@ const Home = () => {
                         </Box>
 
                         <Box>
-                            <Typography variant="overline" sx={{ color: BRAND.teal, display: 'block', mb: 1 }}>
+                            <Typography variant="overline" sx={{ color: BRAND.tealDark, display: 'block', mb: 1 }}>
                                 Vår historia
                             </Typography>
                             <Typography variant="h2" component="h2" sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' }, mb: 2.5 }}>
                                 Familjeägt sedan {FOUNDED_YEAR}
                             </Typography>
                             <Typography sx={{ color: BRAND.muted, fontSize: { xs: '1rem', md: '1.05rem' }, mb: 2 }}>
-                                Knallefisk är en familjeägd fiskhandel som i snart två decennier har
+                                Knallefisk är en familjeägd fiskhandel som i två decennier har
                                 försett Sjuhärad med färsk fisk och skaldjur. Vi handplockar varje
                                 leverans från Göteborgs fiskauktion och står själva bakom disken.
                             </Typography>
@@ -516,22 +465,7 @@ const Home = () => {
                     >
                         {STORES.map((store) => (
                             <Card key={store.id} sx={{ display: 'flex', flexDirection: 'column' }}>
-                                <Box
-                                    sx={{
-                                        px: 3,
-                                        py: 2.25,
-                                        background: `linear-gradient(120deg, ${BRAND.teal} 0%, ${BRAND.tealDark} 100%)`,
-                                        color: WHITE,
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        gap: 1.5,
-                                    }}
-                                >
-                                    <StorefrontOutlined />
-                                    <Typography variant="h5" component="h3" sx={{ color: WHITE }}>
-                                        Knallefisk {store.name}
-                                    </Typography>
-                                </Box>
+                                <StoreHeader title={`Knallefisk ${store.name}`} />
                                 <CardContent sx={{ p: 3, display: 'flex', flexDirection: 'column', gap: 1.5, flexGrow: 1 }}>
                                     <Box sx={{ display: 'flex', gap: 1.25, alignItems: 'flex-start' }}>
                                         <LocationOnOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem', mt: 0.3 }} />
@@ -547,7 +481,7 @@ const Home = () => {
                                         <PhoneOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem', mt: 0.3 }} />
                                         <Typography
                                             component="a"
-                                            href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                            href={`tel:${store.phoneE164}`}
                                             sx={{
                                                 color: BRAND.ink,
                                                 textDecoration: 'none',
@@ -653,32 +587,14 @@ const Home = () => {
                 }}
             >
                 {/* The sea again, faint under a teal tint */}
-                <video
-                    autoPlay
-                    loop
-                    muted
-                    playsInline
-                    aria-hidden
-                    poster="/img/havet_poster.jpg"
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        opacity: 0.22,
-                    }}
-                >
-                    <source src="/video/havet.mp4" type="video/mp4" />
-                </video>
+                <BackgroundVideo src="/video/havet.mp4" poster="/img/havet_poster.jpg" opacity={0.22} />
                 <ScalesPattern color="rgba(255, 255, 255, 0.06)" />
                 <Bubbles style={{ top: -30, right: '5%' }} color="rgba(255, 255, 255, 0.1)" size={200} />
                 <Container maxWidth="md" sx={{ position: 'relative', textAlign: 'center', color: WHITE }}>
                     <Typography variant="h2" component="h2" sx={{ color: WHITE, fontSize: { xs: '1.75rem', md: '2.25rem' }, mb: 2 }}>
                         Beställ till helgen redan idag
                     </Typography>
-                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.88)', fontSize: { xs: '1rem', md: '1.1rem' }, mb: 4, maxWidth: 560, mx: 'auto' }}>
+                    <Typography sx={{ color: 'rgba(255, 255, 255, 0.96)', fontSize: { xs: '1rem', md: '1.1rem' }, mb: 4, maxWidth: 560, mx: 'auto' }}>
                         Skicka din beställning online så packar vi den färsk och klar –
                         du hämtar och betalar i butiken.
                     </Typography>

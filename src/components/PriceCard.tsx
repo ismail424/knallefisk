@@ -2,7 +2,7 @@
 
 import { Box, Card, CardContent, CardMedia, Chip, Typography } from '@mui/material';
 import { AdminPrice } from '@/lib/types';
-import { BRAND } from '@/theme';
+import { BRAND, CARD_HOVER } from '@/theme';
 
 /**
  * The one price card used everywhere prices appear (startsida + prissida),
@@ -19,11 +19,7 @@ export default function PriceCard({ price }: { price: AdminPrice }) {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 4px 8px rgba(23, 49, 58, 0.06), 0 16px 36px rgba(23, 49, 58, 0.12)',
-                },
+                ...CARD_HOVER,
             }}
         >
             {price.image && (
@@ -43,7 +39,7 @@ export default function PriceCard({ price }: { price: AdminPrice }) {
                                 position: 'absolute',
                                 top: 12,
                                 left: 12,
-                                backgroundColor: BRAND.coral,
+                                backgroundColor: BRAND.coralDark,
                                 color: '#fff',
                                 fontWeight: 700,
                                 letterSpacing: '0.06em',

@@ -13,11 +13,13 @@ import {
     Button,
 } from '@mui/material';
 import { SetMealOutlined, ShoppingBasketOutlined, PhoneOutlined } from '@mui/icons-material';
+import { visuallyHidden } from '@mui/utils';
 import { AdminPrice } from '../lib/types';
 import { STORES } from '../lib/site';
 import { BRAND } from '@/theme';
 import PageHero from './PageHero';
 import PriceCard from './PriceCard';
+import CtaCard from './CtaCard';
 
 const ALL = 'Alla';
 
@@ -81,7 +83,7 @@ const Prices = () => {
                                 color="inherit"
                                 size="small"
                                 component="a"
-                                href={`tel:${STORES[0].phone.replace(/\s/g, '')}`}
+                                href={`tel:${STORES[0].phoneE164}`}
                                 startIcon={<PhoneOutlined />}
                             >
                                 Ring oss
@@ -153,13 +155,14 @@ const Prices = () => {
                                             label={cat}
                                             clickable
                                             onClick={() => setCategory(cat)}
+                                            aria-pressed={selected}
                                             sx={{
                                                 px: 0.5,
-                                                backgroundColor: selected ? BRAND.teal : '#fff',
+                                                backgroundColor: selected ? BRAND.tealDark : '#fff',
                                                 color: selected ? '#fff' : BRAND.tealDark,
-                                                border: `1px solid ${selected ? BRAND.teal : BRAND.border}`,
-                                                '&:hover': {
-                                                    backgroundColor: selected ? BRAND.tealDark : BRAND.tealTint,
+                                                border: `1px solid ${selected ? BRAND.tealDark : BRAND.border}`,
+                                                '&:hover, &.MuiChip-clickable:hover': {
+                                                    backgroundColor: selected ? BRAND.tealDarker : BRAND.tealTint,
                                                 },
                                             }}
                                         />
@@ -168,6 +171,9 @@ const Prices = () => {
                             </Box>
                         )}
 
+                        <Typography component="h2" sx={visuallyHidden}>
+                            Prislista
+                        </Typography>
                         <Box
                             sx={{
                                 display: 'grid',
@@ -187,38 +193,22 @@ const Prices = () => {
                         )}
 
                         {/* Order CTA */}
-                        <Card
-                            sx={{
-                                mt: { xs: 5, md: 7 },
-                                p: { xs: 3, md: 4 },
-                                display: 'flex',
-                                flexDirection: { xs: 'column', md: 'row' },
-                                alignItems: { xs: 'flex-start', md: 'center' },
-                                justifyContent: 'space-between',
-                                gap: 2.5,
-                                backgroundColor: BRAND.tealTint,
-                                border: `1px solid ${BRAND.tealPale}`,
-                            }}
-                        >
-                            <Box>
-                                <Typography variant="h4" component="h2" sx={{ mb: 0.75 }}>
-                                    Vill du säkra din fisk till helgen?
-                                </Typography>
-                                <Typography sx={{ color: BRAND.muted }}>
-                                    Beställ online så packar vi åt dig – hämta och betala i butiken.
-                                </Typography>
-                            </Box>
-                            <Button
-                                component={Link}
-                                href="/bestall_online"
-                                variant="contained"
-                                size="large"
-                                startIcon={<ShoppingBasketOutlined />}
-                                sx={{ flexShrink: 0 }}
+                        <Box sx={{ mt: { xs: 5, md: 7 } }}>
+                            <CtaCard
+                                title="Vill du säkra din fisk till helgen?"
+                                text="Beställ online så packar vi åt dig – hämta och betala i butiken."
                             >
-                                Beställ online
-                            </Button>
-                        </Card>
+                                <Button
+                                    component={Link}
+                                    href="/bestall_online"
+                                    variant="contained"
+                                    size="large"
+                                    startIcon={<ShoppingBasketOutlined />}
+                                >
+                                    Beställ online
+                                </Button>
+                            </CtaCard>
+                        </Box>
                     </>
                 )}
             </Container>

@@ -27,7 +27,10 @@ export interface Store {
   streetAddress: string;
   postalCode: string;
   city: string;
+  /** Display format, e.g. "070 836 59 71" */
   phone: string;
+  /** E.164 format for tel: links and structured data, e.g. "+46708365971" */
+  phoneE164: string;
   /** Monday–Sunday, in order */
   hours: DayHours[];
   /** Compact one-line summary for footer and cards */
@@ -54,6 +57,7 @@ export const STORES: Store[] = [
     postalCode: '506 30',
     city: 'Borås',
     phone: '070 836 59 71',
+    phoneE164: '+46708365971',
     hours: [
       { day: 'Måndag', hours: null },
       { day: 'Tisdag', hours: '10:00–18:00' },
@@ -97,6 +101,7 @@ export const STORES: Store[] = [
     postalCode: '511 61',
     city: 'Skene',
     phone: '073 535 09 17',
+    phoneE164: '+46735350917',
     hours: [
       { day: 'Måndag', hours: null },
       { day: 'Tisdag', hours: null },

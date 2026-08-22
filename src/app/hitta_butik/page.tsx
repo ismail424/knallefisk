@@ -1,25 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import { Box, Container, Typography, Card, CardContent, Button } from '@mui/material';
-import {
-    StorefrontOutlined,
-    LocationOnOutlined,
-    PhoneOutlined,
-    DirectionsOutlined,
-} from '@mui/icons-material';
+import { LocationOnOutlined, PhoneOutlined, DirectionsOutlined } from '@mui/icons-material';
+import { visuallyHidden } from '@mui/utils';
 import { STORES } from '@/lib/site';
 import { BRAND } from '@/theme';
 import PageHero from '@/components/PageHero';
+import StoreHeader from '@/components/StoreHeader';
+import OpeningHoursTable from '@/components/OpeningHoursTable';
 
 const HittaButik = () => {
-    // Highlighted after mount so server and client HTML always match.
-    const [todayIndex, setTodayIndex] = useState<number | null>(null);
-
-    useEffect(() => {
-        setTodayIndex((new Date().getDay() + 6) % 7);
-    }, []);
-
     return (
         <Box sx={{ backgroundColor: BRAND.sand }}>
             <PageHero
@@ -30,6 +20,9 @@ const HittaButik = () => {
             />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+                <Typography component="h2" sx={visuallyHidden}>
+                    Våra butiker
+                </Typography>
                 <Box
                     sx={{
                         display: 'grid',
@@ -39,23 +32,7 @@ const HittaButik = () => {
                 >
                     {STORES.map((store) => (
                         <Card key={store.id} sx={{ display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-                            {/* Store header */}
-                            <Box
-                                sx={{
-                                    px: 3,
-                                    py: 2.5,
-                                    background: `linear-gradient(120deg, ${BRAND.teal} 0%, ${BRAND.tealDark} 100%)`,
-                                    color: '#fff',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1.5,
-                                }}
-                            >
-                                <StorefrontOutlined />
-                                <Typography variant="h4" component="h2" sx={{ color: '#fff' }}>
-                                    Knallefisk {store.name}
-                                </Typography>
-                            </Box>
+                            <StoreHeader title={`Knallefisk ${store.name}`} />
 
                             {/* Map */}
                             <Box sx={{ height: 280 }}>
@@ -84,7 +61,7 @@ const HittaButik = () => {
                                         <PhoneOutlined sx={{ color: BRAND.teal, fontSize: '1.2rem' }} />
                                         <Typography
                                             component="a"
-                                            href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                            href={`tel:${store.phoneE164}`}
                                             sx={{
                                                 color: BRAND.ink,
                                                 textDecoration: 'none',
@@ -99,65 +76,10 @@ const HittaButik = () => {
 
                                 {/* Opening hours */}
                                 <Box>
-                                    <Typography variant="h6" component="h3" sx={{ mb: 1.5 }}>
+                                    <Typography variant="h6" component="h4" sx={{ mb: 1.5 }}>
                                         Öppettider
                                     </Typography>
-                                    <Box sx={{ borderRadius: 3, overflow: 'hidden', border: `1px solid ${BRAND.border}` }}>
-                                        {store.hours.map((day, index) => {
-                                            const isToday = todayIndex === index;
-                                            const closed = day.hours === null;
-                                            return (
-                                                <Box
-                                                    key={day.day}
-                                                    sx={{
-                                                        display: 'flex',
-                                                        justifyContent: 'space-between',
-                                                        px: 2,
-                                                        py: 0.9,
-                                                        backgroundColor: isToday
-                                                            ? BRAND.tealTint
-                                                            : index % 2 === 0
-                                                              ? '#fff'
-                                                              : BRAND.sand,
-                                                    }}
-                                                >
-                                                    <Typography
-                                                        sx={{
-                                                            fontSize: '0.92rem',
-                                                            fontWeight: isToday ? 700 : 500,
-                                                            color: BRAND.ink,
-                                                        }}
-                                                    >
-                                                        {day.day}
-                                                        {isToday && (
-                                                            <Typography
-                                                                component="span"
-                                                                sx={{
-                                                                    ml: 1,
-                                                                    fontSize: '0.72rem',
-                                                                    fontWeight: 700,
-                                                                    color: BRAND.tealDark,
-                                                                    textTransform: 'uppercase',
-                                                                    letterSpacing: '0.08em',
-                                                                }}
-                                                            >
-                                                                Idag
-                                                            </Typography>
-                                                        )}
-                                                    </Typography>
-                                                    <Typography
-                                                        sx={{
-                                                            fontSize: '0.92rem',
-                                                            fontWeight: isToday ? 700 : 400,
-                                                            color: closed ? BRAND.muted : BRAND.ink,
-                                                        }}
-                                                    >
-                                                        {day.hours ?? 'Stängt'}
-                                                    </Typography>
-                                                </Box>
-                                            );
-                                        })}
-                                    </Box>
+                                    <OpeningHoursTable store={store} />
                                 </Box>
 
                                 <Button

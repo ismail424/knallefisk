@@ -173,7 +173,15 @@ const Header = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25 }}>
                         <Image src="/img/logo.svg" alt="" width={38} height={38} />
                         <Box>
-                            <Typography sx={{ fontWeight: 700, color: BRAND.tealDark, fontSize: '1.05rem', lineHeight: 1.2 }}>
+                            <Typography
+                                sx={{
+                                    fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                    fontWeight: 700,
+                                    color: BRAND.tealDark,
+                                    fontSize: '1.05rem',
+                                    lineHeight: 1.2,
+                                }}
+                            >
                                 Knallefisk
                             </Typography>
                             <Typography sx={{ color: BRAND.muted, fontSize: '0.68rem' }}>
@@ -238,7 +246,7 @@ const Header = () => {
                         <Box
                             key={store.id}
                             component="a"
-                            href={`tel:${store.phone.replace(/\s/g, '')}`}
+                            href={`tel:${store.phoneE164}`}
                             sx={{
                                 display: 'flex',
                                 alignItems: 'center',

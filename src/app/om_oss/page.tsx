@@ -11,9 +11,11 @@ import {
     StorefrontOutlined,
 } from '@mui/icons-material';
 import { FOUNDED_YEAR, STORES } from '@/lib/site';
-import { BRAND } from '@/theme';
+import { BRAND, CARD_HOVER } from '@/theme';
 import PageHero from '@/components/PageHero';
-import { Bubbles, HeadingRule } from '@/components/decor';
+import SectionHeading from '@/components/SectionHeading';
+import CtaCard from '@/components/CtaCard';
+import { Bubbles } from '@/components/decor';
 
 const VALUES = [
     {
@@ -134,15 +136,7 @@ export default function OmOssPage() {
                 </Box>
 
                 {/* Values */}
-                <Box sx={{ textAlign: 'center', mb: { xs: 4, md: 6 } }}>
-                    <Typography variant="overline" sx={{ color: BRAND.teal, display: 'block', mb: 1 }}>
-                        Det här står vi för
-                    </Typography>
-                    <Typography variant="h2" component="h2" sx={{ fontSize: { xs: '1.75rem', md: '2.25rem' } }}>
-                        Tre löften till dig som kund
-                    </Typography>
-                    <HeadingRule />
-                </Box>
+                <SectionHeading overline="Det här står vi för" title="Tre löften till dig som kund" />
 
                 <Box
                     sx={{
@@ -153,7 +147,7 @@ export default function OmOssPage() {
                     }}
                 >
                     {VALUES.map((value) => (
-                        <Card key={value.title} sx={{ textAlign: 'center' }}>
+                        <Card key={value.title} sx={{ textAlign: 'center', ...CARD_HOVER }}>
                             <CardContent sx={{ p: 4 }}>
                                 <Box
                                     sx={{
@@ -182,51 +176,29 @@ export default function OmOssPage() {
                 </Box>
 
                 {/* Visit CTA */}
-                <Card
-                    sx={{
-                        p: { xs: 3, md: 4 },
-                        backgroundColor: BRAND.tealTint,
-                        border: `1px solid ${BRAND.tealPale}`,
-                    }}
+                <CtaCard
+                    title="Kom in och hälsa på!"
+                    text={`Du hittar oss i ${STORES.map((s) => s.city).join(' och ')} – eller beställ online så packar vi åt dig.`}
                 >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' },
-                            alignItems: { xs: 'flex-start', md: 'center' },
-                            justifyContent: 'space-between',
-                            gap: 2.5,
-                        }}
+                    <Button
+                        component={Link}
+                        href="/hitta_butik"
+                        variant="outlined"
+                        size="large"
+                        startIcon={<StorefrontOutlined />}
                     >
-                        <Box>
-                            <Typography variant="h4" component="h2" sx={{ mb: 0.75 }}>
-                                Kom in och hälsa på!
-                            </Typography>
-                            <Typography sx={{ color: BRAND.muted }}>
-                                Du hittar oss i {STORES.map((s) => s.city).join(' och ')} – eller
-                                beställ online så packar vi åt dig.
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', flexShrink: 0 }}>
-                            <Button
-                                component={Link}
-                                href="/hitta_butik"
-                                variant="outlined"
-                                startIcon={<StorefrontOutlined />}
-                            >
-                                Hitta butik
-                            </Button>
-                            <Button
-                                component={Link}
-                                href="/bestall_online"
-                                variant="contained"
-                                startIcon={<ShoppingBasketOutlined />}
-                            >
-                                Beställ online
-                            </Button>
-                        </Box>
-                    </Box>
-                </Card>
+                        Hitta butik
+                    </Button>
+                    <Button
+                        component={Link}
+                        href="/bestall_online"
+                        variant="contained"
+                        size="large"
+                        startIcon={<ShoppingBasketOutlined />}
+                    >
+                        Beställ online
+                    </Button>
+                </CtaCard>
             </Container>
         </Box>
     );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { BRAND } from '@/theme';
 
 /**
  * Original decorative SVG assets in the Knallefisk brand style.
@@ -18,6 +19,9 @@ interface WaveDividerProps {
 /** Three-layer ocean wave used between page sections. */
 export function WaveDivider({ fill, flip = false, height = { xs: 48, md: 88 } }: WaveDividerProps) {
   const h = typeof height === 'number' ? { xs: height, md: height } : height;
+  // Unique class per instance: the inline <style> is document-global, so a
+  // shared class would let one divider's height clobber every other's.
+  const cls = `wave-${React.useId().replace(/[^a-zA-Z0-9-]/g, '')}`;
   return (
     <div
       aria-hidden
@@ -33,9 +37,9 @@ export function WaveDivider({ fill, flip = false, height = { xs: 48, md: 88 } }:
         viewBox="0 0 1440 120"
         preserveAspectRatio="none"
         style={{ display: 'block', width: '100%', height: 'var(--wave-h)' }}
-        className="wave-divider"
+        className={cls}
       >
-        <style>{`.wave-divider{--wave-h:${h.xs}px}@media(min-width:900px){.wave-divider{--wave-h:${h.md}px}}`}</style>
+        <style>{`.${cls}{--wave-h:${h.xs}px}@media(min-width:900px){.${cls}{--wave-h:${h.md}px}}`}</style>
         <path
           d="M0,68 C240,112 480,14 720,52 C960,90 1200,24 1440,62 L1440,120 L0,120 Z"
           fill={fill}
@@ -154,7 +158,7 @@ export function FishAccent({
 /** Short brand-coloured rule used under section headings. */
 export function HeadingRule({
   centered = true,
-  color = '#448f9b',
+  color = BRAND.teal,
 }: {
   centered?: boolean;
   color?: string;

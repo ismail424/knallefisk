@@ -4,9 +4,10 @@ import { Box, Container, Typography, Link as MuiLink } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 import { NAV_LINKS, STORES, TAGLINE, CONTACT_EMAILS, FOUNDED_YEAR } from '@/lib/site';
+import { BRAND } from '@/theme';
 import { WaveDivider, ScalesPattern } from './decor';
 
-const INK = '#132a32';
+const INK = BRAND.inkDeep;
 const PALE = 'rgba(255, 255, 255, 0.72)';
 const FAINT = 'rgba(255, 255, 255, 0.45)';
 
@@ -96,7 +97,7 @@ const Footer = () => {
                                         {store.postalCode} {store.city}
                                     </Typography>
                                     <MuiLink
-                                        href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                        href={`tel:${store.phoneE164}`}
                                         sx={{ color: PALE, fontSize: '0.9rem', '&:hover': { color: '#fff' } }}
                                     >
                                         {store.phone}
@@ -160,7 +161,7 @@ const Footer = () => {
                             gap: 1,
                         }}
                     >
-                        <Typography sx={{ color: FAINT, fontSize: '0.85rem' }}>
+                        <Typography sx={{ color: FAINT, fontSize: '0.85rem' }} suppressHydrationWarning>
                             © {new Date().getFullYear()} Knallefisk. Alla rättigheter förbehållna.
                         </Typography>
                         <Typography sx={{ color: FAINT, fontSize: '0.85rem' }}>

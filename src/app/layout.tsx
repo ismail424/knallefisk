@@ -68,11 +68,10 @@ export const metadata: Metadata = {
       },
     ],
   },
+  // Card type only — title/description/image fall back to each page's own
+  // OpenGraph values instead of leaking the homepage text onto subpages.
   twitter: {
     card: "summary_large_image",
-    title: `${SITE_NAME} – ${TAGLINE}`,
-    description:
-      "Familjeägd fiskhandel sedan 2006. Butiker i Borås och Skene.",
   },
   robots: {
     index: true,
@@ -99,7 +98,7 @@ const structuredData = {
     name: store.fullName,
     description: `Färsk fisk och skaldjur i ${store.city}. Familjeägd fiskhandel sedan 2006.`,
     url: SITE_URL,
-    telephone: `+46${store.phone.replace(/\s/g, "").slice(1)}`,
+    telephone: store.phoneE164,
     email: CONTACT_EMAILS[0],
     image: `${SITE_URL}/img/store_front.webp`,
     address: {

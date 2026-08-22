@@ -26,7 +26,8 @@ body {
 }
 
 :focus-visible {
-  outline: 3px solid rgba(68, 143, 155, 0.55);
+  /* Solid, dark enough for the 3:1 non-text contrast WCAG 1.4.11 requires */
+  outline: 3px solid #33727d;
   outline-offset: 2px;
 }
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
     Box,
@@ -42,8 +42,13 @@ const Order = () => {
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [submitError, setSubmitError] = useState('');
+    // Set after mount: computing it during prerender would bake the build
+    // date into the static HTML and allow past pickup dates.
+    const [today, setToday] = useState<string>();
 
-    const today = new Date().toISOString().split('T')[0];
+    useEffect(() => {
+        setToday(new Date().toISOString().split('T')[0]);
+    }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({
@@ -93,7 +98,7 @@ const Order = () => {
             <Box sx={{ backgroundColor: BRAND.sand, flexGrow: 1 }}>
                 <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
                     <Card sx={{ p: { xs: 3.5, md: 5 }, textAlign: 'center' }}>
-                        <CheckCircle sx={{ fontSize: '3.5rem', color: '#2e7d32', mb: 2 }} />
+                        <CheckCircle sx={{ fontSize: '3.5rem', color: 'success.main', mb: 2 }} />
                         <Typography variant="h3" component="h1" sx={{ mb: 1.5 }}>
                             Tack för din beställning!
                         </Typography>
@@ -103,7 +108,7 @@ const Order = () => {
 
                         <Box
                             sx={{
-                                backgroundColor: BRAND.teal,
+                                backgroundColor: BRAND.tealDark,
                                 color: '#fff',
                                 borderRadius: 3,
                                 p: 3,
@@ -113,7 +118,7 @@ const Order = () => {
                         >
                             <Typography
                                 variant="overline"
-                                sx={{ color: BRAND.tealPale, display: 'block', mb: 1 }}
+                                sx={{ color: 'rgba(255, 255, 255, 0.92)', display: 'block', mb: 1 }}
                             >
                                 Hämtas
                             </Typography>
@@ -209,7 +214,7 @@ const Order = () => {
                                     onChange={handleChange}
                                     required
                                     autoComplete="email"
-                                    placeholder="din@email.se"
+                                    placeholder="namn@exempel.se"
                                 />
 
                                 <Box
@@ -335,7 +340,7 @@ const Order = () => {
                                     </Typography>
                                     <Typography
                                         component="a"
-                                        href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                        href={`tel:${store.phoneE164}`}
                                         sx={{
                                             color: BRAND.tealDark,
                                             fontWeight: 600,

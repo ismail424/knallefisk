@@ -22,7 +22,7 @@ export default function PageHero({ overline, title, subtitle, image }: PageHeroP
                 position: 'relative',
                 overflow: 'hidden',
                 background: dark
-                    ? `#0d2830 url(${image}) center 40% / cover no-repeat`
+                    ? `${BRAND.inkDeep} url(${image}) center 40% / cover no-repeat`
                     : `linear-gradient(180deg, ${BRAND.tealTint} 0%, ${BRAND.sand} 100%)`,
             }}
         >
@@ -50,7 +50,7 @@ export default function PageHero({ overline, title, subtitle, image }: PageHeroP
             >
                 <Typography
                     variant="overline"
-                    sx={{ color: dark ? BRAND.tealPale : BRAND.teal, display: 'block', mb: 1 }}
+                    sx={{ color: dark ? BRAND.tealPale : BRAND.tealDark, display: 'block', mb: 1 }}
                 >
                     {overline}
                 </Typography>

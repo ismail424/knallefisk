@@ -11,8 +11,10 @@ import {
     ShoppingBasketOutlined,
 } from '@mui/icons-material';
 import { STORES, CONTACT_EMAILS } from '@/lib/site';
-import { BRAND } from '@/theme';
+import { BRAND, CARD_HOVER } from '@/theme';
 import PageHero from '@/components/PageHero';
+import CtaCard from '@/components/CtaCard';
+import OpeningHoursTable from '@/components/OpeningHoursTable';
 
 function ContactCard({
     icon,
@@ -28,11 +30,7 @@ function ContactCard({
             sx={{
                 height: '100%',
                 textAlign: 'center',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: '0 4px 8px rgba(23, 49, 58, 0.06), 0 16px 36px rgba(23, 49, 58, 0.1)',
-                },
+                ...CARD_HOVER,
             }}
         >
             <CardContent sx={{ p: 4 }}>
@@ -99,7 +97,7 @@ export default function KontaktaOssPage() {
                                 </Typography>
                                 <Typography
                                     component="a"
-                                    href={`tel:${store.phone.replace(/\s/g, '')}`}
+                                    href={`tel:${store.phoneE164}`}
                                     sx={linkSx}
                                 >
                                     {store.phone}
@@ -172,31 +170,7 @@ export default function KontaktaOssPage() {
                                     <Typography variant="h6" component="h3" sx={{ mb: 1.5 }}>
                                         Knallefisk {store.name}
                                     </Typography>
-                                    {store.hours.map((day) => (
-                                        <Box
-                                            key={day.day}
-                                            sx={{
-                                                display: 'flex',
-                                                justifyContent: 'space-between',
-                                                py: 0.6,
-                                                borderBottom: `1px solid ${BRAND.border}`,
-                                                '&:last-of-type': { borderBottom: 'none' },
-                                            }}
-                                        >
-                                            <Typography sx={{ fontSize: '0.92rem', color: BRAND.ink }}>
-                                                {day.day}
-                                            </Typography>
-                                            <Typography
-                                                sx={{
-                                                    fontSize: '0.92rem',
-                                                    color: day.hours ? BRAND.ink : BRAND.muted,
-                                                    fontWeight: day.hours ? 500 : 400,
-                                                }}
-                                            >
-                                                {day.hours ?? 'Stängt'}
-                                            </Typography>
-                                        </Box>
-                                    ))}
+                                    <OpeningHoursTable store={store} />
                                 </Box>
                             ))}
                         </Box>
@@ -204,37 +178,20 @@ export default function KontaktaOssPage() {
                 </Card>
 
                 {/* CTA */}
-                <Card
-                    sx={{
-                        p: { xs: 3, md: 4 },
-                        display: 'flex',
-                        flexDirection: { xs: 'column', md: 'row' },
-                        alignItems: { xs: 'flex-start', md: 'center' },
-                        justifyContent: 'space-between',
-                        gap: 2.5,
-                        backgroundColor: BRAND.tealTint,
-                        border: `1px solid ${BRAND.tealPale}`,
-                    }}
+                <CtaCard
+                    title="Vet du redan vad du vill ha?"
+                    text="Skicka din beställning online så står den klar när du kommer."
                 >
-                    <Box>
-                        <Typography variant="h4" component="h2" sx={{ mb: 0.75 }}>
-                            Vet du redan vad du vill ha?
-                        </Typography>
-                        <Typography sx={{ color: BRAND.muted }}>
-                            Skicka din beställning online så står den klar när du kommer.
-                        </Typography>
-                    </Box>
                     <Button
                         component={Link}
                         href="/bestall_online"
                         variant="contained"
                         size="large"
                         startIcon={<ShoppingBasketOutlined />}
-                        sx={{ flexShrink: 0 }}
                     >
                         Beställ online
                     </Button>
-                </Card>
+                </CtaCard>
             </Container>
         </Box>
     );

@@ -18,9 +18,23 @@ export const BRAND = {
   coral: '#d9532c',
   coralDark: '#b23f1e',
   ink: '#17313a',
+  /** Deep ocean dark used by the hero, photo heroes and the footer */
+  inkDeep: '#0d2830',
   muted: '#52676e',
   sand: '#f6f9fa',
   border: '#dfeaec',
+} as const;
+
+/** BRAND.teal with alpha — keeps the rgb triplet defined in one place. */
+export const tealAlpha = (a: number) => `rgba(68, 143, 155, ${a})`;
+
+/** Shared lift-on-hover for cards, so sibling cards can't drift apart. */
+export const CARD_HOVER = {
+  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: '0 4px 8px rgba(23, 49, 58, 0.06), 0 16px 36px rgba(23, 49, 58, 0.1)',
+  },
 } as const;
 
 const HEADING_FONT =
@@ -61,8 +75,11 @@ const theme = createTheme({
     },
     divider: BRAND.border,
   },
+  // Keep MUI's default 4px radius base: numeric `sx` borderRadius values are
+  // MULTIPLIED by this (borderRadius: 3 -> 12px). Component radii that should
+  // be fixed are set in px in the styleOverrides below.
   shape: {
-    borderRadius: 12,
+    borderRadius: 4,
   },
   typography: {
     fontFamily: BODY_FONT,
@@ -171,6 +188,9 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: 'rgba(68, 143, 155, 0.08)',
+        },
+        rounded: {
+          borderRadius: 12,
         },
       },
     },
