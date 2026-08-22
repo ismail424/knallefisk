@@ -77,7 +77,7 @@ export default function KontaktaOssPage() {
                 image="/img/bild7.webp"
             />
 
-            <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+            <Container maxWidth="lg" sx={{ pt: { xs: 4, md: 6 }, pb: { xs: 7, md: 10 } }}>
                 <Box
                     sx={{
                         display: 'grid',

@@ -19,7 +19,7 @@ const HittaButik = () => {
                 image="/img/store_front.webp"
             />
 
-            <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+            <Container maxWidth="lg" sx={{ pt: { xs: 4, md: 6 }, pb: { xs: 7, md: 10 } }}>
                 <Typography component="h2" sx={visuallyHidden}>
                     Våra butiker
                 </Typography>

@@ -73,7 +73,7 @@ const Prices = () => {
                 image="/img/bild1.webp"
             />
 
-            <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+            <Container maxWidth="lg" sx={{ pt: { xs: 4, md: 6 }, pb: { xs: 7, md: 10 } }}>
                 {error ? (
                     <Alert
                         severity="error"

@@ -95,9 +95,12 @@ const Home = () => {
             <Box
                 sx={{
                     position: 'relative',
-                    minHeight: { xs: 560, md: 640 },
-                    height: { xs: 'calc(100svh - 72px)', md: 'calc(100svh - 78px)' },
-                    maxHeight: 860,
+                    // Fill the viewport below the header (capped), but let the
+                    // section grow with its content on small screens.
+                    minHeight: {
+                        xs: 'min(calc(100svh - 72px), 860px)',
+                        md: 'min(calc(100svh - 78px), 860px)',
+                    },
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -123,7 +126,8 @@ const Home = () => {
                         position: 'relative',
                         textAlign: 'center',
                         color: WHITE,
-                        py: { xs: 6, md: 8 },
+                        pt: { xs: 5, md: 8 },
+                        pb: { xs: 10, md: 8 },
                         animation: 'fade-up 0.8s ease both',
                     }}
                 >
@@ -135,7 +139,7 @@ const Home = () => {
                             height={190}
                             priority
                             style={{
-                                width: 'min(64vw, 250px)',
+                                width: 'min(52vw, 250px)',
                                 height: 'auto',
                                 filter: 'drop-shadow(0 10px 30px rgba(0, 0, 0, 0.35))',
                             }}
