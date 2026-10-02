@@ -35,6 +35,12 @@ export interface Store {
   hours: DayHours[];
   /** Compact one-line summary for footer and cards */
   hoursSummary: string;
+  /** Other names the store goes by (e.g. on its Google Business Profile) */
+  alternateNames?: string[];
+  /** The store's Google Maps listing, linked from structured data as sameAs */
+  googleMapsUrl?: string;
+  /** Coordinates for structured data (schema.org GeoCoordinates) */
+  geo: { latitude: number; longitude: number };
   /** Google Maps embed for iframes */
   mapEmbed: string;
   /** Link that opens directions in Google Maps */
@@ -68,6 +74,10 @@ export const STORES: Store[] = [
       { day: 'Söndag', hours: null },
     ],
     hoursSummary: 'Tis–Tor 10–18 · Fre 10–19 · Lör 10–15',
+    alternateNames: ['Knalle Fisk', 'Knalle Fisk Borås'],
+    // Google Business Profile "Knalle Fisk", Ålgårdsvägen 3 (cid from the map embed below)
+    googleMapsUrl: 'https://maps.google.com/?cid=2112591970764158941',
+    geo: { latitude: 57.7317, longitude: 12.9335 },
     mapEmbed:
       'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1065.0512317216635!2d12.933504154929423!3d57.73170229381581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x465aa7204c244b79%3A0x1d516f3454bd77dd!2sKnalle%20Fisk!5e0!3m2!1ssv!2sse!4v1616927781991!5m2!1ssv!2sse',
     directionsUrl:
@@ -97,8 +107,8 @@ export const STORES: Store[] = [
     id: 'skene',
     name: 'Skene',
     fullName: 'Knallefisk Skene',
-    streetAddress: 'Örbyvägen 27',
-    postalCode: '511 61',
+    streetAddress: 'Håvengatan 3a',
+    postalCode: '511 62',
     city: 'Skene',
     phone: '073 535 09 17',
     phoneE164: '+46735350917',
@@ -112,10 +122,12 @@ export const STORES: Store[] = [
       { day: 'Söndag', hours: null },
     ],
     hoursSummary: 'Tor 10–18 · Fre 10–19 · Lör 10–15',
+    alternateNames: ['Knalle Fisk Skene'],
+    geo: { latitude: 57.4861, longitude: 12.648 },
     mapEmbed:
       'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d536.1354135958156!2d12.647960488173517!3d57.48614171965853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x96f6138a27b74bc5!2zNTfCsDI5JzEwLjEiTiAxMsKwMzgnNTQuNiJF!5e0!3m2!1ssv!2sse!4v1667306940644!5m2!1ssv!2sse',
     directionsUrl:
-      'https://www.google.com/maps/dir/?api=1&destination=Knalle+Fisk%2C+%C3%96rbyv%C3%A4gen+27%2C+511+61+Skene',
+      'https://www.google.com/maps/dir/?api=1&destination=Knallefisk+Skene%2C+H%C3%A5vengatan+3a%2C+511+62+Skene',
     openingHoursSpec: [
       {
         '@type': 'OpeningHoursSpecification',
@@ -163,6 +175,18 @@ export function pageOpenGraph(path: string, title: string, description: string) 
   };
 }
 
+/** schema.org BreadcrumbList for a subpage, rooted at the homepage. */
+export function breadcrumbJsonLd(path: string, name: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Hem', item: SITE_URL },
+      { '@type': 'ListItem', position: 2, name, item: `${SITE_URL}${path}` },
+    ],
+  };
+}
+
 export const NAV_LINKS = [
   { name: 'Hem', url: '/' },
   { name: 'Priser', url: '/priser' },
@@ -170,3 +194,47 @@ export const NAV_LINKS = [
   { name: 'Hitta butik', url: '/hitta_butik' },
   { name: 'Kontakta oss', url: '/kontakta_oss' },
 ];
+
+/**
+ * Whether a store is open right now, in Swedish time regardless of the
+ * visitor's clock. Call it client-side only (after mount) so prerendered
+ * HTML never bakes in a stale status.
+ */
+export function storeStatus(store: Store, now: Date = new Date()): { open: boolean; label: string } {
+  const parts = new Intl.DateTimeFormat('sv-SE', {
+    timeZone: 'Europe/Stockholm',
+    weekday: 'short',
+    hour: '2-digit',
+    minute: '2-digit',
+    hourCycle: 'h23',
+  }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  const weekdays = ['mån', 'tis', 'ons', 'tors', 'fre', 'lör', 'sön'];
+  const dayIndex = weekdays.indexOf(get('weekday').replace('.', ''));
+  const minutes = Number(get('hour')) * 60 + Number(get('minute'));
+  const toMinutes = (t: string) => {
+    const [h, m] = t.split(':').map(Number);
+    return h * 60 + m;
+  };
+
+  const today = store.hours[dayIndex]?.hours;
+  if (today) {
+    const [opens, closes] = today.split('–');
+    if (minutes >= toMinutes(opens) && minutes < toMinutes(closes)) {
+      return { open: true, label: `Öppet till ${closes.replace(':00', '')}` };
+    }
+    if (minutes < toMinutes(opens)) {
+      return { open: false, label: `Öppnar ${opens.replace(':00', '')} idag` };
+    }
+  }
+
+  for (let offset = 1; offset <= 7; offset++) {
+    const day = store.hours[(dayIndex + offset) % 7];
+    if (day.hours) {
+      const opens = day.hours.split('–')[0].replace(':00', '');
+      const when = offset === 1 ? 'imorgon' : day.day.toLowerCase();
+      return { open: false, label: `Öppnar ${when} ${opens}` };
+    }
+  }
+  return { open: false, label: 'Stängt' };
+}

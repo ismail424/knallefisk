@@ -11,22 +11,98 @@ import {
     Card,
     CardContent,
     Alert,
-    Divider,
+    Chip,
     FormControl,
     InputLabel,
     Select,
     MenuItem,
 } from '@mui/material';
-import { CheckCircle, Schedule, LocationOnOutlined, ArrowForward } from '@mui/icons-material';
-import { STORES } from '../lib/site';
+import {
+    Schedule,
+    LocationOnOutlined,
+    ArrowForward,
+    PhoneOutlined,
+    Add,
+} from '@mui/icons-material';
+import { STORES, storeStatus } from '../lib/site';
 import { BRAND } from '@/theme';
 import PageHero from './PageHero';
+import Faq from './Faq';
+import SectionHeading from './SectionHeading';
 
 const STEPS = [
     { title: 'Skicka din beställning', text: 'Skriv vad du vill ha och välj butik och dag.' },
     { title: 'Vi packar den färsk', text: 'Vi plockar ihop allt ur dagens leverans.' },
     { title: 'Hämta och betala i butik', text: 'Beställningen står klar – betala på plats.' },
 ];
+
+const POPULAR = [
+    '1 kg laxfilé',
+    '500 g handskalade räkor',
+    '1 kg räkor med skal',
+    'Kokt krabba',
+    'Torskrygg',
+    'Färsk hälleflundra',
+];
+
+const ORDER_FAQ = [
+    {
+        q: 'Hur fungerar det att beställa fisk online hos Knallefisk?',
+        a: 'Du fyller i vad du vill ha, väljer butik och hämtningsdag och skickar beställningen. Vi packar den färsk ur dagens leverans och du hämtar och betalar i butiken i Borås eller Skene.',
+    },
+    {
+        q: 'Behöver jag betala i förväg?',
+        a: 'Nej. Det finns ingen betalning online – du betalar först när du hämtar din beställning i butiken.',
+    },
+    {
+        q: 'Hur långt i förväg ska jag beställa?',
+        a: 'Helst senast dagen innan. Inför helger och högtider som midsommar, kräftskiva och jul är det smart att beställa några dagar tidigare.',
+    },
+    {
+        q: 'Kan jag beställa skaldjursplatå eller större mängder?',
+        a: 'Absolut. Skriv vad du önskar och hur många ni blir, eller ring butiken så hjälper vi dig att sätta ihop beställningen.',
+    },
+    {
+        q: 'Vad händer om något är slut?',
+        a: 'Fisken kommer direkt från Göteborgs fiskauktion och tillgången varierar. Om något saknas i dagens leverans hör vi av oss och föreslår ett likvärdigt alternativ.',
+    },
+];
+
+
+/** Animated checkmark that draws itself in a pulsing circle. */
+function AnimatedCheck() {
+    return (
+        <Box
+            sx={{
+                width: 88,
+                height: 88,
+                mx: 'auto',
+                mb: 2.5,
+                borderRadius: '50%',
+                backgroundColor: BRAND.tealTint,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                animation: 'pop-in 0.6s cubic-bezier(0.2, 0.9, 0.3, 1.3) both',
+            }}
+        >
+            <svg viewBox="0 0 52 52" width="56" height="56" aria-hidden>
+                <circle cx="26" cy="26" r="24" fill={BRAND.teal} />
+                <path
+                    d="M15 27l7 7 15-16"
+                    fill="none"
+                    stroke="#fff"
+                    strokeWidth="4.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeDasharray="40"
+                    strokeDashoffset="40"
+                    style={{ animation: 'draw-check 0.5s 0.45s ease-out forwards' }}
+                />
+            </svg>
+        </Box>
+    );
+}
 
 const EMPTY_FORM = {
     name: '',
@@ -46,8 +122,11 @@ const Order = () => {
     // date into the static HTML and allow past pickup dates.
     const [today, setToday] = useState<string>();
 
+    const [statuses, setStatuses] = useState<Record<string, { open: boolean; label: string }>>({});
+
     useEffect(() => {
         setToday(new Date().toISOString().split('T')[0]);
+        setStatuses(Object.fromEntries(STORES.map((s) => [s.id, storeStatus(s)])));
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -87,6 +166,13 @@ const Order = () => {
         }
     };
 
+    const addItem = (item: string) => {
+        setFormData((current) => ({
+            ...current,
+            message: current.message.trim() ? `${current.message.trimEnd()}\n${item}` : item,
+        }));
+    };
+
     const startNewOrder = () => {
         setFormData(EMPTY_FORM);
         setSubmitted(false);
@@ -97,8 +183,8 @@ const Order = () => {
         return (
             <Box sx={{ backgroundColor: BRAND.sand, flexGrow: 1 }}>
                 <Container maxWidth="sm" sx={{ py: { xs: 6, md: 10 } }}>
-                    <Card sx={{ p: { xs: 3.5, md: 5 }, textAlign: 'center' }}>
-                        <CheckCircle sx={{ fontSize: '3.5rem', color: 'success.main', mb: 2 }} />
+                    <Card sx={{ p: { xs: 3.5, md: 5 }, textAlign: 'center', overflow: 'hidden', position: 'relative' }}>
+                        <AnimatedCheck />
                         <Typography variant="h3" component="h1" sx={{ mb: 1.5 }}>
                             Tack för din beställning!
                         </Typography>
@@ -166,7 +252,13 @@ const Order = () => {
                     }}
                 >
                     {/* Order form */}
-                    <Card sx={{ p: { xs: 3, md: 4 } }}>
+                    <Card id="bestallning" sx={{ p: { xs: 3, md: 4 }, scrollMarginTop: 96 }}>
+                        <Typography variant="h3" component="h2" sx={{ fontSize: { xs: '1.4rem', md: '1.6rem' }, mb: 0.5 }}>
+                            Din beställning
+                        </Typography>
+                        <Typography sx={{ color: BRAND.muted, fontSize: '0.92rem', mb: 3 }}>
+                            Fyll i formuläret så bekräftar vi via e-post.
+                        </Typography>
                         {submitError && (
                             <Alert severity="error" sx={{ mb: 3 }}>
                                 {submitError}
@@ -256,6 +348,32 @@ const Order = () => {
                                     </FormControl>
                                 </Box>
 
+                                <Box>
+                                    <Typography sx={{ fontSize: '0.85rem', color: BRAND.muted, mb: 1 }}>
+                                        Populärt – klicka för att lägga till:
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                                        {POPULAR.map((item) => (
+                                            <Chip
+                                                key={item}
+                                                label={item}
+                                                icon={<Add />}
+                                                variant="outlined"
+                                                clickable
+                                                onClick={() => addItem(item)}
+                                                sx={{
+                                                    borderColor: BRAND.border,
+                                                    color: BRAND.ink,
+                                                    fontWeight: 500,
+                                                    transition: 'all 0.2s ease',
+                                                    '& .MuiChip-icon': { color: BRAND.teal },
+                                                    '&:hover': { borderColor: BRAND.teal, backgroundColor: BRAND.tealTint },
+                                                }}
+                                            />
+                                        ))}
+                                    </Box>
+                                </Box>
+
                                 <TextField
                                     fullWidth
                                     label="Din beställning"
@@ -289,74 +407,132 @@ const Order = () => {
                     </Card>
 
                     {/* Sidebar */}
-                    <Card>
-                        <CardContent sx={{ p: 3 }}>
-                            <Typography variant="h5" component="h2" sx={{ mb: 2.5 }}>
-                                Så fungerar det
-                            </Typography>
-                            {STEPS.map((step, index) => (
-                                <Box key={step.title} sx={{ display: 'flex', gap: 2, mb: index < STEPS.length - 1 ? 2.25 : 0 }}>
-                                    <Box
-                                        sx={{
-                                            width: 32,
-                                            height: 32,
-                                            borderRadius: '50%',
-                                            backgroundColor: BRAND.tealTint,
-                                            color: BRAND.tealDark,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            fontFamily: 'var(--font-poppins), Poppins, sans-serif',
-                                            fontWeight: 700,
-                                            fontSize: '0.95rem',
-                                            flexShrink: 0,
-                                        }}
-                                    >
-                                        {index + 1}
-                                    </Box>
-                                    <Box>
-                                        <Typography sx={{ fontWeight: 600, color: BRAND.ink, mb: 0.25 }}>
-                                            {step.title}
-                                        </Typography>
-                                        <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
-                                            {step.text}
-                                        </Typography>
-                                    </Box>
-                                </Box>
-                            ))}
+                    <Box sx={{ display: 'grid', gap: 3, position: { md: 'sticky' }, top: { md: 100 } }}>
+                        <Card
+                            sx={{
+                                background: `linear-gradient(160deg, ${BRAND.tealDark} 0%, ${BRAND.tealDarker} 100%)`,
+                                color: '#fff',
+                                border: 'none',
+                                position: 'relative',
+                                overflow: 'hidden',
+                            }}
+                        >
+                            <CardContent sx={{ p: 3, position: 'relative' }}>
+                                <Typography variant="h5" component="h2" sx={{ mb: 2, color: '#fff' }}>
+                                    Hämta hos oss
+                                </Typography>
+                                {STORES.map((store, index) => {
+                                    const status = statuses[store.id];
+                                    return (
+                                        <Box
+                                            key={store.id}
+                                            sx={{
+                                                pb: index < STORES.length - 1 ? 2.25 : 0,
+                                                mb: index < STORES.length - 1 ? 2.25 : 0,
+                                                borderBottom:
+                                                    index < STORES.length - 1 ? '1px solid rgba(255, 255, 255, 0.15)' : 'none',
+                                            }}
+                                        >
+                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                                                <Typography sx={{ fontWeight: 700, color: '#fff' }}>
+                                                    Knallefisk {store.name}
+                                                </Typography>
+                                                {status && (
+                                                    <Box
+                                                        component="span"
+                                                        sx={{
+                                                            fontSize: '0.72rem',
+                                                            fontWeight: 600,
+                                                            px: 1,
+                                                            py: 0.25,
+                                                            borderRadius: 999,
+                                                            backgroundColor: status.open ? 'rgba(165, 214, 167, 0.2)' : 'rgba(255, 255, 255, 0.12)',
+                                                            color: status.open ? '#c8e6c9' : 'rgba(255, 255, 255, 0.85)',
+                                                        }}
+                                                    >
+                                                        {status.open ? 'Öppet nu' : status.label}
+                                                    </Box>
+                                                )}
+                                            </Box>
+                                            <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                                                {store.streetAddress}, {store.city}
+                                            </Typography>
+                                            <Typography sx={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.9rem' }}>
+                                                {store.hoursSummary}
+                                            </Typography>
+                                            <Box
+                                                component="a"
+                                                href={`tel:${store.phoneE164}`}
+                                                sx={{
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: 0.75,
+                                                    mt: 0.75,
+                                                    color: '#fff',
+                                                    fontWeight: 600,
+                                                    fontSize: '0.9rem',
+                                                    textDecoration: 'none',
+                                                    '&:hover': { textDecoration: 'underline' },
+                                                }}
+                                            >
+                                                <PhoneOutlined sx={{ fontSize: '1rem' }} />
+                                                {store.phone}
+                                            </Box>
+                                        </Box>
+                                    );
+                                })}
+                            </CardContent>
+                        </Card>
 
-                            <Divider sx={{ my: 3 }} />
-
-                            <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
-                                Hämta hos oss
-                            </Typography>
-                            {STORES.map((store, index) => (
-                                <Box key={store.id} sx={{ mb: index < STORES.length - 1 ? 2.25 : 0 }}>
-                                    <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>
-                                        {store.name} – {store.streetAddress}
-                                    </Typography>
-                                    <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>
-                                        {store.hoursSummary}
-                                    </Typography>
-                                    <Typography
-                                        component="a"
-                                        href={`tel:${store.phoneE164}`}
-                                        sx={{
-                                            color: BRAND.tealDark,
-                                            fontWeight: 600,
-                                            fontSize: '0.9rem',
-                                            textDecoration: 'none',
-                                            '&:hover': { textDecoration: 'underline' },
-                                        }}
-                                    >
-                                        {store.phone}
-                                    </Typography>
+                        <Card>
+                            <CardContent sx={{ p: 3 }}>
+                                <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+                                    Så fungerar det
+                                </Typography>
+                                <Box component="ol" sx={{ listStyle: 'none', m: 0, p: 0, display: 'grid', gap: 2 }}>
+                                    {STEPS.map((step, index) => (
+                                        <Box component="li" key={step.title} sx={{ display: 'flex', gap: 1.75 }}>
+                                            <Box
+                                                sx={{
+                                                    width: 30,
+                                                    height: 30,
+                                                    flexShrink: 0,
+                                                    borderRadius: '50%',
+                                                    backgroundColor: BRAND.tealTint,
+                                                    color: BRAND.tealDark,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    fontWeight: 700,
+                                                    fontSize: '0.9rem',
+                                                }}
+                                            >
+                                                {index + 1}
+                                            </Box>
+                                            <Box>
+                                                <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>{step.title}</Typography>
+                                                <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>{step.text}</Typography>
+                                            </Box>
+                                        </Box>
+                                    ))}
                                 </Box>
-                            ))}
-                        </CardContent>
-                    </Card>
+                            </CardContent>
+                        </Card>
+                    </Box>
                 </Box>
             </Container>
+
+            {/* ============ FAQ ============ */}
+            <Box sx={{ backgroundColor: '#fff', py: { xs: 7, md: 10 } }}>
+                <Container maxWidth="md">
+                    <SectionHeading
+                        overline="Frågor & svar"
+                        title="Vanliga frågor om att beställa"
+                        subtitle="Hittar du inte svaret? Ring närmaste butik så hjälper vi dig."
+                    />
+                    <Faq items={ORDER_FAQ} />
+                </Container>
+            </Box>
         </Box>
     );
 };

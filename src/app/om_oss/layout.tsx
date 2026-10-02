@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Om oss',
+  title: 'Om oss – familjeägd fiskhandel sedan 2006',
   description:
     'Knallefisk är en familjeägd fiskhandel sedan 2006. Vi hämtar färsk fisk och skaldjur från Göteborgs fiskauktion till våra butiker i Borås och Skene.',
   alternates: { canonical: '/om_oss' },
@@ -18,5 +19,10 @@ export default function OmOssLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/om_oss', 'Om oss')} />
+      {children}
+    </>
+  );
 }

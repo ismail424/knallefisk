@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Hitta butik',
+  title: 'Fiskbutiker i Borås & Skene – öppettider & karta',
   description:
     'Hitta Knallefisks butiker i Borås och Skene. Adresser, öppettider, kartor och vägbeskrivningar till våra fiskbutiker.',
   alternates: { canonical: '/hitta_butik' },
@@ -18,5 +19,10 @@ export default function HittaButikLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/hitta_butik', 'Hitta butik')} />
+      {children}
+    </>
+  );
 }

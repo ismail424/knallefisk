@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Prices from '../../components/Prices';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Priser',
+  title: 'Dagens priser på fisk & skaldjur',
   description:
     'Se våra aktuella priser på färsk fisk och skaldjur – lax, räkor, krabba och mycket mer. Priserna uppdateras löpande av oss i butiken.',
   alternates: { canonical: '/priser' },
@@ -11,5 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function PriserPage() {
-  return <Prices />;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/priser', 'Priser')} />
+      <Prices />
+    </>
+  );
 }

@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { Box, Container, Typography, Button } from '@mui/material';
 import { HomeOutlined, ShoppingBasketOutlined } from '@mui/icons-material';
 import { BRAND } from '@/theme';
-import { Bubbles } from '@/components/decor';
 
 export default function NotFound() {
     return (
@@ -19,7 +18,6 @@ export default function NotFound() {
                 background: `linear-gradient(180deg, ${BRAND.tealTint} 0%, ${BRAND.sand} 100%)`,
             }}
         >
-            <Bubbles style={{ top: 40, right: '8%' }} size={220} />
             <Container maxWidth="sm" sx={{ position: 'relative', textAlign: 'center', py: { xs: 8, md: 12 } }}>
                 <Box
                     sx={{
