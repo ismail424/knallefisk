@@ -4,7 +4,7 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import MUIThemeProvider from "../components/ThemeProvider";
-import { SITE_URL, SITE_NAME, TAGLINE, STORES, CONTACT_EMAILS } from "../lib/site";
+import { SITE_URL, SITE_NAME, TAGLINE, STORES, CONTACT_EMAILS, FOUNDED_YEAR } from "../lib/site";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -22,12 +22,21 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: `${SITE_NAME} – ${TAGLINE}`,
+    default: `${SITE_NAME} – Fiskbutik i Borås & Skene | Färsk fisk & skaldjur`,
     template: `%s – ${SITE_NAME}`,
   },
   description:
-    "Familjeägd fiskhandel sedan 2006. Färsk fisk och skaldjur från Göteborgs fiskauktion till våra butiker i Borås och Skene. Beställ online och hämta i butik.",
+    "Familjeägd fiskbutik i Borås och Skene sedan 2006. Dagsfärsk fisk och skaldjur direkt från Göteborgs fiskauktion – lax, räkor, krabba och mer. Beställ online och hämta i butik.",
+  applicationName: SITE_NAME,
+  category: "food",
   keywords: [
+    "fiskbutik Borås",
+    "fiskhandel Borås",
+    "fiskbutik Skene",
+    "skaldjur Borås",
+    "räkor Borås",
+    "färsk fisk Sjuhärad",
+    "beställa fisk online",
     "fisk",
     "skaldjur",
     "färsk fisk",
@@ -88,29 +97,63 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: "#448f9b",
+  colorScheme: "light",
 };
+
+const LOGO_URL = `${SITE_URL}/img/logo-email.png`;
 
 const structuredData = {
   "@context": "https://schema.org",
-  "@graph": STORES.map((store) => ({
-    "@type": "GroceryStore",
-    "@id": `${SITE_URL}/#${store.id}`,
-    name: store.fullName,
-    description: `Färsk fisk och skaldjur i ${store.city}. Familjeägd fiskhandel sedan 2006.`,
-    url: SITE_URL,
-    telephone: store.phoneE164,
-    email: CONTACT_EMAILS[0],
-    image: `${SITE_URL}/img/store_front.webp`,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: store.streetAddress,
-      postalCode: store.postalCode,
-      addressLocality: store.city,
-      addressCountry: "SE",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      logo: LOGO_URL,
+      slogan: TAGLINE,
+      foundingDate: String(FOUNDED_YEAR),
+      email: CONTACT_EMAILS[0],
     },
-    openingHoursSpecification: store.openingHoursSpec,
-    priceRange: "$$",
-  })),
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      url: SITE_URL,
+      name: SITE_NAME,
+      inLanguage: "sv-SE",
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    },
+    ...STORES.map((store) => ({
+      "@type": ["GroceryStore", "LocalBusiness"],
+      "@id": `${SITE_URL}/#${store.id}`,
+      name: store.fullName,
+      description: `Fiskbutik i ${store.city} med dagsfärsk fisk och skaldjur från Göteborgs fiskauktion. Familjeägd fiskhandel sedan ${FOUNDED_YEAR}.`,
+      url: `${SITE_URL}/hitta_butik`,
+      telephone: store.phoneE164,
+      email: CONTACT_EMAILS[0],
+      image: [`${SITE_URL}/img/store_front.webp`, `${SITE_URL}/og.jpg`],
+      logo: LOGO_URL,
+      parentOrganization: { "@id": `${SITE_URL}/#organization` },
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: store.streetAddress,
+        postalCode: store.postalCode,
+        addressLocality: store.city,
+        addressRegion: "Västra Götalands län",
+        addressCountry: "SE",
+      },
+      geo: { "@type": "GeoCoordinates", ...store.geo },
+      hasMap: store.directionsUrl,
+      areaServed: ["Borås", "Skene", "Mark", "Sjuhärad"],
+      openingHoursSpecification: store.openingHoursSpec,
+      priceRange: "$$",
+      currenciesAccepted: "SEK",
+      potentialAction: {
+        "@type": "OrderAction",
+        target: `${SITE_URL}/bestall_online`,
+      },
+    })),
+  ],
 };
 
 export default function RootLayout({

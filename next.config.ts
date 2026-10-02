@@ -1,6 +1,17 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    formats: ["image/avif", "image/webp"],
+  },
+  async headers() {
+    // Static media rarely changes; let browsers and the CDN keep it a week
+    const cache = { key: "Cache-Control", value: "public, max-age=604800, stale-while-revalidate=86400" };
+    return [
+      { source: "/video/:path*", headers: [cache] },
+      { source: "/img/:path*", headers: [cache] },
+    ];
+  },
   async redirects() {
     return [
       // Old contact page now lives at /kontakta_oss

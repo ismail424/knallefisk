@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Hitta butik',
@@ -18,5 +19,10 @@ export default function HittaButikLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/hitta_butik', 'Hitta butik')} />
+      {children}
+    </>
+  );
 }

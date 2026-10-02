@@ -31,6 +31,8 @@ import PriceCard from './PriceCard';
 import SectionHeading from './SectionHeading';
 import StoreHeader from './StoreHeader';
 import BackgroundVideo from './BackgroundVideo';
+import Reveal from './Reveal';
+import Faq from './Faq';
 
 const WHITE = '#ffffff';
 
@@ -49,6 +51,53 @@ const USPS = [
         icon: ShoppingBasketOutlined,
         title: 'Beställ online – hämta i butik',
         text: 'Lägg din beställning på webben så står den packad och klar när du kommer till butiken.',
+    },
+];
+
+const JOURNEY = [
+    {
+        image: '/img/illustrationer/havet.webp',
+        alt: 'Illustration av en fiskebåt på havet i gryningen',
+        step: 'Havet',
+        title: 'Fångad i Nordsjön & Skagerrak',
+        text: 'Fiskebåtarna från västkusten landar sin fångst tidigt på morgonen – så färskt det bara går.',
+    },
+    {
+        image: '/img/illustrationer/auktionen.webp',
+        alt: 'Illustration av Göteborgs fiskauktion med lådor av fisk och havskräftor',
+        step: 'Auktionen',
+        title: 'Handplockat på Göteborgs fiskauktion',
+        text: 'Vi är på plats och väljer själva ut fisken och skaldjuren. Bara det bästa följer med hem.',
+    },
+    {
+        image: '/img/illustrationer/butiken.webp',
+        alt: 'Illustration av Knallefisks fiskdisk med lax, räkor, krabba och musslor',
+        step: 'Disken',
+        title: 'I vår disk i Borås & Skene',
+        text: 'Samma dag ligger fångsten på is i disken – redo att bli middag, räkmacka eller helgens fest.',
+    },
+];
+
+const HOME_FAQ = [
+    {
+        q: 'Var köper Knallefisk sin fisk?',
+        a: 'Vi köper in fisk och skaldjur direkt på Göteborgs fiskauktion och kör dem själva till våra butiker i Borås och Skene, så att allt är så färskt som möjligt.',
+    },
+    {
+        q: 'Vilka öppettider har fiskbutiken i Borås?',
+        a: 'Knallefisk Borås på Ålgårdsvägen 3 har öppet tisdag–torsdag 10–18, fredag 10–19 och lördag 10–15. Söndag och måndag är stängt.',
+    },
+    {
+        q: 'Vilka öppettider har fiskbutiken i Skene?',
+        a: 'Knallefisk Skene på Örbyvägen 27 har öppet torsdag 10–18, fredag 10–19 och lördag 10–15.',
+    },
+    {
+        q: 'Kan jag beställa fisk och skaldjur i förväg?',
+        a: 'Ja, beställ online eller ring butiken. Vi packar beställningen färsk till din hämtningsdag och du betalar när du hämtar.',
+    },
+    {
+        q: 'Säljer ni skaldjur till fest och högtider?',
+        a: 'Ja – räkor, krabba, hummer, havskräftor och musslor. Inför midsommar, kräftskiva, nyår och jul rekommenderar vi att beställa i god tid.',
     },
 ];
 
@@ -266,39 +315,41 @@ const Home = () => {
                             gap: 3,
                         }}
                     >
-                        {USPS.map((usp) => (
-                            <Card
-                                key={usp.title}
-                                sx={{
-                                    p: 1,
-                                    textAlign: 'center',
-                                    ...CARD_HOVER,
-                                }}
-                            >
-                                <CardContent>
-                                    <Box
-                                        sx={{
-                                            width: 64,
-                                            height: 64,
-                                            borderRadius: '50%',
-                                            backgroundColor: BRAND.tealTint,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            mx: 'auto',
-                                            mb: 2,
-                                        }}
-                                    >
-                                        <usp.icon sx={{ fontSize: 30, color: BRAND.teal }} />
-                                    </Box>
-                                    <Typography variant="h5" component="h3" sx={{ mb: 1 }}>
-                                        {usp.title}
-                                    </Typography>
-                                    <Typography sx={{ color: BRAND.muted, fontSize: '0.95rem' }}>
-                                        {usp.text}
-                                    </Typography>
-                                </CardContent>
-                            </Card>
+                        {USPS.map((usp, index) => (
+                            <Reveal key={usp.title} delay={index * 0.1}>
+                                <Card
+                                    sx={{
+                                        p: 1,
+                                        height: '100%',
+                                        textAlign: 'center',
+                                        ...CARD_HOVER,
+                                    }}
+                                >
+                                    <CardContent>
+                                        <Box
+                                            sx={{
+                                                width: 64,
+                                                height: 64,
+                                                borderRadius: '50%',
+                                                backgroundColor: BRAND.tealTint,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                mx: 'auto',
+                                                mb: 2,
+                                            }}
+                                        >
+                                            <usp.icon sx={{ fontSize: 30, color: BRAND.teal }} />
+                                        </Box>
+                                        <Typography variant="h5" component="h3" sx={{ mb: 1 }}>
+                                            {usp.title}
+                                        </Typography>
+                                        <Typography sx={{ color: BRAND.muted, fontSize: '0.95rem' }}>
+                                            {usp.text}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
+                            </Reveal>
                         ))}
                     </Box>
                 </Container>
@@ -355,6 +406,108 @@ const Home = () => {
                     </Box>
                 </>
             )}
+
+            {/* ============ From sea to counter ============ */}
+            <Box sx={{ backgroundColor: BRAND.tealTint, py: { xs: 7, md: 10 }, position: 'relative', overflow: 'hidden' }}>
+                <ScalesPattern color="rgba(68, 143, 155, 0.06)" />
+                <Container maxWidth="lg" sx={{ position: 'relative' }}>
+                    <SectionHeading
+                        overline="Från hav till disk"
+                        title="Så hamnar fisken hos dig"
+                        subtitle="Kort väg från båt till butik – det är hemligheten bakom smaken."
+                    />
+                    <Box
+                        component="ol"
+                        sx={{
+                            listStyle: 'none',
+                            m: 0,
+                            p: 0,
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+                            gap: { xs: 3, md: 4 },
+                            position: 'relative',
+                            // dashed route line connecting the three steps on desktop
+                            '&::before': {
+                                content: '""',
+                                display: { xs: 'none', md: 'block' },
+                                position: 'absolute',
+                                top: 'calc(33% - 1px)',
+                                left: '12%',
+                                right: '12%',
+                                borderTop: `2px dashed ${BRAND.tealLight}`,
+                                opacity: 0.6,
+                            },
+                        }}
+                    >
+                        {JOURNEY.map((item, index) => (
+                            <Reveal component="li" key={item.step} delay={index * 0.15} sx={{ position: 'relative' }}>
+                                <Card
+                                    sx={{
+                                        height: '100%',
+                                        overflow: 'hidden',
+                                        ...CARD_HOVER,
+                                        '&:hover img': { transform: 'scale(1.05)' },
+                                    }}
+                                >
+                                    <Box sx={{ position: 'relative', aspectRatio: '16 / 10', overflow: 'hidden', backgroundColor: BRAND.tealTint }}>
+                                        <Image
+                                            src={item.image}
+                                            alt={item.alt}
+                                            fill
+                                            sizes="(max-width: 900px) 100vw, 33vw"
+                                            style={{ objectFit: 'cover', transition: 'transform 0.6s ease' }}
+                                        />
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                top: 14,
+                                                left: 14,
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                gap: 1,
+                                                pl: 0.5,
+                                                pr: 1.5,
+                                                py: 0.5,
+                                                borderRadius: 999,
+                                                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                                                backdropFilter: 'blur(6px)',
+                                                fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                                fontWeight: 700,
+                                                fontSize: '0.8rem',
+                                                color: BRAND.tealDarker,
+                                            }}
+                                        >
+                                            <Box
+                                                component="span"
+                                                sx={{
+                                                    width: 24,
+                                                    height: 24,
+                                                    borderRadius: '50%',
+                                                    backgroundColor: BRAND.coral,
+                                                    color: WHITE,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    fontSize: '0.75rem',
+                                                }}
+                                            >
+                                                {index + 1}
+                                            </Box>
+                                            {item.step}
+                                        </Box>
+                                    </Box>
+                                    <CardContent sx={{ p: 3 }}>
+                                        <Typography variant="h5" component="h3" sx={{ mb: 1 }}>
+                                            {item.title}
+                                        </Typography>
+                                        <Typography sx={{ color: BRAND.muted, fontSize: '0.95rem' }}>{item.text}</Typography>
+                                    </CardContent>
+                                </Card>
+                            </Reveal>
+                        ))}
+                    </Box>
+                </Container>
+            </Box>
 
             {/* ============ About ============ */}
             <Box
@@ -577,6 +730,18 @@ const Home = () => {
                             );
                         })}
                     </Box>
+                </Container>
+            </Box>
+
+            {/* ============ FAQ ============ */}
+            <Box sx={{ backgroundColor: showPricesSection ? WHITE : BRAND.sand, py: { xs: 7, md: 10 } }}>
+                <Container maxWidth="md">
+                    <SectionHeading
+                        overline="Frågor & svar"
+                        title="Vanliga frågor"
+                        subtitle="Det här undrar våra kunder oftast – fråga oss gärna i butiken också."
+                    />
+                    <Faq items={HOME_FAQ} />
                 </Container>
             </Box>
 

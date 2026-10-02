@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Prices from '../../components/Prices';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Priser',
@@ -11,5 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function PriserPage() {
-  return <Prices />;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/priser', 'Priser')} />
+      <Prices />
+    </>
+  );
 }

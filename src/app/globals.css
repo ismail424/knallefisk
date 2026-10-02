@@ -52,6 +52,170 @@ body {
   }
 }
 
+/* ---- SeaScene / decorative illustration motion ---- */
+
+@keyframes sea-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(var(--shift, -480px));
+  }
+}
+
+@keyframes sea-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(7px) rotate(2deg);
+  }
+}
+
+@keyframes sea-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes sea-leap {
+  0%,
+  45% {
+    transform: translate(0, 40px) rotate(-40deg);
+    opacity: 0;
+  }
+  50% {
+    transform: translate(10px, 10px) rotate(-40deg);
+    opacity: 1;
+  }
+  70% {
+    transform: translate(70px, -60px) rotate(0deg);
+  }
+  90% {
+    transform: translate(130px, 10px) rotate(40deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(140px, 40px) rotate(40deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sea-glide {
+  from {
+    transform: translateX(-60px);
+  }
+  to {
+    transform: translateX(540px);
+  }
+}
+
+@keyframes sea-flap {
+  0%,
+  100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.5);
+  }
+}
+
+@keyframes sea-rise {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-110px);
+    opacity: 0;
+  }
+}
+
+@keyframes sea-drift {
+  from {
+    transform: translateX(-40px);
+  }
+  to {
+    transform: translateX(40px);
+  }
+}
+
+@keyframes swim-across {
+  from {
+    transform: translateX(-120px);
+  }
+  to {
+    transform: translateX(calc(100vw + 120px));
+  }
+}
+
+@keyframes draw-check {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.08);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes drop-in {
+  0% {
+    transform: translateY(-140px) rotate(-20deg);
+    opacity: 0;
+  }
+  60% {
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(6px) rotate(4deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-dot {
+  0% {
+    box-shadow: 0 0 0 0 rgba(102, 187, 106, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 0 8px rgba(102, 187, 106, 0);
+  }
+}
+
+/* Scroll-reveal: elements fade up once they enter the viewport (see Reveal.tsx) */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -63,5 +227,10 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
   }
 }

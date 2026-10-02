@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Kontakta oss',
@@ -18,5 +19,10 @@ export default function KontaktaOssLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return children;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/kontakta_oss', 'Kontakta oss')} />
+      {children}
+    </>
+  );
 }

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Order from '../../components/Order';
-import { pageOpenGraph } from '../../lib/site';
+import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
+import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
   title: 'Beställ online',
@@ -15,5 +16,10 @@ export const metadata: Metadata = {
 };
 
 export default function BestallOnlinePage() {
-  return <Order />;
+  return (
+    <>
+      <JsonLd data={breadcrumbJsonLd('/bestall_online', 'Beställ online')} />
+      <Order />
+    </>
+  );
 }
