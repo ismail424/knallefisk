@@ -122,7 +122,7 @@ const HOME_FAQ = [
     },
     {
         q: 'Vilka öppettider har fiskbutiken i Skene?',
-        a: 'Knallefisk Skene på Örbyvägen 27 har öppet torsdag 10–18, fredag 10–19 och lördag 10–15.',
+        a: 'Knallefisk Skene på Håvengatan 3a har öppet torsdag 10–18, fredag 10–19 och lördag 10–15.',
     },
     {
         q: 'Kan jag beställa fisk och skaldjur i förväg?',

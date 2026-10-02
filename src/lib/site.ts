@@ -107,8 +107,8 @@ export const STORES: Store[] = [
     id: 'skene',
     name: 'Skene',
     fullName: 'Knallefisk Skene',
-    streetAddress: 'Örbyvägen 27',
-    postalCode: '511 61',
+    streetAddress: 'Håvengatan 3a',
+    postalCode: '511 62',
     city: 'Skene',
     phone: '073 535 09 17',
     phoneE164: '+46735350917',
@@ -127,7 +127,7 @@ export const STORES: Store[] = [
     mapEmbed:
       'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d536.1354135958156!2d12.647960488173517!3d57.48614171965853!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x96f6138a27b74bc5!2zNTfCsDI5JzEwLjEiTiAxMsKwMzgnNTQuNiJF!5e0!3m2!1ssv!2sse!4v1667306940644!5m2!1ssv!2sse',
     directionsUrl:
-      'https://www.google.com/maps/dir/?api=1&destination=Knalle+Fisk%2C+%C3%96rbyv%C3%A4gen+27%2C+511+61+Skene',
+      'https://www.google.com/maps/dir/?api=1&destination=Knallefisk+Skene%2C+H%C3%A5vengatan+3a%2C+511+62+Skene',
     openingHoursSpec: [
       {
         '@type': 'OpeningHoursSpecification',
