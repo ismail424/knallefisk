@@ -47,7 +47,7 @@ const USPS = [
     {
         icon: FavoriteBorder,
         image: '/img/store_front.webp',
-        alt: 'Knallefisks butik med skylten Färska fisken över hela disken',
+        alt: 'Knallefisks butik i Skene med skylten Färska fisken över hela disken',
         title: `Familjeägt sedan ${FOUNDED_YEAR}`,
         text: 'Ett familjeföretag med passion för havet, kvalitet och personlig service i varje möte.',
     },
@@ -650,7 +650,7 @@ const Home = () => {
                             <Box
                                 component="img"
                                 src="/img/store_front.webp"
-                                alt="Knallefisks butik med skylten Färska fisken över hela disken"
+                                alt="Knallefisks butik i Skene med skylten Färska fisken över hela disken"
                                 sx={{
                                     position: 'relative',
                                     width: '100%',

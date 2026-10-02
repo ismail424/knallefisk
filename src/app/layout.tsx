@@ -136,7 +136,11 @@ const structuredData = {
       url: `${SITE_URL}/hitta_butik`,
       telephone: store.phoneE164,
       email: CONTACT_EMAILS[0],
-      image: [`${SITE_URL}/img/store_front.webp`, `${SITE_URL}/og.jpg`],
+      // store_front.webp shows the Skene shop; don't attach it to Borås
+      image:
+        store.id === "skene"
+          ? [`${SITE_URL}/img/store_front.webp`, `${SITE_URL}/og.jpg`]
+          : [`${SITE_URL}/og.jpg`],
       logo: LOGO_URL,
       parentOrganization: { "@id": `${SITE_URL}/#organization` },
       address: {

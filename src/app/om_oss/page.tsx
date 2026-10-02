@@ -116,7 +116,7 @@ export default function OmOssPage() {
                             >
                                 <Image
                                     src="/img/store_front.webp"
-                                    alt="Knallefisks butik med skylten Färska fisken över hela disken"
+                                    alt="Knallefisks butik i Skene med skylten Färska fisken över hela disken"
                                     fill
                                     sizes="(max-width: 900px) 60vw, 30vw"
                                     style={{ objectFit: 'cover' }}
