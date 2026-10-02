@@ -52,111 +52,6 @@ body {
   }
 }
 
-/* ---- SeaScene / decorative illustration motion ---- */
-
-@keyframes sea-slide {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(var(--shift, -480px));
-  }
-}
-
-@keyframes sea-bob {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-2deg);
-  }
-  50% {
-    transform: translateY(7px) rotate(2deg);
-  }
-}
-
-@keyframes sea-pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.06);
-  }
-}
-
-@keyframes sea-leap {
-  0%,
-  45% {
-    transform: translate(0, 40px) rotate(-40deg);
-    opacity: 0;
-  }
-  50% {
-    transform: translate(10px, 10px) rotate(-40deg);
-    opacity: 1;
-  }
-  70% {
-    transform: translate(70px, -60px) rotate(0deg);
-  }
-  90% {
-    transform: translate(130px, 10px) rotate(40deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(140px, 40px) rotate(40deg);
-    opacity: 0;
-  }
-}
-
-@keyframes sea-glide {
-  from {
-    transform: translateX(-60px);
-  }
-  to {
-    transform: translateX(540px);
-  }
-}
-
-@keyframes sea-flap {
-  0%,
-  100% {
-    transform: scaleY(1);
-  }
-  50% {
-    transform: scaleY(0.5);
-  }
-}
-
-@keyframes sea-rise {
-  0% {
-    transform: translateY(0);
-    opacity: 0;
-  }
-  15% {
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-110px);
-    opacity: 0;
-  }
-}
-
-@keyframes sea-drift {
-  from {
-    transform: translateX(-40px);
-  }
-  to {
-    transform: translateX(40px);
-  }
-}
-
-@keyframes swim-across {
-  from {
-    transform: translateX(-120px);
-  }
-  to {
-    transform: translateX(calc(100vw + 120px));
-  }
-}
-
 @keyframes draw-check {
   to {
     stroke-dashoffset: 0;
@@ -174,23 +69,6 @@ body {
   }
   100% {
     transform: scale(1);
-  }
-}
-
-@keyframes drop-in {
-  0% {
-    transform: translateY(-140px) rotate(-20deg);
-    opacity: 0;
-  }
-  60% {
-    opacity: 1;
-  }
-  80% {
-    transform: translateY(6px) rotate(4deg);
-  }
-  100% {
-    transform: translateY(0) rotate(0);
-    opacity: 1;
   }
 }
 

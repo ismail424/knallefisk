@@ -21,27 +21,20 @@ import {
     Schedule,
     LocationOnOutlined,
     ArrowForward,
-    EditNoteOutlined,
-    Inventory2Outlined,
-    StorefrontOutlined,
-    CreditCardOffOutlined,
-    AcUnitOutlined,
     PhoneOutlined,
     Add,
 } from '@mui/icons-material';
 import { STORES, storeStatus } from '../lib/site';
 import { BRAND } from '@/theme';
-import { Bubbles, FishAccent, HeadingRule } from './decor';
-import LoopVideo from './LoopVideo';
-import SeaScene from './SeaScene';
-import Reveal from './Reveal';
+import { Bubbles } from './decor';
+import PageHero from './PageHero';
 import Faq from './Faq';
 import SectionHeading from './SectionHeading';
 
 const STEPS = [
-    { icon: EditNoteOutlined, title: 'Skicka din beställning', text: 'Skriv vad du vill ha och välj butik och dag.' },
-    { icon: Inventory2Outlined, title: 'Vi packar den färsk', text: 'Vi plockar ihop allt ur dagens leverans.' },
-    { icon: StorefrontOutlined, title: 'Hämta och betala i butik', text: 'Beställningen står klar – betala på plats.' },
+    { title: 'Skicka din beställning', text: 'Skriv vad du vill ha och välj butik och dag.' },
+    { title: 'Vi packar den färsk', text: 'Vi plockar ihop allt ur dagens leverans.' },
+    { title: 'Hämta och betala i butik', text: 'Beställningen står klar – betala på plats.' },
 ];
 
 const POPULAR = [
@@ -76,41 +69,6 @@ const ORDER_FAQ = [
     },
 ];
 
-const PERKS = [
-    { icon: CreditCardOffOutlined, label: 'Ingen betalning online' },
-    { icon: AcUnitOutlined, label: 'Packas kallt & färskt' },
-    { icon: LocationOnOutlined, label: 'Hämta i Borås eller Skene' },
-];
-
-/** A small label that floats over the hero illustration. */
-function FloatingChip({ children, sx }: { children: React.ReactNode; sx?: object }) {
-    return (
-        <Box
-            aria-hidden
-            sx={{
-                position: 'absolute',
-                zIndex: 2,
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1,
-                px: 1.75,
-                py: 1,
-                borderRadius: 999,
-                backgroundColor: '#fff',
-                color: BRAND.ink,
-                fontFamily: 'var(--font-poppins), Poppins, sans-serif',
-                fontWeight: 600,
-                fontSize: { xs: '0.78rem', md: '0.88rem' },
-                boxShadow: '0 10px 30px rgba(23, 49, 58, 0.16)',
-                animation: 'bob 4s ease-in-out infinite',
-                whiteSpace: 'nowrap',
-                ...sx,
-            }}
-        >
-            {children}
-        </Box>
-    );
-}
 
 /** Animated checkmark that draws itself in a pulsing circle. */
 function AnimatedCheck() {
@@ -263,10 +221,6 @@ const Order = () => {
                             Du betalar i butiken när du hämtar.
                         </Typography>
 
-                        <Box sx={{ borderRadius: 4, overflow: 'hidden', mb: 3.5, mx: { xs: -1, md: 0 } }}>
-                            <SeaScene />
-                        </Box>
-
                         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
                             <Button variant="outlined" onClick={startNewOrder}>
                                 Gör en ny beställning
@@ -283,220 +237,11 @@ const Order = () => {
 
     return (
         <Box sx={{ backgroundColor: BRAND.sand }}>
-            {/* ============ Hero with animated illustration ============ */}
-            <Box
-                sx={{
-                    position: 'relative',
-                    overflow: 'hidden',
-                    background: `linear-gradient(180deg, ${BRAND.tealTint} 0%, ${BRAND.sand} 100%)`,
-                }}
-            >
-                <Bubbles style={{ top: -40, left: '-3%' }} size={220} color="rgba(68, 143, 155, 0.12)" />
-                <FishAccent style={{ bottom: 30, right: '2%' }} size={80} color="rgba(68, 143, 155, 0.12)" flip />
-                <Container
-                    maxWidth="lg"
-                    sx={{
-                        position: 'relative',
-                        display: 'grid',
-                        gridTemplateColumns: { xs: '1fr', md: '5fr 6fr' },
-                        gap: { xs: 4, md: 6 },
-                        alignItems: 'center',
-                        pt: { xs: 5, md: 8 },
-                        pb: { xs: 5, md: 8 },
-                    }}
-                >
-                    <Box sx={{ animation: 'fade-up 0.7s ease both', textAlign: { xs: 'center', md: 'left' } }}>
-                        <Typography variant="overline" sx={{ color: BRAND.tealDark, display: 'block', mb: 1 }}>
-                            Beställ & hämta
-                        </Typography>
-                        <Typography
-                            variant="h1"
-                            sx={{ fontSize: { xs: '2.1rem', md: '3rem' }, mb: 2, lineHeight: 1.1 }}
-                        >
-                            Beställ online,{' '}
-                            <Box component="span" sx={{ color: BRAND.teal }}>
-                                hämta färskt
-                            </Box>
-                        </Typography>
-                        <Typography
-                            sx={{
-                                color: BRAND.muted,
-                                fontSize: { xs: '1rem', md: '1.12rem' },
-                                lineHeight: 1.7,
-                                maxWidth: 480,
-                                mx: { xs: 'auto', md: 0 },
-                            }}
-                        >
-                            Skriv vad du vill ha, så packar vi det färskt ur dagens leverans till din
-                            hämtningsdag. Du betalar i butiken.
-                        </Typography>
-                        <Box sx={{ '& svg': { mx: { xs: 'auto !important', md: '0 !important' } } }}>
-                            <HeadingRule centered={false} />
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                gap: 1,
-                                mt: 3,
-                                justifyContent: { xs: 'center', md: 'flex-start' },
-                            }}
-                        >
-                            {PERKS.map((perk) => (
-                                <Box
-                                    key={perk.label}
-                                    sx={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: 0.75,
-                                        px: 1.5,
-                                        py: 0.75,
-                                        borderRadius: 999,
-                                        backgroundColor: '#fff',
-                                        border: `1px solid ${BRAND.border}`,
-                                        fontSize: '0.85rem',
-                                        fontWeight: 500,
-                                        color: BRAND.ink,
-                                    }}
-                                >
-                                    <perk.icon sx={{ fontSize: '1rem', color: BRAND.teal }} />
-                                    {perk.label}
-                                </Box>
-                            ))}
-                        </Box>
-                        <Button
-                            href="#bestallning"
-                            variant="contained"
-                            size="large"
-                            endIcon={<ArrowForward sx={{ transform: 'rotate(90deg)' }} />}
-                            sx={{ mt: 3.5, display: { xs: 'none', md: 'inline-flex' } }}
-                        >
-                            Till beställningen
-                        </Button>
-                    </Box>
-
-                    <Box sx={{ position: 'relative', animation: 'fade-up 0.9s 0.15s ease both' }}>
-                        <Box
-                            sx={{
-                                position: 'relative',
-                                aspectRatio: '16 / 9',
-                                borderRadius: { xs: 4, md: 6 },
-                                overflow: 'hidden',
-                                backgroundColor: BRAND.tealTint,
-                                boxShadow: '0 24px 60px rgba(23, 49, 58, 0.18)',
-                                border: '6px solid #fff',
-                            }}
-                        >
-                            <LoopVideo
-                                src="/video/fiskdisk.mp4"
-                                poster="/img/illustrationer/fiskdisk.webp"
-                                control="top-right"
-                            />
-                        </Box>
-                        <FloatingChip sx={{ top: { xs: -14, md: 24 }, left: { xs: 8, md: -28 } }}>
-                            <Box component="span" sx={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: '#66bb6a' }} />
-                            Dagsfärskt från auktionen
-                        </FloatingChip>
-                        <FloatingChip
-                            sx={{
-                                bottom: { xs: -16, md: 28 },
-                                right: { xs: 8, md: -20 },
-                                animationDelay: '-2s',
-                                backgroundColor: BRAND.coral,
-                                color: '#fff',
-                            }}
-                        >
-                            Packat & klart till dig
-                        </FloatingChip>
-                    </Box>
-                </Container>
-            </Box>
-
-            {/* ============ How it works ============ */}
-            <Container maxWidth="lg" sx={{ pb: { xs: 5, md: 7 } }}>
-                <Box
-                    component="ol"
-                    sx={{
-                        listStyle: 'none',
-                        m: 0,
-                        p: 0,
-                        display: 'grid',
-                        gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
-                        gap: { xs: 2, md: 3 },
-                        position: 'relative',
-                    }}
-                >
-                    {STEPS.map((step, index) => (
-                        <Reveal component="li" key={step.title} delay={index * 0.12}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    gap: 2,
-                                    alignItems: 'center',
-                                    p: 2.5,
-                                    height: '100%',
-                                    borderRadius: 4,
-                                    backgroundColor: '#fff',
-                                    border: `1px solid ${BRAND.border}`,
-                                    position: 'relative',
-                                    transition: 'transform 0.25s ease, box-shadow 0.25s ease',
-                                    '&:hover': {
-                                        transform: 'translateY(-3px)',
-                                        boxShadow: '0 12px 30px rgba(23, 49, 58, 0.08)',
-                                    },
-                                    '&:hover .step-icon': { transform: 'rotate(-8deg) scale(1.08)' },
-                                }}
-                            >
-                                <Box
-                                    className="step-icon"
-                                    sx={{
-                                        position: 'relative',
-                                        width: 56,
-                                        height: 56,
-                                        flexShrink: 0,
-                                        borderRadius: 3,
-                                        background: `linear-gradient(135deg, ${BRAND.teal} 0%, ${BRAND.tealDark} 100%)`,
-                                        color: '#fff',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        transition: 'transform 0.3s ease',
-                                    }}
-                                >
-                                    <step.icon />
-                                    <Box
-                                        component="span"
-                                        sx={{
-                                            position: 'absolute',
-                                            top: -8,
-                                            right: -8,
-                                            width: 24,
-                                            height: 24,
-                                            borderRadius: '50%',
-                                            backgroundColor: BRAND.coral,
-                                            color: '#fff',
-                                            fontSize: '0.75rem',
-                                            fontWeight: 700,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            border: '2px solid #fff',
-                                        }}
-                                    >
-                                        {index + 1}
-                                    </Box>
-                                </Box>
-                                <Box>
-                                    <Typography component="h2" sx={{ fontWeight: 700, color: BRAND.ink, fontFamily: 'var(--font-poppins), Poppins, sans-serif' }}>
-                                        {step.title}
-                                    </Typography>
-                                    <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>{step.text}</Typography>
-                                </Box>
-                            </Box>
-                        </Reveal>
-                    ))}
-                </Box>
-            </Container>
+            <PageHero
+                overline="Beställ & hämta"
+                title="Beställ online"
+                subtitle="Skriv vad du vill ha, så packar vi det färskt till din hämtningsdag. Du betalar i butiken."
+            />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
                 <Box
@@ -743,14 +488,35 @@ const Order = () => {
 
                         <Card>
                             <CardContent sx={{ p: 3 }}>
-                                <Typography variant="h5" component="h2" sx={{ mb: 1.5 }}>
-                                    Bra att veta
+                                <Typography variant="h5" component="h2" sx={{ mb: 2 }}>
+                                    Så fungerar det
                                 </Typography>
-                                <Box component="ul" sx={{ m: 0, pl: 2.25, color: BRAND.muted, fontSize: '0.92rem', display: 'grid', gap: 1 }}>
-                                    <li>Beställ gärna senast dagen innan – till helgen helst redan på onsdag.</li>
-                                    <li>Ange ungefärlig vikt eller antal personer, så hjälper vi dig med mängden.</li>
-                                    <li>Vi meddelar dig om något är slut i dagens leverans.</li>
-                                    <li>Skaldjursplatå eller större beställning? Ring oss gärna direkt.</li>
+                                <Box component="ol" sx={{ listStyle: 'none', m: 0, p: 0, display: 'grid', gap: 2 }}>
+                                    {STEPS.map((step, index) => (
+                                        <Box component="li" key={step.title} sx={{ display: 'flex', gap: 1.75 }}>
+                                            <Box
+                                                sx={{
+                                                    width: 30,
+                                                    height: 30,
+                                                    flexShrink: 0,
+                                                    borderRadius: '50%',
+                                                    backgroundColor: BRAND.tealTint,
+                                                    color: BRAND.tealDark,
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    fontWeight: 700,
+                                                    fontSize: '0.9rem',
+                                                }}
+                                            >
+                                                {index + 1}
+                                            </Box>
+                                            <Box>
+                                                <Typography sx={{ fontWeight: 600, color: BRAND.ink }}>{step.title}</Typography>
+                                                <Typography sx={{ color: BRAND.muted, fontSize: '0.9rem' }}>{step.text}</Typography>
+                                            </Box>
+                                        </Box>
+                                    ))}
                                 </Box>
                             </CardContent>
                         </Card>

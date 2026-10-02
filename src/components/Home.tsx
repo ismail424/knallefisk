@@ -26,7 +26,7 @@ import { visuallyHidden } from '@mui/utils';
 import { AdminPrice } from '../lib/types';
 import { STORES, FOUNDED_YEAR } from '../lib/site';
 import { BRAND, CARD_HOVER } from '@/theme';
-import { WaveDivider, Bubbles, ScalesPattern, FishAccent } from './decor';
+import { WaveDivider, Bubbles, FishAccent } from './decor';
 import PriceCard from './PriceCard';
 import SectionHeading from './SectionHeading';
 import StoreHeader from './StoreHeader';
@@ -75,6 +75,27 @@ const JOURNEY = [
         step: 'Disken',
         title: 'I vår disk i Borås & Skene',
         text: 'Samma dag ligger fångsten på is i disken – redo att bli middag, räkmacka eller helgens fest.',
+    },
+];
+
+const IDEAS = [
+    {
+        src: '/img/foto/skaldjursplata.webp',
+        alt: 'Skaldjursplatå med räkor, krabba, havskräftor, musslor och ostron',
+        title: 'Skaldjursplatå till festen',
+        text: 'Räkor, krabba, havskräftor och musslor – berätta hur många ni blir så sätter vi ihop den.',
+    },
+    {
+        src: '/img/foto/rakmacka.webp',
+        alt: 'Räkmacka med handskalade räkor, ägg, majonnäs och dill',
+        title: 'Klassisk räkmacka',
+        text: 'Handskalade räkor, ägg och en klick majonnäs. Enkelt, och alltid lika gott.',
+    },
+    {
+        src: '/img/foto/filea.webp',
+        alt: 'Färsk lax som filéas på en skärbräda',
+        title: 'Filé efter önskemål',
+        text: 'Hel fisk eller färdig filé? Vi rensar och portionerar precis som du vill ha det.',
     },
 ];
 
@@ -408,9 +429,8 @@ const Home = () => {
             )}
 
             {/* ============ From sea to counter ============ */}
-            <Box sx={{ backgroundColor: BRAND.tealTint, py: { xs: 7, md: 10 }, position: 'relative', overflow: 'hidden' }}>
-                <ScalesPattern color="rgba(68, 143, 155, 0.06)" />
-                <Container maxWidth="lg" sx={{ position: 'relative' }}>
+            <Box sx={{ backgroundColor: BRAND.tealTint, py: { xs: 7, md: 10 } }}>
+                <Container maxWidth="lg">
                     <SectionHeading
                         overline="Från hav till disk"
                         title="Så hamnar fisken hos dig"
@@ -509,10 +529,98 @@ const Home = () => {
                 </Container>
             </Box>
 
+            {/* ============ Ideas (photo cards) ============ */}
+            <Box sx={{ backgroundColor: WHITE, py: { xs: 7, md: 10 } }}>
+                <Container maxWidth="lg">
+                    <SectionHeading
+                        overline="Inspiration"
+                        title="Perfekt till helgen"
+                        subtitle="Några favoriter som våra kunder kommer tillbaka för – beställ i förväg så står det klart."
+                    />
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: { xs: '1fr', md: '1.4fr 1fr 1fr' },
+                            gap: { xs: 2.5, md: 3 },
+                        }}
+                    >
+                        {IDEAS.map((idea, index) => (
+                            <Reveal key={idea.title} delay={index * 0.12}>
+                                <Box
+                                    component={Link}
+                                    href="/bestall_online"
+                                    sx={{
+                                        position: 'relative',
+                                        display: 'block',
+                                        height: { xs: 300, md: 420 },
+                                        borderRadius: 4,
+                                        overflow: 'hidden',
+                                        color: WHITE,
+                                        textDecoration: 'none',
+                                        boxShadow: '0 12px 32px rgba(23, 49, 58, 0.14)',
+                                        '& img': { transition: 'transform 0.6s ease' },
+                                        '&:hover img': { transform: 'scale(1.05)' },
+                                        '&:hover .idea-cta': { gap: 1.25 },
+                                    }}
+                                >
+                                    <Image
+                                        src={idea.src}
+                                        alt={idea.alt}
+                                        fill
+                                        sizes="(max-width: 900px) 100vw, 40vw"
+                                        style={{ objectFit: 'cover' }}
+                                    />
+                                    <Box
+                                        sx={{
+                                            position: 'absolute',
+                                            inset: 0,
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            justifyContent: 'flex-end',
+                                            p: { xs: 2.5, md: 3 },
+                                            background:
+                                                'linear-gradient(180deg, rgba(13, 40, 48, 0) 40%, rgba(13, 40, 48, 0.88) 100%)',
+                                        }}
+                                    >
+                                        <Typography
+                                            component="h3"
+                                            sx={{
+                                                fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                                fontWeight: 700,
+                                                fontSize: { xs: '1.25rem', md: '1.4rem' },
+                                                mb: 0.75,
+                                            }}
+                                        >
+                                            {idea.title}
+                                        </Typography>
+                                        <Typography sx={{ fontSize: '0.92rem', color: 'rgba(255, 255, 255, 0.9)', mb: 1.5 }}>
+                                            {idea.text}
+                                        </Typography>
+                                        <Box
+                                            className="idea-cta"
+                                            sx={{
+                                                display: 'inline-flex',
+                                                alignItems: 'center',
+                                                gap: 0.75,
+                                                fontWeight: 600,
+                                                fontSize: '0.9rem',
+                                                transition: 'gap 0.2s ease',
+                                            }}
+                                        >
+                                            Beställ <ArrowForward sx={{ fontSize: '1rem' }} />
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Reveal>
+                        ))}
+                    </Box>
+                </Container>
+            </Box>
+
             {/* ============ About ============ */}
             <Box
                 sx={{
-                    backgroundColor: showPricesSection ? BRAND.sand : WHITE,
+                    backgroundColor: BRAND.sand,
                     py: { xs: 7, md: 11 },
                     position: 'relative',
                     overflow: 'hidden',
@@ -605,7 +713,7 @@ const Home = () => {
             </Box>
 
             {/* ============ Stores ============ */}
-            <Box sx={{ backgroundColor: showPricesSection ? WHITE : BRAND.sand, py: { xs: 7, md: 10 } }}>
+            <Box sx={{ backgroundColor: WHITE, py: { xs: 7, md: 10 } }}>
                 <Container maxWidth="lg">
                     <SectionHeading
                         overline="Här finns vi"
@@ -679,7 +787,7 @@ const Home = () => {
             </Box>
 
             {/* ============ Gallery ============ */}
-            <Box sx={{ backgroundColor: showPricesSection ? BRAND.sand : WHITE, py: { xs: 7, md: 10 } }}>
+            <Box sx={{ backgroundColor: BRAND.sand, py: { xs: 7, md: 10 } }}>
                 <Container maxWidth="lg">
                     <SectionHeading
                         overline="Ur vår disk"
@@ -734,7 +842,7 @@ const Home = () => {
             </Box>
 
             {/* ============ FAQ ============ */}
-            <Box sx={{ backgroundColor: showPricesSection ? WHITE : BRAND.sand, py: { xs: 7, md: 10 } }}>
+            <Box sx={{ backgroundColor: WHITE, py: { xs: 7, md: 10 } }}>
                 <Container maxWidth="md">
                     <SectionHeading
                         overline="Frågor & svar"
@@ -757,7 +865,6 @@ const Home = () => {
             >
                 {/* The sea again, faint under a teal tint */}
                 <BackgroundVideo src="/video/havet.mp4" poster="/img/havet_poster.jpg" opacity={0.22} />
-                <ScalesPattern color="rgba(255, 255, 255, 0.06)" />
                 <Bubbles style={{ top: -30, right: '5%' }} color="rgba(255, 255, 255, 0.1)" size={200} />
                 <Container maxWidth="md" sx={{ position: 'relative', textAlign: 'center', color: WHITE }}>
                     <Typography variant="h2" component="h2" sx={{ color: WHITE, fontSize: { xs: '1.75rem', md: '2.25rem' }, mb: 2 }}>

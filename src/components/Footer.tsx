@@ -13,8 +13,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { NAV_LINKS, STORES, TAGLINE, CONTACT_EMAILS, FOUNDED_YEAR, storeStatus } from '@/lib/site';
 import { BRAND } from '@/theme';
-import { WaveDivider, ScalesPattern } from './decor';
-import LoopVideo from './LoopVideo';
+import { WaveDivider } from './decor';
 
 const INK = BRAND.inkDeep;
 const PALE = 'rgba(255, 255, 255, 0.72)';
@@ -46,39 +45,6 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
         >
             {children}
         </Typography>
-    );
-}
-
-/** Small fish that swim across the illustration band on a loop. */
-function SwimmingFish() {
-    const school = [
-        { top: '62%', size: 30, duration: 26, delay: -4, opacity: 0.55 },
-        { top: '72%', size: 20, duration: 34, delay: -18, opacity: 0.4 },
-        { top: '80%', size: 24, duration: 22, delay: -11, opacity: 0.5 },
-    ];
-    return (
-        <Box aria-hidden sx={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
-            {school.map((fish, i) => (
-                <Box
-                    key={i}
-                    sx={{
-                        position: 'absolute',
-                        top: fish.top,
-                        left: 0,
-                        opacity: fish.opacity,
-                        animation: `swim-across ${fish.duration}s linear infinite`,
-                        animationDelay: `${fish.delay}s`,
-                    }}
-                >
-                    <svg viewBox="0 0 64 40" width={fish.size} height={(fish.size * 40) / 64} style={{ transform: 'scaleX(-1)', display: 'block' }}>
-                        <path
-                            d="M4 20c7-9 17-14 27-14 9 0 17 4 22 9l9-8c1-1 2 0 2 1v24c0 1-1 2-2 1l-9-8c-5 5-13 9-22 9-10 0-20-5-27-14z"
-                            fill="#d3e7ea"
-                        />
-                    </svg>
-                </Box>
-            ))}
-        </Box>
     );
 }
 
@@ -134,72 +100,36 @@ const Footer = () => {
         <Box component="footer" sx={{ mt: 'auto' }}>
             <WaveDivider fill={INK} height={{ xs: 40, md: 64 }} />
 
-            {/* ============ Illustrated coastline band ============ */}
-            <Box
-                sx={{
-                    position: 'relative',
-                    backgroundColor: INK,
-                    height: { xs: 520, sm: 480, md: 480 },
-                    overflow: 'hidden',
-                }}
-            >
-                <LoopVideo
-                    src="/video/kust.mp4"
-                    poster="/img/illustrationer/kust.webp"
-                    sx={{ objectPosition: { xs: '18% 0%', md: 'center 0%' } }}
-                />
-                {/* Blend the illustration into the dark footer above and below */}
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        inset: 0,
-                        background: `linear-gradient(180deg, ${INK} 0%, rgba(13, 40, 48, 0.55) 18%, rgba(13, 40, 48, 0.05) 45%, rgba(13, 40, 48, 0.1) 75%, ${INK} 100%)`,
-                    }}
-                />
-                <SwimmingFish />
-
-                <Container
-                    maxWidth="lg"
-                    sx={{
-                        position: 'relative',
-                        height: '100%',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        // Mobile: copy over the dark sea below the scene; desktop: in the open sky
-                        justifyContent: { xs: 'flex-end', md: 'flex-start' },
-                        pt: { md: 5 },
-                        pb: { xs: 3, md: 0 },
-                    }}
-                >
+            {/* ============ Info columns ============ */}
+            <Box sx={{ backgroundColor: INK, color: '#fff' }}>
+                <Container maxWidth="lg" sx={{ pt: { xs: 4, md: 6 }, pb: 4 }}>
+                    {/* CTA row */}
                     <Box
                         sx={{
                             display: 'flex',
                             flexDirection: { xs: 'column', md: 'row' },
-                            alignItems: { xs: 'flex-start', md: 'flex-end' },
+                            alignItems: { xs: 'flex-start', md: 'center' },
                             justifyContent: 'space-between',
-                            gap: 3,
+                            gap: 2.5,
+                            pb: { xs: 4, md: 5 },
+                            mb: { xs: 4, md: 5 },
+                            borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
                         }}
                     >
-                        <Box sx={{ maxWidth: 560 }}>
-                            <Typography
-                                variant="overline"
-                                sx={{ color: BRAND.tealPale, display: 'block', mb: 0.5, textShadow: '0 1px 8px rgba(0,0,0,0.4)' }}
-                            >
-                                Från västkusten till Sjuhärad
-                            </Typography>
+                        <Box>
                             <Typography
                                 component="p"
                                 sx={{
                                     fontFamily: 'var(--font-poppins), Poppins, sans-serif',
                                     fontWeight: 700,
-                                    color: '#fff',
-                                    fontSize: { xs: '1.45rem', md: '2.3rem' },
-                                    lineHeight: 1.15,
-                                    letterSpacing: '-0.015em',
-                                    textShadow: '0 2px 24px rgba(0, 0, 0, 0.45)',
+                                    fontSize: { xs: '1.4rem', md: '1.75rem' },
+                                    lineHeight: 1.2,
                                 }}
                             >
-                                Havets bästa, packat och klart när du kommer.
+                                Sugen på färsk fisk?
+                            </Typography>
+                            <Typography sx={{ color: PALE, mt: 0.5 }}>
+                                Beställ online och hämta i Borås eller Skene – du betalar i butiken.
                             </Typography>
                         </Box>
                         <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap' }}>
@@ -209,11 +139,6 @@ const Footer = () => {
                                 variant="contained"
                                 size="large"
                                 startIcon={<ShoppingBasketOutlined />}
-                                sx={{
-                                    backgroundColor: BRAND.coral,
-                                    '&:hover': { backgroundColor: BRAND.coralDark },
-                                    boxShadow: '0 8px 24px rgba(217, 83, 44, 0.35)',
-                                }}
                             >
                                 Beställ online
                             </Button>
@@ -225,26 +150,15 @@ const Footer = () => {
                                 startIcon={<PhoneOutlined />}
                                 sx={{
                                     color: '#fff',
-                                    borderColor: 'rgba(255, 255, 255, 0.6)',
-                                    backgroundColor: 'rgba(13, 40, 48, 0.35)',
-                                    backdropFilter: 'blur(6px)',
-                                    '&:hover': {
-                                        borderColor: '#fff',
-                                        backgroundColor: 'rgba(13, 40, 48, 0.55)',
-                                    },
+                                    borderColor: 'rgba(255, 255, 255, 0.4)',
+                                    '&:hover': { borderColor: '#fff', backgroundColor: 'rgba(255, 255, 255, 0.06)' },
                                 }}
                             >
                                 Ring oss
                             </Button>
                         </Box>
                     </Box>
-                </Container>
-            </Box>
 
-            {/* ============ Info columns ============ */}
-            <Box sx={{ backgroundColor: INK, color: '#fff', position: 'relative', overflow: 'hidden' }}>
-                <ScalesPattern color="rgba(255, 255, 255, 0.035)" />
-                <Container maxWidth="lg" sx={{ position: 'relative', pt: { xs: 4, md: 6 }, pb: 4 }}>
                     <Box
                         sx={{
                             display: 'grid',

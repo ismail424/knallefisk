@@ -35,6 +35,33 @@ const VALUES = [
     },
 ];
 
+const PHOTO_STORY = [
+    {
+        src: '/img/foto/hamnen.webp',
+        alt: 'Fiskebåtar vid kaj i en västkusthamn i gryningen',
+        title: 'Hamnen',
+        text: 'Västkustens fiskebåtar landar fångsten tidigt på morgonen.',
+    },
+    {
+        src: '/img/foto/auktionen.webp',
+        alt: 'Lådor med färsk torsk och havskräftor på is på en fiskauktion',
+        title: 'Auktionen',
+        text: 'På Göteborgs fiskauktion väljer vi själva ut det bästa.',
+    },
+    {
+        src: '/img/foto/filea.webp',
+        alt: 'Händer som filéar en hel färsk lax på en skärbräda',
+        title: 'Hantverket',
+        text: 'Vi rensar, filéar och portionerar efter dina önskemål.',
+    },
+    {
+        src: '/img/foto/fiskdisk.webp',
+        alt: 'Laxfilé, torskrygg och hel makrill på krossad is i en fiskdisk',
+        title: 'Disken',
+        text: 'Samma dag ligger allt på is – färska fisken över hela disken.',
+    },
+];
+
 export default function OmOssPage() {
     return (
         <Box sx={{ backgroundColor: BRAND.sand }}>
@@ -42,7 +69,7 @@ export default function OmOssPage() {
                 overline="Vår historia"
                 title="Om Knallefisk"
                 subtitle={`Familjeägd fiskhandel sedan ${FOUNDED_YEAR} – med färska fisken över hela disken och hjärtat i Sjuhärad.`}
-                image="/img/bild6.webp"
+                image="/img/foto/hamnen.webp"
             />
 
             {/* Story */}
@@ -133,6 +160,72 @@ export default function OmOssPage() {
                             </Box>
                         </Box>
                     </Box>
+                </Box>
+
+                {/* Photo story: from harbour to counter */}
+                <SectionHeading
+                    overline="Bakom disken"
+                    title="Från hamnen till disken"
+                    subtitle="Varje dag följer fisken samma korta väg – så här går det till."
+                />
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
+                        gap: { xs: 2, md: 2.5 },
+                        mb: { xs: 7, md: 10 },
+                    }}
+                >
+                    {PHOTO_STORY.map((photo) => (
+                        <Box
+                            key={photo.title}
+                            sx={{
+                                position: 'relative',
+                                aspectRatio: { xs: '4 / 3', lg: '3 / 4' },
+                                borderRadius: 4,
+                                overflow: 'hidden',
+                                boxShadow: '0 12px 32px rgba(23, 49, 58, 0.14)',
+                                '& img': { transition: 'transform 0.6s ease' },
+                                '&:hover img': { transform: 'scale(1.05)' },
+                            }}
+                        >
+                            <Image
+                                src={photo.src}
+                                alt={photo.alt}
+                                fill
+                                sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                                style={{ objectFit: 'cover' }}
+                            />
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    inset: 0,
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'flex-end',
+                                    p: 2.5,
+                                    color: '#fff',
+                                    background:
+                                        'linear-gradient(180deg, rgba(13, 40, 48, 0) 45%, rgba(13, 40, 48, 0.85) 100%)',
+                                }}
+                            >
+                                <Typography
+                                    component="h3"
+                                    sx={{
+                                        fontFamily: 'var(--font-poppins), Poppins, sans-serif',
+                                        fontWeight: 700,
+                                        fontSize: '1.2rem',
+                                        mb: 0.5,
+                                    }}
+                                >
+                                    {photo.title}
+                                </Typography>
+                                <Typography sx={{ fontSize: '0.9rem', color: 'rgba(255, 255, 255, 0.9)', lineHeight: 1.5 }}>
+                                    {photo.text}
+                                </Typography>
+                            </Box>
+                        </Box>
+                    ))}
                 </Box>
 
                 {/* Values */}
