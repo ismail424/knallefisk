@@ -3,7 +3,7 @@ import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
 import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Kontakta oss',
+  title: 'Kontakta oss – ring eller mejla fiskbutiken',
   description:
     'Kontakta Knallefisk – ring, mejla eller besök våra fiskbutiker i Borås och Skene. Telefonnummer, e-post, adresser och öppettider.',
   alternates: { canonical: '/kontakta_oss' },

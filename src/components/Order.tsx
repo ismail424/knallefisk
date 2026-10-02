@@ -26,7 +26,6 @@ import {
 } from '@mui/icons-material';
 import { STORES, storeStatus } from '../lib/site';
 import { BRAND } from '@/theme';
-import { Bubbles } from './decor';
 import PageHero from './PageHero';
 import Faq from './Faq';
 import SectionHeading from './SectionHeading';
@@ -418,7 +417,6 @@ const Order = () => {
                                 overflow: 'hidden',
                             }}
                         >
-                            <Bubbles style={{ top: -50, right: -40 }} size={180} color="rgba(255, 255, 255, 0.08)" />
                             <CardContent sx={{ p: 3, position: 'relative' }}>
                                 <Typography variant="h5" component="h2" sx={{ mb: 2, color: '#fff' }}>
                                     Hämta hos oss

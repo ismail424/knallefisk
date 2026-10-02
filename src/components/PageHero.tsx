@@ -1,7 +1,7 @@
 'use client';
 
 import { Box, Container, Typography } from '@mui/material';
-import { Bubbles, FishAccent, HeadingRule } from './decor';
+import { HeadingRule } from './decor';
 import { BRAND } from '@/theme';
 
 interface PageHeroProps {
@@ -35,14 +35,6 @@ export default function PageHero({ overline, title, subtitle, image }: PageHeroP
                             'linear-gradient(180deg, rgba(13, 40, 48, 0.84) 0%, rgba(13, 40, 48, 0.7) 60%, rgba(13, 40, 48, 0.84) 100%)',
                     }}
                 />
-            )}
-            <Bubbles
-                style={{ top: -30, right: '4%' }}
-                size={200}
-                color={dark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(68, 143, 155, 0.16)'}
-            />
-            {!dark && (
-                <FishAccent style={{ bottom: 18, left: '3%' }} size={72} color="rgba(68, 143, 155, 0.14)" />
             )}
             <Container
                 maxWidth="md"

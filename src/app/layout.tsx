@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     template: `%s – ${SITE_NAME}`,
   },
   description:
-    "Familjeägd fiskbutik i Borås och Skene sedan 2006. Dagsfärsk fisk och skaldjur direkt från Göteborgs fiskauktion – lax, räkor, krabba och mer. Beställ online och hämta i butik.",
+    "Familjeägd fiskbutik i Borås och Skene sedan 2006. Dagsfärsk fisk och skaldjur från Göteborgs fiskauktion. Beställ online och hämta i butik.",
   applicationName: SITE_NAME,
   category: "food",
   keywords: [
@@ -109,8 +109,11 @@ const structuredData = {
       "@type": "Organization",
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
+      alternateName: "Knalle Fisk",
       url: SITE_URL,
       logo: LOGO_URL,
+      // Both stores belong to one business — ties the two Google listings together
+      subOrganization: STORES.map((store) => ({ "@id": `${SITE_URL}/#${store.id}` })),
       slogan: TAGLINE,
       foundingDate: String(FOUNDED_YEAR),
       email: CONTACT_EMAILS[0],
@@ -127,6 +130,8 @@ const structuredData = {
       "@type": ["GroceryStore", "LocalBusiness"],
       "@id": `${SITE_URL}/#${store.id}`,
       name: store.fullName,
+      ...(store.alternateNames && { alternateName: store.alternateNames }),
+      ...(store.googleMapsUrl && { sameAs: [store.googleMapsUrl] }),
       description: `Fiskbutik i ${store.city} med dagsfärsk fisk och skaldjur från Göteborgs fiskauktion. Familjeägd fiskhandel sedan ${FOUNDED_YEAR}.`,
       url: `${SITE_URL}/hitta_butik`,
       telephone: store.phoneE164,
@@ -143,7 +148,7 @@ const structuredData = {
         addressCountry: "SE",
       },
       geo: { "@type": "GeoCoordinates", ...store.geo },
-      hasMap: store.directionsUrl,
+      hasMap: store.googleMapsUrl ?? store.directionsUrl,
       areaServed: ["Borås", "Skene", "Mark", "Sjuhärad"],
       openingHoursSpecification: store.openingHoursSpec,
       priceRange: "$$",

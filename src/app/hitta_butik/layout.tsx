@@ -3,7 +3,7 @@ import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
 import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Hitta butik',
+  title: 'Fiskbutiker i Borås & Skene – öppettider & karta',
   description:
     'Hitta Knallefisks butiker i Borås och Skene. Adresser, öppettider, kartor och vägbeskrivningar till våra fiskbutiker.',
   alternates: { canonical: '/hitta_butik' },

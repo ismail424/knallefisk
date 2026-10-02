@@ -26,7 +26,7 @@ import { visuallyHidden } from '@mui/utils';
 import { AdminPrice } from '../lib/types';
 import { STORES, FOUNDED_YEAR } from '../lib/site';
 import { BRAND, CARD_HOVER } from '@/theme';
-import { WaveDivider, Bubbles, FishAccent } from './decor';
+import { WaveDivider } from './decor';
 import PriceCard from './PriceCard';
 import SectionHeading from './SectionHeading';
 import StoreHeader from './StoreHeader';
@@ -39,16 +39,22 @@ const WHITE = '#ffffff';
 const USPS = [
     {
         icon: SailingOutlined,
+        image: '/img/foto/auktionen.webp',
+        alt: 'Lådor med färsk fisk och havskräftor på is på fiskauktionen',
         title: 'Direkt från auktionen',
         text: 'Vi köper in fisk och skaldjur på Göteborgs fiskauktion – dagsfärskt över hela disken.',
     },
     {
         icon: FavoriteBorder,
+        image: '/img/store_front.webp',
+        alt: 'Knallefisks butik med skylten Färska fisken över hela disken',
         title: `Familjeägt sedan ${FOUNDED_YEAR}`,
         text: 'Ett familjeföretag med passion för havet, kvalitet och personlig service i varje möte.',
     },
     {
         icon: ShoppingBasketOutlined,
+        image: '/img/foto/bestallning.webp',
+        alt: 'Färdigpackad fiskbeställning i papper med räkor och citroner på disken',
         title: 'Beställ online – hämta i butik',
         text: 'Lägg din beställning på webben så står den packad och klar när du kommer till butiken.',
     },
@@ -92,10 +98,16 @@ const IDEAS = [
         text: 'Handskalade räkor, ägg och en klick majonnäs. Enkelt, och alltid lika gott.',
     },
     {
-        src: '/img/foto/filea.webp',
-        alt: 'Färsk lax som filéas på en skärbräda',
-        title: 'Filé efter önskemål',
-        text: 'Hel fisk eller färdig filé? Vi rensar och portionerar precis som du vill ha det.',
+        src: '/img/foto/havskraftor.webp',
+        alt: 'Färska havskräftor på is med citron och dill',
+        title: 'Havskräftor',
+        text: 'Västkustens finaste skaldjur – perfekta att grilla, koka eller servera kalla.',
+    },
+    {
+        src: '/img/foto/gravadlax.webp',
+        alt: 'Gravad lax med hovmästarsås, dill och rågbröd',
+        title: 'Lax till gravning',
+        text: 'Fin laxfilé som blir hemmagjord gravad lax med hovmästarsås.',
     },
 ];
 
@@ -228,7 +240,7 @@ const Home = () => {
                             textShadow: '0 2px 24px rgba(0, 0, 0, 0.35)',
                         }}
                     >
-                        Färska fisken
+                        Färska fisken{' '}
                         <br />
                         över hela disken
                     </Typography>
@@ -324,7 +336,6 @@ const Home = () => {
 
             {/* ============ USP band ============ */}
             <Box sx={{ backgroundColor: BRAND.sand, py: { xs: 6, md: 9 }, position: 'relative', overflow: 'hidden' }}>
-                <FishAccent style={{ top: 24, right: '2%' }} size={90} color="rgba(68, 143, 155, 0.1)" />
                 <Container maxWidth="lg">
                     <Typography component="h2" sx={visuallyHidden}>
                         Därför Knallefisk
@@ -338,33 +349,23 @@ const Home = () => {
                     >
                         {USPS.map((usp, index) => (
                             <Reveal key={usp.title} delay={index * 0.1}>
-                                <Card
-                                    sx={{
-                                        p: 1,
-                                        height: '100%',
-                                        textAlign: 'center',
-                                        ...CARD_HOVER,
-                                    }}
-                                >
-                                    <CardContent>
-                                        <Box
-                                            sx={{
-                                                width: 64,
-                                                height: 64,
-                                                borderRadius: '50%',
-                                                backgroundColor: BRAND.tealTint,
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                justifyContent: 'center',
-                                                mx: 'auto',
-                                                mb: 2,
-                                            }}
-                                        >
-                                            <usp.icon sx={{ fontSize: 30, color: BRAND.teal }} />
+                                <Card sx={{ height: '100%', overflow: 'hidden', ...CARD_HOVER }}>
+                                    <Box sx={{ position: 'relative', aspectRatio: '16 / 10' }}>
+                                        <Image
+                                            src={usp.image}
+                                            alt={usp.alt}
+                                            fill
+                                            sizes="(max-width: 900px) 100vw, 33vw"
+                                            style={{ objectFit: 'cover' }}
+                                        />
+                                    </Box>
+                                    <CardContent sx={{ p: 3 }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, mb: 1 }}>
+                                            <usp.icon sx={{ fontSize: 22, color: BRAND.teal }} />
+                                            <Typography variant="h5" component="h3">
+                                                {usp.title}
+                                            </Typography>
                                         </Box>
-                                        <Typography variant="h5" component="h3" sx={{ mb: 1 }}>
-                                            {usp.title}
-                                        </Typography>
                                         <Typography sx={{ color: BRAND.muted, fontSize: '0.95rem' }}>
                                             {usp.text}
                                         </Typography>
@@ -540,7 +541,7 @@ const Home = () => {
                     <Box
                         sx={{
                             display: 'grid',
-                            gridTemplateColumns: { xs: '1fr', md: '1.4fr 1fr 1fr' },
+                            gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)', lg: 'repeat(4, 1fr)' },
                             gap: { xs: 2.5, md: 3 },
                         }}
                     >
@@ -552,7 +553,7 @@ const Home = () => {
                                     sx={{
                                         position: 'relative',
                                         display: 'block',
-                                        height: { xs: 300, md: 420 },
+                                        height: { xs: 300, md: 380 },
                                         borderRadius: 4,
                                         overflow: 'hidden',
                                         color: WHITE,
@@ -567,7 +568,7 @@ const Home = () => {
                                         src={idea.src}
                                         alt={idea.alt}
                                         fill
-                                        sizes="(max-width: 900px) 100vw, 40vw"
+                                        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 25vw"
                                         style={{ objectFit: 'cover' }}
                                     />
                                     <Box
@@ -626,7 +627,6 @@ const Home = () => {
                     overflow: 'hidden',
                 }}
             >
-                <Bubbles style={{ bottom: -40, left: '-2%' }} size={220} color="rgba(68, 143, 155, 0.08)" />
                 <Container maxWidth="lg">
                     <Box
                         sx={{
@@ -679,7 +679,7 @@ const Home = () => {
                                 hos oss får du alltid kvalitet, kunskap och ett vänligt bemötande.
                             </Typography>
 
-                            <Box sx={{ display: 'flex', gap: { xs: 3, md: 5 }, mb: 4, flexWrap: 'wrap' }}>
+                            <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, auto)', justifyContent: 'start', columnGap: { xs: 3, md: 5 }, mb: 4 }}>
                                 {[
                                     { value: '20+', label: 'år i branschen' },
                                     { value: '2', label: 'butiker i Sjuhärad' },
@@ -865,7 +865,6 @@ const Home = () => {
             >
                 {/* The sea again, faint under a teal tint */}
                 <BackgroundVideo src="/video/havet.mp4" poster="/img/havet_poster.jpg" opacity={0.22} />
-                <Bubbles style={{ top: -30, right: '5%' }} color="rgba(255, 255, 255, 0.1)" size={200} />
                 <Container maxWidth="md" sx={{ position: 'relative', textAlign: 'center', color: WHITE }}>
                     <Typography variant="h2" component="h2" sx={{ color: WHITE, fontSize: { xs: '1.75rem', md: '2.25rem' }, mb: 2 }}>
                         Beställ till helgen redan idag

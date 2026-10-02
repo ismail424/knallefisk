@@ -4,7 +4,7 @@ import { pageOpenGraph, breadcrumbJsonLd } from '../../lib/site';
 import JsonLd from '../../components/JsonLd';
 
 export const metadata: Metadata = {
-  title: 'Beställ online',
+  title: 'Beställ fisk online – hämta i Borås & Skene',
   description:
     'Beställ färsk fisk och skaldjur online från Knallefisk. Vi packar din beställning färsk och klar – hämta och betala i butiken i Borås eller Skene.',
   alternates: { canonical: '/bestall_online' },

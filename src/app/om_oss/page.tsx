@@ -15,7 +15,6 @@ import { BRAND, CARD_HOVER } from '@/theme';
 import PageHero from '@/components/PageHero';
 import SectionHeading from '@/components/SectionHeading';
 import CtaCard from '@/components/CtaCard';
-import { Bubbles } from '@/components/decor';
 
 const VALUES = [
     {
@@ -105,7 +104,6 @@ export default function OmOssPage() {
                     </Box>
 
                     <Box sx={{ position: 'relative' }}>
-                        <Bubbles style={{ top: -36, right: -14 }} size={140} />
                         <Box sx={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 2 }}>
                             <Box
                                 sx={{
