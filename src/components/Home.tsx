@@ -33,6 +33,7 @@ import StoreHeader from './StoreHeader';
 import BackgroundVideo from './BackgroundVideo';
 import Reveal from './Reveal';
 import Faq from './Faq';
+import { KARP_OFFER, KarpHeroBadge, KarpOfferSection } from './KarpOffer';
 
 const WHITE = '#ffffff';
 
@@ -228,6 +229,8 @@ const Home = () => {
                         />
                     </Box>
 
+                    {KARP_OFFER.active && <KarpHeroBadge />}
+
                     <Typography
                         component="h1"
                         sx={{
@@ -333,6 +336,9 @@ const Home = () => {
                     <WaveDivider fill={BRAND.sand} height={{ xs: 42, md: 72 }} />
                 </Box>
             </Box>
+
+            {/* ============ Levande karp (seasonal offer) ============ */}
+            {KARP_OFFER.active && <KarpOfferSection />}
 
             {/* ============ USP band ============ */}
             <Box sx={{ backgroundColor: BRAND.sand, py: { xs: 6, md: 9 }, position: 'relative', overflow: 'hidden' }}>

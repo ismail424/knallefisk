@@ -29,6 +29,7 @@ import { BRAND } from '@/theme';
 import PageHero from './PageHero';
 import Faq from './Faq';
 import SectionHeading from './SectionHeading';
+import { KARP_OFFER, KarpOrderCard, mentionsKarp } from './KarpOffer';
 
 const STEPS = [
     { title: 'Skicka din beställning', text: 'Skriv vad du vill ha och välj butik och dag.' },
@@ -104,6 +105,10 @@ function AnimatedCheck() {
     );
 }
 
+/** Appends an item on its own line to the free-text order. */
+const appendLine = (message: string, item: string) =>
+    message.trim() ? `${message.trimEnd()}\n${item}` : item;
+
 const EMPTY_FORM = {
     name: '',
     phone: '',
@@ -127,6 +132,14 @@ const Order = () => {
     useEffect(() => {
         setToday(new Date().toISOString().split('T')[0]);
         setStatuses(Object.fromEntries(STORES.map((s) => [s.id, storeStatus(s)])));
+        // "Beställ levande karp" on the home page links here with ?vara=karp
+        if (KARP_OFFER.active && new URLSearchParams(window.location.search).get('vara') === 'karp') {
+            setFormData((current) =>
+                mentionsKarp(current.message)
+                    ? current
+                    : { ...current, message: appendLine(current.message, KARP_OFFER.orderLine) }
+            );
+        }
     }, []);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -169,8 +182,15 @@ const Order = () => {
     const addItem = (item: string) => {
         setFormData((current) => ({
             ...current,
-            message: current.message.trim() ? `${current.message.trimEnd()}\n${item}` : item,
+            message: appendLine(current.message, item),
         }));
+    };
+
+    const karpAdded = mentionsKarp(formData.message);
+
+    const addKarp = () => {
+        if (!karpAdded) addItem(KARP_OFFER.orderLine);
+        document.getElementById('order-message')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     };
 
     const startNewOrder = () => {
@@ -243,6 +263,8 @@ const Order = () => {
             />
 
             <Container maxWidth="lg" sx={{ pb: { xs: 7, md: 10 } }}>
+                {KARP_OFFER.active && <KarpOrderCard added={karpAdded} onAdd={addKarp} />}
+
                 <Box
                     sx={{
                         display: 'grid',
@@ -376,6 +398,7 @@ const Order = () => {
 
                                 <TextField
                                     fullWidth
+                                    id="order-message"
                                     label="Din beställning"
                                     name="message"
                                     multiline
